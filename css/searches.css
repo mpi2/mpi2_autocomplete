@@ -1,0 +1,92 @@
+/*-------- autosuggest -------*/
+/*
+<input class="ui-autocomplete-input"/>
+<ul class="ui-autocomplete ui-menu ui-widget ui-widget-content ui-corner-all">
+  <li class="ui-menu-item">
+    <a class="ui-corner-all">item 1</a>
+  </li> 
+</ul> 
+*/
+html {
+	font-family: Arial, serif, "sans-serif";
+    font-size: 12px;    
+    margin: 0 80px;
+}
+body{
+	font-size: 12px;
+	margin: 20px 0;
+}
+input#tags {width: 300px;}
+ul.ui-autocomplete {
+	font-size: 12px !important;
+	height: auto;
+	max-height: 250px;
+	overflow: auto;
+	padding: 10px 15px;
+}
+ul.ui-autocomplete li {
+	border-bottom: 1px dashed #D1D1D1;
+}
+span#loading {margin-left: 10px;}
+span#solrInfo {width: auto; margin-left: 10px; font-size: 10px;}
+
+/*-------- end of autosuggest -------*/
+
+.rounded-corners {
+	-moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -khtml-border-radius: 4px;
+    border-radius: 4px;
+}
+
+/*---------- override dataTable css ---------*/
+div#geneStatus_wrapper {
+	border: 1px solid gray;
+	padding: 10px;
+	margin-bottom: 10px;	
+	/*box-shadow: 2px 2px 2px 2px #F0F0F0;*/
+}
+div#geneStatus_length {
+	margin: 10px 0;
+}
+div#geneStatusTable {
+	margin-top: 20px;
+}
+table#geneStatus {
+	border-collapse: collapse;
+}
+.noImage {
+	background-image: none;	
+}
+table#geneStatus th {
+	background-color: #CCCCCC;
+	text-align: left;
+}
+table#geneStatus th:nth-child(1){
+	display: none;	
+}	
+table#geneStatus tr {
+	border-bottom: 1px solid #CDC8B1;
+	background-color: #F4F4F4; /*#EEE8CD;*/
+}
+table#geneStatus tr:hover {
+	background-color: white;	
+} 
+table#geneStatus td:nth-child(1){
+	width: 30px;
+	display: none;
+}
+table#geneStatus td:nth-child(2){
+	min-width: 100px;
+}
+table#geneStatus td {
+	padding: 3px 5px 3px 10px;
+}
+.highlight {
+	color: #8B0A50 !important; /* matched string highlight */
+}
+div#geneStatus_info, div#geneStatus_paginate {
+	margin: 20px 0;
+}
+
+/*---------- end of override dataTable css ---------*/

@@ -1,0 +1,129 @@
+html {
+	font-family:"Times New Roman",Georgia,Serif !important;
+}
+body {margin: 20px;}
+div#term_suggest {
+	font-size: 12px;
+}
+input#auto_term {width: 350px;}
+span.srchMode {
+	border: 1px solid gray;
+	padding: 1px 5px;
+	margin-right: 3px;
+}
+span#searchWait {
+	margin-left: 30px;
+	width: auto;
+	height: auto;
+}
+div.ac_results {	
+	font-family: "Times New Roman",Georgia,Serif !important;
+	size: 12px !important;
+	/*width: auto !important;*/	 
+	/*min-width: 200px;*/	/*autosuggest drop down width override */
+	/*max-width: 350px;*/
+	width: 350px !important;
+	margin-left: 100px;
+	padding: 15px;
+	border: 1px solid gray;
+	background-color: white;
+	z-index: 999;	
+	-moz-border-radius: 4px;
+}
+.ac_results ul {
+	list-style-position: outside;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	overflow: auto;
+}
+.ac_results li {
+	margin: 0px;
+	padding: 3px 15px;
+	/* 
+	if width will be 100% horizontal scrollbar will apear 
+	when scroll mode will be used
+	*/
+
+	font: menu;
+	font-size: 12px;
+	/* 
+	it is very important, if line-height not setted or setted 
+	in relative units scroll will be broken in firefox
+	*/
+	line-height: 13px;
+}
+.ac_results li.liFacet {	
+	padding-left: 0px;
+	float: left;
+	clear: right;
+	width: 293px;
+	border-bottom: 1px dashed gray;
+}
+.ac_results li.liToggle {
+	float: right;	
+	padding: 3px 10px 0 0;		
+}	
+.ac_results li.liHide {
+	display: none;	
+}
+.ac_results li.liDynamic {	
+	clear: both;
+}
+li.btmBorder {
+	border-bottom: 1px dashed #CDC8B1;
+}
+.ac_results li.liDynamic:after {
+	content: ""; display: block; height: 0; clear: both;
+}
+.ac_loading {
+	background: white url('indicator.gif') right center no-repeat;
+}
+li.ac_even, li.ac_odd { width: auto; z-index: -10 !important;}
+.ac_over {
+	cursor: pointer;
+	background-color: #F4F4F4;
+
+}
+span.facet {
+	cursor: pointer;	
+	color: #2F4F4F;
+	position: relative;
+	margin-left: 5px;
+}
+
+div#gCount {
+	margin: 0 0 20px -10px; font-weight: bold; 
+}
+span.upArrow {
+	background-image: url(../images/up.gif) !important;
+}
+span.termToggle {
+	cursor: pointer;
+	width: 10px;
+	padding-left: 3px 0 0 0;
+	float: right;
+	background-image: url(../images/down.gif);
+    background-repeat: no-repeat;
+    background-position: 0 50%;
+    height: 15px;
+}
+span.termHide {display: block; border: 1px solid red;}
+span.dType {float: left; width: 100px; clear: left; padding: 2px 20px 2px 0; color: #8B8878;}
+span.dVal {float: right; width: 59%; padding: 2px 0; color: #303030;}
+.kw {font-size: 12px; color: #663399;}
+
+div#resultBox {font-size: 12px; margin: 50px 100px;}
+
+table#gcData {
+	border-collapse: collapse;
+}
+table#gcData td {
+	padding: 3px 5px;
+	border-bottom: 1px solid gray;
+}
+table#gcData td.gName {	
+	font-weight: bold;
+	font-size: 12px;
+	background-color: #CCCC99;	
+}
