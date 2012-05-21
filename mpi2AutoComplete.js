@@ -6,6 +6,15 @@
     }
     MPI2.AutoComplete = {};
 
+    MPI2.AutoComplete.searchFields = ["marker_symbol", "mgi_accession_id", "marker_name", "marker_synonym"];
+    MPI2.AutoComplete.geneDataFields = ["marker_symbol", "mgi_accession_id", "marker_name", "synonym"];
+    MPI2.AutoComplete.fieldsPretty = {
+        marker_symbol: 'Gene Symbol',
+        marker_name: 'Gene Name',
+        mgi_accession_id: 'MGI Id',
+        synonym: 'Gene Synonym',
+    };
+
     $.widget('MPI2.mpi2AutoComplete', $.ui.autocomplete, {
 
         options: {
@@ -16,6 +25,13 @@
         },
 
         _create : function () {
+            var self = this;
+
+            self.element.bind('keyup', function(e) {
+                if (e.keyCode == 13) {
+                    self.close();
+                }
+            });
             $.ui.autocomplete.prototype._create.apply(this);
         },
 
@@ -35,10 +51,16 @@
                 start: 0,
                 rows: 10,
                 q: request.term,
-                wt: 'json'
+                wt: 'json',
+                'group': 'on',
+                'group.field': 'mgi_accession_id',
+                'defType': 'edismax',
+	        'qf': 'auto_suggest',
+                'fl': "marker_name,marker_synonym,marker_symbol,mgi_accession_id"
             };
 
-            params.q = params.q.replace(/[^A-Za-z0-9]/g, '');
+ 	    params.q = params.q.replace(/^\s+|\s+$/g, "");
+ 	    params.q = params.q.replace(":", "\\:"); // so that mgi:* would work
 
             $.ajax({
                 url: self.options.solrURL,
@@ -47,16 +69,76 @@
                 jsonp: 'json.wrf',
                 timeout: 10000,
                 success: function (solrResponse) {
-                    var markerSymbols = $.map(solrResponse.response.docs, function (solrDoc) {
-                        return solrDoc.marker_symbol;
-                    });
-                    response(markerSymbols);
+                    self.parseSolrGroupedJson(solrResponse, params.q);
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     response(['AJAX error']);
                 }
             });
+        },
+
+        parseSolrGroupedJson: function (json, query) {
+            var self = this;
+
+            //console.log(json);
+            var maxRow   = json.responseHeader.params.rows;
+            var g        = json.grouped.mgi_accession_id;
+            var numFound = g.matches;
+            var groups   = g.groups;
+
+            var aFields = MPI2.AutoComplete.searchFields;
+
+            var list = [];
+            var mapping = {};
+
+            for ( var i in groups ){
+                var geneId = groups[i].groupValue;
+
+                var docs = groups[i].doclist.docs;
+                for ( var i in docs ){
+                    for ( var j in aFields ){
+                        if ( docs[i][aFields[j]] ){
+                            var fld = aFields[j];
+                            var val = docs[i][fld];
+                            // marker_synonym, mp_id, mp_term, mp_term_synonym are all multivalued
+                            if (fld == 'marker_synonym' || fld == 'mp_id' || fld == 'mp_term' || fld == 'mp_term_synonym' ){
+                                var aVals = docs[i][fld];
+                                for ( j in aVals ){
+                                    var thisVal = aVals[j];
+
+                                    // only want indexed terms that have string match to query keyword
+                                    if ( thisVal.toLowerCase().indexOf(query) != -1 || query.indexOf('*') ){
+                                        mapping[thisVal] = geneId;
+                                        list.push(MPI2.AutoComplete.fieldsPretty[fld] + " : " +  thisVal);
+                                    }
+                                }
+                            }
+                            else {
+                                if ( val.toLowerCase().indexOf(query) != -1 || query.indexOf('*') ){
+                                    mapping[val] = geneId;
+                                    list.push(MPI2.AutoComplete.fieldsPretty[fld] + " : " +  val);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return self.getUnique(list);
+        },
+
+        getUnique: function (list) {
+            var u = {}, a = [];
+            for(var i = 0, l = list.length; i < l; ++i){
+                if(list[i] in u){
+                    continue;
+                }
+                a.push(list[i]);
+                u[list[i]] = 1;
+            }
+            return a;
         }
+
     });
 
 }(jQuery));
