@@ -106,16 +106,16 @@
                                 var aVals = docs[i][fld];
                                 for ( j in aVals ){
                                     var thisVal = aVals[j];
-
+									
                                     // only want indexed terms that have string match to query keyword
-                                    if ( thisVal.toLowerCase().indexOf(query) != -1 || query.indexOf('*') ){
-                                        mapping[thisVal] = geneId;
+                                    if ( thisVal.toLowerCase().indexOf(query) != -1 || query.indexOf('*') != -1 ){
+										mapping[thisVal] = geneId;
                                         list.push(MPI2.AutoComplete.fieldsPretty[fld] + " : " +  thisVal);
                                     }
                                 }
                             }
                             else {
-                                if ( val.toLowerCase().indexOf(query) != -1 || query.indexOf('*') ){
+                                if ( val.toLowerCase().indexOf(query) != -1 || query.indexOf('*') != -1 ){
                                     mapping[val] = geneId;
                                     list.push(MPI2.AutoComplete.fieldsPretty[fld] + " : " +  val);
                                 }
