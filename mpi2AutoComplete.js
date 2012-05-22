@@ -55,21 +55,21 @@
                 'group': 'on',
                 'group.field': 'mgi_accession_id',
                 'defType': 'edismax',
-	        'qf': 'auto_suggest',
-                'fl': "marker_name,marker_synonym,marker_symbol,mgi_accession_id"
+	        	'qf': 'auto_suggest',
+                'fl': "marker_name,synonym,marker_symbol,mgi_accession_id"
             };
 
  	    params.q = params.q.replace(/^\s+|\s+$/g, "");
  	    params.q = params.q.replace(":", "\\:"); // so that mgi:* would work
 
-            $.ajax({
+        $.ajax({
                 url: self.options.solrURL,
                 data: params,
                 dataType: 'jsonp',
                 jsonp: 'json.wrf',
                 timeout: 10000,
                 success: function (solrResponse) {
-                    self.parseSolrGroupedJson(solrResponse, params.q);
+                    response( self.parseSolrGroupedJson(solrResponse, params.q) );									
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     response(['AJAX error']);
@@ -100,8 +100,9 @@
                         if ( docs[i][aFields[j]] ){
                             var fld = aFields[j];
                             var val = docs[i][fld];
+							
                             // marker_synonym, mp_id, mp_term, mp_term_synonym are all multivalued
-                            if (fld == 'marker_synonym' || fld == 'mp_id' || fld == 'mp_term' || fld == 'mp_term_synonym' ){
+                            if (fld == 'synonym' || fld == 'mp_id' || fld == 'mp_term' || fld == 'mp_term_synonym' ){
                                 var aVals = docs[i][fld];
                                 for ( j in aVals ){
                                     var thisVal = aVals[j];
