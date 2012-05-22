@@ -3,26 +3,23 @@ $(document).ready(function(){
 		
 	//scoring matrix for ordering gene names	
 	IMPC.geneMatrix = {
-		id          : { equal : 15, substr : 15 },	
-		GeneSymbol  : { equal : 15, substr : 8 },
-		GeneName    : { equal : 3,  substr : 2 },
-		GeneSynonym : { equal : 2,  substr : 1 }		
+		mgi_accessioni_id         : { equal : 15, substr : 15 },	
+		marker_symbol  : { equal : 15, substr : 8 },
+		marker_name    : { equal : 3,  substr : 2 },
+		synonym        : { equal : 2,  substr : 1 }
 	};
 
-	doAutoComplete();
+	doAutoComplete();	
 });
 
 function doAutoComplete(){
+	
+	var params = {'start':0, 'rows':50, 'wt':'json', 'group':'on', 'group.field':'mgi_accession_id', 'defType':'edismax',
+		      'qf':'text', 'qf':'auto_suggest', 'fl':"marker_name,synonym,marker_symbol,mgi_accession_id"};
 
-	//var url = "/PhenotypeArchive/komp2/autosuggestGenericSearch";
-	var params = {'start':0, 'rows':50, 'wt':'json', 'group':'on', 'group.field':'id', 'defType':'edismax', 'qf':'text'};
-	//var params = {'start':0, 'rows':50, 'wt':'json', 'group':'on', 'group.field':'id'};
-	
-	//var solrUrl = "http://localhost:8983/solr/select";
-	//var solrUrl = "http://192.168.1.9:8983/solr/select";
-	var solrUrl = "http://172.22.69.171:8983/solr/select";
-	//var solrUrl = "http://wwwdev.ebi.ac.uk/mi/solr/autosuggest/select";
-	
+	var solrUrl = "http://ikmc.vm.bytemark.co.uk:8900/solr/gene_autosuggest/select";
+	//var solrUrl = "http://ikmc.vm.bytemark.co.uk:8999/solr/gene_autosuggest/select";
+
  	$( "#tags" ).autocomplete({ 			
  		//source : url,
  		create : function(event, ui){
@@ -33,22 +30,13 @@ function doAutoComplete(){
  			}); 			
  			// preload an arbitrarily chosen search keyword: pax
  			IMPC.searchKW = 'pax'; // default search when application starts so that something appears in table
- 			/*$.ajax({   					
- 					url: url + "?maxRow=50&url=http://localhost:8983/solr/&mode=kw&term="+ IMPC.searchKW, 					
- 					success:function(jsonResponse){ 
- 						parseSolrGroupedJson1(jsonResponse);
- 						makeTable();
- 						$('table#geneStatus th').addClass('noImage');
- 						$('span#loading').html('');
- 						$('span#solrInfo').html('');
- 					}
-			});*/
+ 			
  			$.ajax({ 				 					
  					'url': solrUrl, 					
  					'data': params,		
  					'dataType': 'jsonp',
  					'jsonp': 'json.wrf',
- 					'success': function(json) { 
+ 					'success': function(json) { 						
  						parseSolrGroupedJson(json);
  						makeTable();
  						$('table#geneStatus th').addClass('noImage');
@@ -63,30 +51,12 @@ function doAutoComplete(){
  			var query =  request.term; 			
  			
  			// trim away leading, trailing spaces
- 			query = query.replace(/^\s+|\s+$/g, ""); 
- 			//IMPC.searchKW = query.replace(/\*$/, '');
+ 			query = query.replace(/^\s+|\s+$/g, "");  	
  			IMPC.searchKW = query;
  			
  			// parenthesis need to be escaped 			
- 			//query = query.replace(/\(/g, "\\(");
- 			//query = query.replace(/\)/g, "\\)");
- 			
- 			// dealing with phrase, 
- 			// eg, paired box becomes paired AND box
- 			//     paired box gene becomes paired box AND gene
- 			//query = query.replace(/\s+(.+){0,}$/, " AND $1"); // not needed if use dismax query parser
- 			
- 			
- 			// need to quote the query if does NOT contain 'AND',  '(', and '.'
- 			// eg, S. cerevisiae, (Drosophila) will not be quoted
- 			// NOTE this whole lot is not needed if use dismax query parser
- 			/*if ( query.indexOf('AND') == -1  
- 					&& query.indexOf('(') == -1 
- 					&& query.indexOf('.') == -1 
- 					&& query.indexOf('*') == -1) {
- 				query = "\"" + query + "\"";
- 			} */			
- 			
+ 			query = query.replace(/\(/g, "\\(");
+ 			query = query.replace(/\)/g, "\\)"); 			
  			query = query.replace(":", "\\:"); // so that mgi:* would work
  			
  			//console.log("ESC:---" + query +"---");
@@ -99,22 +69,10 @@ function doAutoComplete(){
 					'dataType': 'jsonp',
 					'jsonp': 'json.wrf',
 					'success': function(json) {  
-						response( parseSolrGroupedJson(json) ); // works for asterisk
-						//response( $.ui.autocomplete.filter(parseSolrGroupedJson(json), request.term));  // won't work for asterisk				 
+						response( parseSolrGroupedJson(json) ); // works for asterisk						 
 						$('span#loading').html('');												
 					}
-			}); 
- 			/*$.ajax({ 					  	
-				  url: url + "?maxRow=200&url=http://localhost:8983/solr/&mode=kw",
-				  //dataType: 'json', // server already returns json
-				  data: request,					 
-				  success:function(jsonResponse){					  
-					  //console.log(parseSolrGroupedJson(jsonResponse));
-					  //response( $.ui.autocomplete.filter(parseSolrGroupedJson1(jsonResponse), request.term) );
-					  response( parseSolrGroupedJson1(jsonResponse) );
-					  $('span#loading').html('');
-				  }
- 			});*/ 
+			}); 			
  		}, 			
  		minLength: 1,
  		delay: 400, // millisec
@@ -125,9 +83,7 @@ function doAutoComplete(){
  			$('span#solrInfo').html('');
  		},	
  		select: function(event, ui) { 			
- 			var val = ui.item.value.replace(/^(.+)\s(:)\s(.+)/, '$3');			
- 			//alert('...selected:' + val + ' -> ' + IMPC.mapping[val]);  // value of hovered item
- 			//params.q = IMPC.mapping[val].replace(":", "\\:"); // MGI gene id // not needed with edisMax 			
+ 			var val = ui.item.value.replace(/^(.+)\s(:)\s(.+)/, '$3');			 	
  			params.q = IMPC.mapping[val];
  			
  			$('span#loading').html("<img src='../images/loading_small.gif' />");
@@ -141,14 +97,7 @@ function doAutoComplete(){
  						parseSolrGroupedJson(json);
  						makeTable();													
  					}
- 			});
- 			/*$.ajax({  
- 					url: url + "?maxRow=100&url=http://localhost:8983/solr/&mode=id&term=" + IMPC.mapping[val],					
- 					success:function(jsonResponse){ 						
- 						parseSolrGroupedJson1(jsonResponse);
- 						makeTable(); 																
- 					}
-			});*/
+ 			}); 			
  		}
  	}).data('autocomplete')._renderItem = function( ul, item ) { 
  		//console.log(item);
@@ -177,16 +126,13 @@ function doAutoComplete(){
  	}); 
 }
 function makeTable(){
-	//"GeneSymbol", "id", "GeneName", "GeneSynonym";
-	//console.log( "val: " + IMPC.groups[0].groupValue );
-	//console.log( "val: " + IMPC.searchKW );
-	
+
 	var trs = '';	
-	var aFields = ["GeneSymbol", "id", "GeneName", "GeneSynonym"];
-	var oFieldsPretty = {GeneSymbol:'Gene Symbol', 
-            GeneName:'Gene Name', 
-            id:'MGI Id', 
-            GeneSynonym:'Gene Synonym'           
+	var aFields = ["mgi_accession_id", "marker_symbol", "marker_name", "synonym"];
+	var oFieldsPretty = {marker_symbol:'Gene Symbol', 
+            marker_name:'Gene Name', 
+            mgi_accession_id:'MGI Id', 
+            synonym:'Gene Synonym'           
             };	
 	
 	var ths = '';
@@ -318,9 +264,9 @@ function initDataTable(jqObj){
 	});	
 }	
 function parseSolrGroupedJson(json){
-	
+	//console.log(json);
 	var maxRow   = json.responseHeader.params.rows;
-	var g        = json.grouped.id;
+	var g        = json.grouped.mgi_accession_id;
 	var numFound = g.matches;
 	var groups   = g.groups;
 	IMPC.groups = groups;
@@ -328,84 +274,48 @@ function parseSolrGroupedJson(json){
 	var foundFilterMsg = "Max records to return: " + maxRow + ' ... Records found: ' + numFound;	
 	$('span#solrInfo').html(foundFilterMsg);
 	
-	var aFields = ["GeneSymbol", "id", "GeneName", "GeneSynonym"];
-	var oFieldsPretty = {GeneSymbol:'Gene Symbol', 
-			             GeneName:'Gene Name', 
-			             id:'MGI Id', 
-			             GeneSynonym:'Gene Synonym'
+	var aFields = ["marker_symbol", "mgi_accession_id", "marker_name", "synonym"];// need to be updated to marker_synonym
+	var oFieldsPretty = {marker_symbol:'Gene Symbol', 
+						 marker_name:'Gene Name', 
+						 mgi_accession_id:'MGI Id', 
+			             synonym:'Gene Synonym'
 			             };
 	var list = [];	
 	var mapping = {};
 
 	for ( var i in groups ){
 		var geneId = groups[i].groupValue;
-		
+		console.log(geneId);
 		var docs = groups[i].doclist.docs;
 		for ( var i in docs ){		
 			for ( var j in aFields ){
 				if ( docs[i][aFields[j]] ){					
 					var fld = aFields[j];
 					var val = docs[i][fld];
-					mapping[val] = geneId;
-					//console.log('**** ' + val + ' '+ mapping[val]);					
-					//console.log(oFieldsPretty[fld] + " : " +  val + ' ' + geneId);
-					list.push(oFieldsPretty[fld] + " : " +  val);
+					
+					if ( fld == 'synonym' ){						
+						var aGsynonyms = docs[i][fld];
+						for ( j in aGsynonyms ){						
+							var thisGeneSynonym = aGsynonyms[j];
+							mapping[thisGeneSynonym] = geneId;						
+							list.push(oFieldsPretty[fld] + " : " +  thisGeneSynonym);
+						}
+					}
+					else {
+						mapping[val] = geneId;											
+						list.push(oFieldsPretty[fld] + " : " +  val);
+					}
 				}
 			}	
 		}		
 	}
 		
 	IMPC.mapping = mapping;	
-	return list;
-}	
-function parseSolrGroupedJson1(response){
-	var json = eval("(" + response + ")");
-	//console.log(json);
-	var maxRow   = json.responseHeader.params.rows;
-	var g        = json.grouped.id;
-	var numFound = g.matches;  // problematic with "protein-" not what expected from autosuggest
-	var groups   = g.groups;
-	IMPC.groups = groups;		
-	
-	//console.log("Max number of records to return: " + maxRow + ' --- Records found: ' + numFound);
-	$('span#solrInfo').html("Max records to return: " + maxRow + ' --- Records found: ' + numFound);
-	
-	var aFields = ["GeneSymbol", "id", "GeneName", "GeneSynonym"];
-	var oFieldsPretty = {GeneSymbol:'Gene Symbol', 
-			             GeneName:'Gene Name', 
-			             id:'MGI Id', 
-			             GeneSynonym:'Gene Synonym'
-			             };
-	var list = [];
-	var mapping = {};
-		
-	for ( var i in groups ){
-		var geneId = groups[i].groupValue;
-		
-		var docs = groups[i].doclist.docs;
-		for ( var i in docs ){		
-			for ( var j in aFields ){
-				if ( docs[i][aFields[j]] ){
-					
-					var fld = aFields[j];
-					var val = docs[i][fld];
-					mapping[val] = geneId;					
-					
-					//console.log('**** ' + fld + ': ' + val + ' '+ mapping[val]);					
-					//console.log(oFieldsPretty[fld] + " : " +  val + ' ' + geneId);
-					
-					list.push(oFieldsPretty[fld] + " : " +  val);
-				}
-			}	
-		}		
-	}
-	IMPC.mapping = mapping;	
-	//console.log('size: '+ list.length);
 	return list;
 }	
 function fetch_name_matching_score(fld, val, userQry){
-	//console.log('field now: ' + fld + ' val: ' + val + ' qry: ' + userQry);
 	var subScore = 0;
+	val = val + ''; // make sure it is a string (ie, converts number in the string to string)
 	if (  val.toLowerCase() == userQry.toLowerCase() ){		
 		subScore = parseInt(IMPC.geneMatrix[fld].equal);		
 		//console.log(fld + ' : ' + subScore);
@@ -418,51 +328,4 @@ function fetch_name_matching_score(fld, val, userQry){
 	}
 	return false;
 }
-function parse_solrJson(response){
-	var json = eval("(" + response + ")");
-	//console.log(json);
-	
-	var maxRow   = json.responseHeader.params.rows;
-	var numFound = json.response.numFound;	
-	$('span#solrInfo').html("Max number of terms to return: " + maxRow + ' --- Terms found: ' + numFound);
-	
-	// fields indexed in Solr document that we want to use here
-	// to tag for the source of the data
-	var aFields = ["Gene_Symbol", "Gene_Name", "id", "Gene_Synonym"];
-	var list = [];
-	var docs = json.response.docs;
-	for ( var i in docs ){		
-		for ( var j in aFields ){
-			if ( docs[i][aFields[j]] ){
-				//console.log( docs[i][aFields[j]]);
-				var fld = aFields[j];
-				list.push(fld + " : " +  docs[i][aFields[j]]);
-			}
-		}	
-	}	
-	return list;
-	
-}
-function parse_solrJsonV1(response){
-	var json = eval("(" + response + ")");
-	//console.log(json);
-		
-	var numFound = json.numFound;
-	var maxRow = json.maxRow; 
-	//console.log("found: " + numFound + " max: " + maxRow);
-	
-	$('span#solrInfo').html("Max number of terms to return: " + maxRow + ' --- Terms found: ' + numFound);	
-	return json.docs;
-	
-}
-/*
-json string: {"responseHeader":{"status":0,"QTime":1,"params":{"start":"0","q":"pax6*","group.limit":["10","10"],"group.field":["GeneSymbol","GeneName"],"group":["on","on"],"wt":"json","rows":"1000"}},
-	          "grouped":{"GeneSymbol":
-	          					{"matches":2,
-	        	                 "groups":[{"groupValue":"Pax6","doclist":{"numFound":1,"start":0,"docs":[{"GeneSymbol":"Pax6","GeneName":"paired box gene 6","id":"MGI:97490","GeneSynonym":"Dey"}]}},
-	        	                           {"groupValue":"Pax6os1","doclist":{"numFound":1,"start":0,"docs":[{"GeneSymbol":"Pax6os1","GeneName":"Pax6 opposite strand transcript 1","id":"MGI:3028033"}]}}]},
-	        	         "GeneName":{"matches":2,
-	        	        	     "groups":[{"groupValue":"paired box gene 6","doclist":{"numFound":1,"start":0,"docs":[{"GeneSymbol":"Pax6","GeneName":"paired box gene 6","id":"MGI:97490","GeneSynonym":"Dey"}]}},
-	        	        	               {"groupValue":"Pax6 opposite strand transcript 1","doclist":{"numFound":1,"start":0,"docs":[{"GeneSymbol":"Pax6os1","GeneName":"Pax6 opposite strand transcript 1","id":"MGI:3028033"}]}}]}}}
 
-*/
