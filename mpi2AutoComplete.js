@@ -18,12 +18,14 @@
     $.widget('MPI2.mpi2AutoComplete', $.ui.autocomplete, {
 
         options: {
-            source: function () {this.sourceCallback.apply(this, arguments);},
+            source: function () {
+				this.sourceCallback.apply(this, arguments);				
+			},
             minLength: 1,
             delay: 400,
-            solrURL: 'http://ikmc.vm.bytemark.co.uk:8983/solr/gene_autosuggest/select'
+            solrURL: 'http://ikmc.vm.bytemark.co.uk:8983/solr/gene_autosuggest/select'			
         },
-
+		
         _create : function () {
             var self = this;
 
@@ -32,7 +34,7 @@
                     self.close();
                 }
             });
-            $.ui.autocomplete.prototype._create.apply(this);
+            $.ui.autocomplete.prototype._create.apply(this);			
         },
 
         _setOption: function (key, value) {
@@ -44,6 +46,24 @@
 
             $.ui.autocomplete.prototype._setOption.apply(this, arguments);
         },
+
+		_renderItem: function( ul, item ) { 
+ 			//console.log(item);
+ 			// highlight the matching characters in string 		
+ 		 	var term = this.term.split(' ').join('|'); 			
+ 			var wildCard = term.replace(/\*/g, "\\w+");
+ 			wildCard = wildCard.replace(/\(/g, "\\(");
+ 			wildCard = wildCard.replace(/\)/g, "\\)"); 	
+ 		
+ 			var re = new RegExp("(" + wildCard + ")", "gi") ;
+ 			var t = item.label.replace(re,"<b>$1</b>");
+ 			if ( t.indexOf("<b>") > -1 ){
+ 				return $( "<li></li>" )
+ 		    		.data( "item.autocomplete", item )
+ 		    		.append( "<a>" + t + "</a>" )
+ 		    		.appendTo( ul ); 			 				
+ 			}
+		},
 
         sourceCallback: function (request, response) {
             var self = this;
@@ -57,55 +77,55 @@
                 'defType': 'edismax',
 	        	'qf': 'auto_suggest',
                 'fl': "marker_name,synonym,marker_symbol,mgi_accession_id"
-            };
+        	};
 
- 	    params.q = params.q.replace(/^\s+|\s+$/g, "");
- 	    params.q = params.q.replace(":", "\\:"); // so that mgi:* would work
+ 	    	params.q = params.q.replace(/^\s+|\s+$/g, "");
+ 	   	 	params.q = params.q.replace(":", "\\:"); // so that mgi:* would work
 
-        $.ajax({
-                url: self.options.solrURL,
-                data: params,
-                dataType: 'jsonp',
-                jsonp: 'json.wrf',
-                timeout: 10000,
-                success: function (solrResponse) {
-                    response( self.parseSolrGroupedJson(solrResponse, params.q) );									
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    response(['AJAX error']);
-                }
-            });
-        },
+        	$.ajax({
+            	    url: self.options.solrURL,
+            	    data: params,
+            	    dataType: 'jsonp',
+            	    jsonp: 'json.wrf',
+            	    timeout: 10000,
+            	    success: function (solrResponse) {
+            	       	response( self.parseSolrGroupedJson(solrResponse, params.q) );	
+            	    },
+            	    error: function (jqXHR, textStatus, errorThrown) {
+            	        response(['AJAX error']);
+            	    }
+            	});
+        	},
 
-        parseSolrGroupedJson: function (json, query) {
-            var self = this;
+        	parseSolrGroupedJson: function (json, query) {
+            	var self = this;
 
-            //console.log(json);
-            var maxRow   = json.responseHeader.params.rows;
-            var g        = json.grouped.mgi_accession_id;
-            var numFound = g.matches;
-            var groups   = g.groups;
+            	//console.log(json);
+            	var maxRow   = json.responseHeader.params.rows;
+            	var g        = json.grouped.mgi_accession_id;
+            	var numFound = g.matches;
+            	var groups   = g.groups;
 
-            var aFields = MPI2.AutoComplete.searchFields;
+            	var aFields = MPI2.AutoComplete.searchFields;	
 
-            var list = [];
-            var mapping = {};
+            	var list = [];
+            	var mapping = {};
 
-            for ( var i in groups ){
-                var geneId = groups[i].groupValue;
+            	for ( var i in groups ){
+               		var geneId = groups[i].groupValue;
 
-                var docs = groups[i].doclist.docs;
-                for ( var i in docs ){
-                    for ( var j in aFields ){
-                        if ( docs[i][aFields[j]] ){
-                            var fld = aFields[j];
-                            var val = docs[i][fld];
+                	var docs = groups[i].doclist.docs;
+                	for ( var i in docs ){
+                    	for ( var j in aFields ){
+                    	    if ( docs[i][aFields[j]] ){
+                            	var fld = aFields[j];
+                            	var val = docs[i][fld];
 							
-                            // marker_synonym, mp_id, mp_term, mp_term_synonym are all multivalued
-                            if (fld == 'synonym' || fld == 'mp_id' || fld == 'mp_term' || fld == 'mp_term_synonym' ){
-                                var aVals = docs[i][fld];
-                                for ( j in aVals ){
-                                    var thisVal = aVals[j];
+                            	// marker_synonym, mp_id, mp_term, mp_term_synonym are all multivalued
+                            	if (fld == 'synonym' || fld == 'mp_id' || fld == 'mp_term' || fld == 'mp_term_synonym' ){
+                              	  var aVals = docs[i][fld];
+                               	 for ( j in aVals ){
+                                 	var thisVal = aVals[j];
 									
                                     // only want indexed terms that have string match to query keyword
                                     if ( thisVal.toLowerCase().indexOf(query) != -1 || query.indexOf('*') != -1 ){
@@ -124,8 +144,8 @@
                     }
                 }
             }
-
             return self.getUnique(list);
+			
         },
 
         getUnique: function (list) {
@@ -141,5 +161,7 @@
         }
 
     });
+
+	
 
 }(jQuery));
