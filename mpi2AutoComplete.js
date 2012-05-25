@@ -14,6 +14,7 @@
         mgi_accession_id: 'MGI Id',
         synonym: 'Gene Synonym',
     };
+	MPI2.AutoComplete.mapping = {};
 
     $.widget('MPI2.mpi2AutoComplete', $.ui.autocomplete, {
 
@@ -23,9 +24,13 @@
 			},
             minLength: 1,
             delay: 400,
-            solrURL: 'http://ikmc.vm.bytemark.co.uk:8983/solr/gene_autosuggest/select'			
+            solrURL: 'http://ikmc.vm.bytemark.co.uk:8983/solr/gene_autosuggest/select',
+			select: function(event, ui) {			
+				var mgiId = ui.item.value.replace(/^(.+)\s(:)\s(.+)/, '$3');				
+				$('#mpi2-search').doSearch({mgiAccessionId: mgiId}); 
+			}							
         },
-		
+
         _create : function () {
             var self = this;
 
@@ -47,6 +52,7 @@
             $.ui.autocomplete.prototype._setOption.apply(this, arguments);
         },
 
+		// executes for each item in the list
 		_renderItem: function( ul, item ) { 
  			//console.log(item);
  			// highlight the matching characters in string 		
@@ -64,7 +70,7 @@
  		    		.appendTo( ul ); 			 				
  			}
 		},
-
+		
         sourceCallback: function (request, response) {
             var self = this;
             var params = {
@@ -89,7 +95,7 @@
             	    jsonp: 'json.wrf',
             	    timeout: 10000,
             	    success: function (solrResponse) {
-            	       	response( self.parseSolrGroupedJson(solrResponse, params.q) );	
+            	       	response( self.parseSolrGroupedJson(solrResponse, params.q) );									                                                            
             	    },
             	    error: function (jqXHR, textStatus, errorThrown) {
             	        response(['AJAX error']);
@@ -109,10 +115,10 @@
             	var aFields = MPI2.AutoComplete.searchFields;	
 
             	var list = [];
-            	var mapping = {};
+            	
 
             	for ( var i in groups ){
-               		var geneId = groups[i].groupValue;
+               		var geneId = "MGI:" + groups[i].groupValue;
 
                 	var docs = groups[i].doclist.docs;
                 	for ( var i in docs ){
@@ -129,14 +135,14 @@
 									
                                     // only want indexed terms that have string match to query keyword
                                     if ( thisVal.toLowerCase().indexOf(query) != -1 || query.indexOf('*') != -1 ){
-										mapping[thisVal] = geneId;
+										MPI2.AutoComplete.mapping[thisVal] = geneId;
                                         list.push(MPI2.AutoComplete.fieldsPretty[fld] + " : " +  thisVal);
                                     }
                                 }
                             }
                             else {
                                 if ( val.toLowerCase().indexOf(query) != -1 || query.indexOf('*') != -1 ){
-                                    mapping[val] = geneId;
+                                    MPI2.AutoComplete.mapping[val] = geneId;
                                     list.push(MPI2.AutoComplete.fieldsPretty[fld] + " : " +  val);
                                 }
                             }
