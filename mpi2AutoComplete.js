@@ -31,7 +31,7 @@
 								
 				$('input#auto-complete').val(mgiId);
 				var mpi2Search = $('.mpi2-search-container').parent();	
-				console.log(mpi2Search.html());			
+				console.log(mpi2Search);			
 				mpi2Search.doSearch({ mgiAccessionId: mgiId }); 			
 			}							
         },
