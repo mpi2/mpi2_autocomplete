@@ -28,10 +28,10 @@
 			select: function(event, ui) {						
 				var val = ui.item.value.replace(/^(.+)\s(:)\s(.+)/, '$3');
 				var mgiId = MPI2.AutoComplete.mapping[val];
-								
+							
 				$('input#auto-complete').val(mgiId);
-				var mpi2Search = $('.mpi2-search-container').parent();							
-				mpi2Search.doSearch({ mgiAccessionId: mgiId }); 			
+				var mpi2SearchElm = $('.mpi2-search-container').parent();							
+				mpi2SearchElm.mpi2Search('doSearch', { mgiAccessionId: mgiId }); 			
 			}							
         },
 
