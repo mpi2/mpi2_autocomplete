@@ -25,10 +25,13 @@
             minLength: 1,
             delay: 400,
             solrURL: 'http://ikmc.vm.bytemark.co.uk:8983/solr/gene_autosuggest/select',
-			select: function(event, ui) {			
-				var mgiId = ui.item.value.replace(/^(.+)\s(:)\s(.+)/, '$3');
-				$('input.ui-autocomplete-input').val(val);
-				$('#mpi2-search').doSearch({mgiAccessionId: mgiId}); 
+			select: function(event, ui) {						
+				var val = ui.item.value.replace(/^(.+)\s(:)\s(.+)/, '$3');
+				var mgiId = MPI2.AutoComplete.mapping[val];
+								
+				//$('input#auto-complete').val(mgiId);
+				var mpi2Search = $(ui).closest('.mpi2-search-container').parent();
+				mpi2Search.doSearch({ mgiAccessionId: mgiId }); 			
 			}							
         },
 
