@@ -30,7 +30,8 @@
 				var mgiId = MPI2.AutoComplete.mapping[val];
 								
 				$('input#auto-complete').val(mgiId);
-				var mpi2Search = $('.mpi2-search-container').parent();				
+				var mpi2Search = $('.mpi2-search-container').parent();	
+				console.log(mpi2Search.html());			
 				mpi2Search.doSearch({ mgiAccessionId: mgiId }); 			
 			}							
         },
