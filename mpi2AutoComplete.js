@@ -26,7 +26,8 @@
             delay: 400,
             solrURL: 'http://ikmc.vm.bytemark.co.uk:8983/solr/gene_autosuggest/select',
 			select: function(event, ui) {			
-				var mgiId = ui.item.value.replace(/^(.+)\s(:)\s(.+)/, '$3');				
+				var mgiId = ui.item.value.replace(/^(.+)\s(:)\s(.+)/, '$3');
+				$('input.ui-autocomplete-input').val(val);
 				$('#mpi2-search').doSearch({mgiAccessionId: mgiId}); 
 			}							
         },
