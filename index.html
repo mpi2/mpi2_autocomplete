@@ -25,6 +25,8 @@
     <body>
         <h1>MPI2 Auto Complete Test</h1>
 
+        <h2>mpi2AutoComplete.js</h2>
+
         <div>
             <input type="text" id="auto-complete"></input>
         </div>
@@ -33,6 +35,17 @@
 
         <script type="text/javascript">
             $("input#auto-complete").mpi2AutoComplete({delay: 100});
+        </script>
+
+        <h2>mpi2SearchInput.js</h2>
+
+        <div id="search-input">
+        </div>
+
+        <script type="text/javascript" src="mpi2SearchInput.js"></script>
+
+        <script type="text/javascript">
+            $("div#search-input").mpi2SearchInput();
         </script>
     </body>
 </html>
