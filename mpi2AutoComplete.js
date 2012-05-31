@@ -20,7 +20,8 @@
 			mouseSelected: 0,
 			rowShown: 50,
             minLength: 1,
-            delay: 300,            
+            delay: 300,  
+            solrJsonResponse: {},          
             solrURL: 'http://ikmc.vm.bytemark.co.uk:8983/solr/gene_autosuggest/select',
 			select: function(event, ui) {				
 				var thisWidget = $(this).data().mpi2AutoComplete; // this widget
@@ -31,10 +32,7 @@
 								
 				if ( MPI2.AutoComplete.mapping[termVal] ){
 					var geneId = MPI2.AutoComplete.mapping[termVal].replace(":","\\:");					
-					thisWidget._trigger("loadGenePage", null, 
-							{queryString: geneId, 
-							 solrJsonResonse: thisWidget.options.solrJsonResponse, 
-							 userEvent: 'select'});	
+					thisWidget._trigger("loadGenePage", null, { queryString: geneId });	
 				}	
 				else {				
 					// user should have selected a term other than gene Id/name/synonym
@@ -54,12 +52,11 @@
                 if (e.keyCode == 13) {
                     self.close();
                     
-                    // need to distinquish between enter on the input box and enter on the drop down list
+                    // need to distinguish between enter on the input box and enter on the drop down list
                     // ie, users use keyboard, instead of mouse, to navigate the list and hit enter to choose a term
                     if (self.options.mouseSelected == 0 ){                    	
-                    	// the value in the input box
-                    	console.log(self.options.solrJsonResponse);
-                    	self._trigger("loadGenePage", null, { queryString: self.term, userEvent: 'enter' });
+                    	// the value in the input box                    	
+                    	self._trigger("loadGenePage", null, { queryString: self.term });
                     }
                 }
             });
@@ -151,6 +148,7 @@
 				geneIds.push(groups[i].groupValue.replace(":", "\\:"));
 			}			
 			$('div#solrInfo').html(">>> "+ matchesFound + " matches found in database");
+			
 			self._trigger("loadGenePage", null, 
 						{queryString: geneIds.join(" or "), 
 				 		solrJsonResonse: json, 
@@ -158,9 +156,7 @@
 		},
 
 		_parseSolrGroupedJson: function (json, query) {
-			var self = this;
-			
-           	console.log(json);		      
+			var self = this;              
            
            	var g = json.grouped[self.options.grouppingId]; 
            	var maxRow = json.responseHeader.params.rows;
@@ -239,9 +235,8 @@
             	    dataType: 'jsonp',
             	    jsonp: 'json.wrf',
             	    timeout: 10000,
-            	    success: function (solrResponse) {            	    	
-            	    	self.options.solrJsonResponse = solrResponse;
-            	    	console.log('json:' + self.options.solrJsonResponse);
+            	    success: function (solrResponse) {        	    	
+            	    	
             	       	response( self._parseSolrGroupedJson(solrResponse, q) );									                                                            
             	    },
             	    error: function (jqXHR, textStatus, errorThrown) {
@@ -250,5 +245,36 @@
         	});
     	}        	
     });
-    
+
+    $.widget("MPI2.mpi2SearchInput", {
+
+        _create: function () {
+            var self = this;
+
+            self.container = this.element;
+            self.container.addClass('mpi2-search-input');
+
+            self.input = $('<input type="text" placeholder="e.g. Cbx1"></input>');
+            self.container.append(self.input);
+
+            self.input.mpi2AutoComplete({
+				loadGenePage: function(event, data){					
+					// data.queryString is the q
+					// invoke the gene grid
+				}
+			});
+
+            self.button = $('<button class="search">Search</button>');
+            self.container.append(self.button);
+			
+        },
+
+        destroy: function () {
+            var self = this;
+            $.Widget.prototype.destroy.call(self);
+            self.container.removeClass('mpi2-search-input');
+            self.container.html('');
+        }
+    });
+
 }(jQuery));
