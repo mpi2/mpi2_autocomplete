@@ -3,62 +3,82 @@
 
     if(typeof(window.MPI2) === 'undefined') {
         window.MPI2 = {};
-    }
-    MPI2.AutoComplete = {};
-
-    MPI2.AutoComplete.searchFields = ["marker_symbol", "mgi_accession_id", "marker_name", "marker_synonym"];
-    MPI2.AutoComplete.geneDataFields = ["marker_symbol", "mgi_accession_id", "marker_name", "synonym"];
-    MPI2.AutoComplete.fieldsPretty = {
-        marker_symbol: 'Gene Symbol',
-        marker_name: 'Gene Name',
-        mgi_accession_id: 'MGI Id',
-        synonym: 'Gene Synonym',
-    };
+    }    
+    MPI2.AutoComplete = {};    
 	MPI2.AutoComplete.mapping = {};
-
+	
     $.widget('MPI2.mpi2AutoComplete', $.ui.autocomplete, {
-
-        options: {
-            source: function () {
+    
+    	options: {
+    		source: function () {
 				this.sourceCallback.apply(this, arguments);				
 			},
+			grouppingId : 'mgi_accession_id',
+			searchFields: ["marker_symbol", "mgi_accession_id", "marker_name", "marker_synonym"],
+			srcLabel: {},
+			qf: 'auto_suggest', // solr query field
+			mouseSelected: 0,
+			rowShown: 50,
             minLength: 1,
-            delay: 400,
+            delay: 300,            
             solrURL: 'http://ikmc.vm.bytemark.co.uk:8983/solr/gene_autosuggest/select',
-			select: function(event, ui) {						
-				var val = ui.item.value.replace(/^(.+)\s(:)\s(.+)/, '$3');
-				var mgiId = MPI2.AutoComplete.mapping[val];
-							
-				$('input#auto-complete').val(mgiId);
-				var mpi2SearchElm = $('.mpi2-search-container').parent();							
-				mpi2SearchElm.mpi2Search('doSearch', { mgiAccessionId: mgiId }); 			
-			}							
+			select: function(event, ui) {				
+				var thisWidget = $(this).data().mpi2AutoComplete; // this widget
+								
+				thisWidget.options.mouseSelected = 1;
+				var termVal = ui.item.value.replace(/^(.+)\s(:)\s(.+)/, '$3');
+				var geneIds = [];
+								
+				if ( MPI2.AutoComplete.mapping[termVal] ){
+					var geneId = MPI2.AutoComplete.mapping[termVal].replace(":","\\:");					
+					thisWidget._trigger("loadGenePage", null, 
+							{queryString: geneId, 
+							 solrJsonResonse: thisWidget.options.solrJsonResponse, 
+							 userEvent: 'select'});	
+				}	
+				else {				
+					// user should have selected a term other than gene Id/name/synonym
+					// fetch all MGI gene ids annotated to this term
+					thisWidget._fetch_mgi_accession_ids_by_MP(ui.item.value, termVal); 
+				}				
+			},
+			close : function(event, ui){  // result dropdown list closed
+	 			$('div#solrInfo').html('');
+	 		},	
         },
-
+        
         _create : function () {
-            var self = this;
-
+            var self = this;  
+                        
             self.element.bind('keyup', function(e) {
                 if (e.keyCode == 13) {
                     self.close();
+                    
+                    // need to distinquish between enter on the input box and enter on the drop down list
+                    // ie, users use keyboard, instead of mouse, to navigate the list and hit enter to choose a term
+                    if (self.options.mouseSelected == 0 ){                    	
+                    	// the value in the input box
+                    	console.log(self.options.solrJsonResponse);
+                    	self._trigger("loadGenePage", null, { queryString: self.term, userEvent: 'enter' });
+                    }
                 }
             });
             $.ui.autocomplete.prototype._create.apply(this);			
-        },
-
+        },   
+        
         _setOption: function (key, value) {
             switch(key) {
             case 'solrURL':
                 this.options.solrURL = value;
                 break;
             }
-
             $.ui.autocomplete.prototype._setOption.apply(this, arguments);
         },
-
-		// executes for each item in the list
+        
+		// the loops thru each item in the list
+        // and highlight the match string
 		_renderItem: function( ul, item ) { 
- 			//console.log(item);
+ 		
  			// highlight the matching characters in string 		
  		 	var term = this.term.split(' ').join('|'); 			
  			var wildCard = term.replace(/\*/g, "\\w+");
@@ -75,103 +95,160 @@
  			}
 		},
 		
-        sourceCallback: function (request, response) {
-            var self = this;
-            var params = {
-                start: 0,
-                rows: 10,
-                q: request.term,
-                wt: 'json',
-                'group': 'on',
-                'group.field': 'mgi_accession_id',
-                'defType': 'edismax',
-	        	'qf': 'auto_suggest',
-                'fl': "marker_name,synonym,marker_symbol,mgi_accession_id"
-        	};
+		_fetch_mgi_accession_ids_by_MP: function(prefixedVal, termVal){
+			var self = this;
+			
+ 			if ( /^MP (.*) : (.+)$/.test(prefixedVal) ){
+ 				//IMPC.listSelectMp = true;
+ 				//IMPC.selectedId = false;
+ 				
+ 				var termMapping = {'Id'           : 'mp_id',
+ 						           'Term'         : 'mp_term',
+ 							       'Term Synonym' : 'mp_term_synonym'
+ 				};
+ 				 				
+ 				var pattern = /^MP (.*) :/; 
+ 				var matches = prefixedVal.match(pattern);
+ 				var fld = matches[1]; 				 				
+ 				var val = fld == 'Id' ? termVal.replace(":", "\\:") : '"' + termVal + '"'; 				
+ 				var solrQry = termMapping[fld] + ':' + val;
+ 				console.log('solr qry: ' + solrQry);
+ 				self._fetch_MP_related_genes_from_solr(solrQry); 				
+ 			}			
+		},
 
- 	    	params.q = params.q.replace(/^\s+|\s+$/g, "");
- 	   	 	params.q = params.q.replace(":", "\\:"); // so that mgi:* would work
+		_fetch_MP_related_genes_from_solr: function(solrQry){
+			var self = this;
+			self.options.queryParams.q = solrQry;			
+			self.options.queryParams.fl = 'mgi_accession_id';
+			var solrUrl = self.options.solrURL;	
+						
+			$.ajax({ 				 					
+				'url': solrUrl, 					
+				'data': self.options.queryParams,		
+				'dataType': 'jsonp',
+				'jsonp': 'json.wrf',
+				'success': function(json) {			
+					self._parseJsonMPGene(json);			
+				}		
+			});	
+		},
+		
+		_parseJsonMPGene: function(json) {
+			console.log(json);
+			
+			var self = this;
+			
+			self.options.solrJsonResponse = json;
+			
+			var geneIds = [];
+			// using grouping here is to ensure no duplicates
+			//var maxRow       = json.responseHeader.params.rows;
+			var g            = json.grouped.mgi_accession_id;
+			var matchesFound = json.grouped.mgi_accession_id.matches;
+			var groups   = g.groups;
+			for (var i in groups ){
+				geneIds.push(groups[i].groupValue.replace(":", "\\:"));
+			}			
+			$('div#solrInfo').html(">>> "+ matchesFound + " matches found in database");
+			self._trigger("loadGenePage", null, 
+						{queryString: geneIds.join(" or "), 
+				 		solrJsonResonse: json, 
+				 		userEvent: 'select'});		
+		},
+
+		_parseSolrGroupedJson: function (json, query) {
+			var self = this;
+			
+           	console.log(json);		      
+           
+           	var g = json.grouped[self.options.grouppingId]; 
+           	var maxRow = json.responseHeader.params.rows;
+           	var matchesFound = g.matches;
+           	$('div#solrInfo').html(">>> "+ matchesFound + " matches found in database");
+           	
+           	var groups   = g.groups;
+           	var aFields  = self.options.searchFields;	
+           	var srcLabel = self.options.srcLabel;
+           	var list     = [];
+           	
+           	for ( var i in groups ){
+        		var geneId = groups[i].groupValue;
+        		
+        		var docs = groups[i].doclist.docs;
+        		for ( var d in docs ){	
+        			for ( var f in aFields ){
+        				if ( docs[d][aFields[f]] ){					
+        					var fld = aFields[f];
+        					var val = docs[d][fld];		
+        					//console.log('field: '+ fld + ' -- val: ' + val + ' : ' + typeof val);
+        					// marker_synonym, mp_id, mp_term, mp_term_synonym are all multivalued
+        					if (fld == 'marker_synonym' || fld == 'mp_id' || fld == 'mp_term' || fld == 'mp_term_synonym' ){
+        						var aVals = docs[d][fld];
+        						for ( var v in aVals ){						
+        							var thisVal = aVals[v];
+        							
+        							// only want indexed terms that have string match to query keyword
+        							if ( thisVal.toLowerCase().indexOf(query) != -1 || query.indexOf('*') != -1 ){
+        								
+        								if (fld == 'marker_synonym'){
+        									MPI2.AutoComplete.mapping[thisVal] = geneId;        									
+        								} 
+        								list.push(srcLabel[fld] + " : " +  thisVal);
+        							}							
+        						}
+        					}
+        					else {        						
+        						if ( val.toLowerCase().indexOf(query) != -1 || query.indexOf('*') != -1 ){
+        							MPI2.AutoComplete.mapping[val] = geneId;        										
+        							list.push(srcLabel[fld] + " : " +  val);
+        						}	
+        					}
+        				}
+        			}		
+        		}
+        	}	     	
+           	
+            return self._getUnique(list);			
+        },	
+        
+        _getUnique: function (list) {
+        	var u = {}, a = [];
+        	for(var i = 0, l = list.length; i < l; ++i){
+        		if(list[i] in u){
+        			continue;
+        		}
+        		a.push(list[i]);
+        		u[list[i]] = 1;
+        	}
+        	return a;
+        },	
+        
+        sourceCallback: function (request, response) {
+        	var self = this;
+        	
+        	self.options.mouseSelected = 0; // important to distinguish between mouse select and keyborad select
+                       
+ 	    	var q = request.term.replace(/^\s+|\s+$/g, ""); // trim away leading/trailing spaces
+ 	    	q = q.replace(":", "\\:");                      // so that mgi:* would work
+ 	    	self.options.queryParams.q = q;
 
         	$.ajax({
             	    url: self.options.solrURL,
-            	    data: params,
+            	    data: self.options.queryParams,
             	    dataType: 'jsonp',
             	    jsonp: 'json.wrf',
             	    timeout: 10000,
-            	    success: function (solrResponse) {
-            	       	response( self.parseSolrGroupedJson(solrResponse, params.q) );									                                                            
+            	    success: function (solrResponse) {            	    	
+            	    	self.options.solrJsonResponse = solrResponse;
+            	    	console.log('json:' + self.options.solrJsonResponse);
+            	       	response( self._parseSolrGroupedJson(solrResponse, q) );									                                                            
             	    },
             	    error: function (jqXHR, textStatus, errorThrown) {
             	        response(['AJAX error']);
-            	    }
-            	});
-        	},
-
-        	parseSolrGroupedJson: function (json, query) {
-            	var self = this;
-
-            	//console.log(json);
-            	var maxRow   = json.responseHeader.params.rows;
-            	var g        = json.grouped.mgi_accession_id;
-            	var numFound = g.matches;
-            	var groups   = g.groups;
-
-            	var aFields = MPI2.AutoComplete.searchFields;	
-
-            	var list = [];
-            	
-
-            	for ( var i in groups ){
-               		var geneId = "MGI:" + groups[i].groupValue;
-
-                	var docs = groups[i].doclist.docs;
-                	for ( var i in docs ){
-                    	for ( var j in aFields ){
-                    	    if ( docs[i][aFields[j]] ){
-                            	var fld = aFields[j];
-                            	var val = docs[i][fld];
-							
-                            	// marker_synonym, mp_id, mp_term, mp_term_synonym are all multivalued
-                            	if (fld == 'synonym' || fld == 'mp_id' || fld == 'mp_term' || fld == 'mp_term_synonym' ){
-                              	  var aVals = docs[i][fld];
-                               	 for ( j in aVals ){
-                                 	var thisVal = aVals[j];
-									
-                                    // only want indexed terms that have string match to query keyword
-                                    if ( thisVal.toLowerCase().indexOf(query) != -1 || query.indexOf('*') != -1 ){
-										MPI2.AutoComplete.mapping[thisVal] = geneId;
-                                        list.push(MPI2.AutoComplete.fieldsPretty[fld] + " : " +  thisVal);
-                                    }
-                                }
-                            }
-                            else {
-                                if ( val.toLowerCase().indexOf(query) != -1 || query.indexOf('*') != -1 ){
-                                    MPI2.AutoComplete.mapping[val] = geneId;
-                                    list.push(MPI2.AutoComplete.fieldsPretty[fld] + " : " +  val);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            return self.getUnique(list);
-			
-        },
-
-        getUnique: function (list) {
-            var u = {}, a = [];
-            for(var i = 0, l = list.length; i < l; ++i){
-                if(list[i] in u){
-                    continue;
-                }
-                a.push(list[i]);
-                u[list[i]] = 1;
-            }
-            return a;
-        }
-
+            	    }            	
+        	});
+    	}        	
     });
-
-	
-
+    
 }(jQuery));
