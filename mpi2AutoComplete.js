@@ -22,7 +22,7 @@
 					  'group':'on',					
 					  'group.field':'mgi_accession_id', 
 					  'defType':'edismax',
-					  'qf':'auto_suggest'}, 
+					  'qf':'auto_suggest',
 					  'fl':"marker_name,marker_synonym,marker_symbol,mgi_accession_id,mp_id,mp_term,mp_term_synonym"},				
 			qf: 'auto_suggest', // solr query field
 			mouseSelected: 0,
