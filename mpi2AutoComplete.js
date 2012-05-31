@@ -14,10 +14,10 @@
 				this.sourceCallback.apply(this, arguments);				
 			},
 			grouppingId : 'mgi_accession_id',
-			searchFields: ["marker_symbol", "mgi_accession_id", "marker_name", "marker_synonym"],
+			searchFields: ["symbol", "mgi_accession_id", "marker_name", "marker_synonym"],
 			srcLabel : { // what appears to the user in the AC dropdown list, ie, how a term is prefixed for a particular solr field
 					marker_symbol    : 'Gene Symbol',
-					marker_name      : 'Gene Name',
+					marker_name      : 'Gene Name',					
 					marker_synonym   : 'Gene Synonym',
 					mgi_accession_id : 'MGI ID', 
 					mp_id            : 'MP ID',
@@ -195,7 +195,7 @@
         					var val = docs[d][fld];		
         					//console.log('field: '+ fld + ' -- val: ' + val + ' : ' + typeof val);
         					// marker_synonym, mp_id, mp_term, mp_term_synonym are all multivalued
-        					if (fld == 'marker_synonym' || fld == 'mp_id' || fld == 'mp_term' || fld == 'mp_term_synonym' ){
+        					if (fld == 'marker_synonym' ){// || fld == 'mp_id' || fld == 'mp_term' || fld == 'mp_term_synonym' ){
         						var aVals = docs[d][fld];
         						for ( var v in aVals ){						
         							var thisVal = aVals[v];
