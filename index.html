@@ -5,6 +5,9 @@
         <meta charset="utf-8" />
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.js"></script>
+        <script type="text/javascript" src="mpi2AutoComplete.js"></script>
+        <script type="text/javascript" src="mpi2SearchInput.js"></script>
+
         <link type="text/css" rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/themes/base/jquery-ui.css">
 		<style>
 			ul.ui-autocomplete {
@@ -31,8 +34,6 @@
             <input type="text" id="auto-complete"></input>
         </div>
 
-        <script type="text/javascript" src="mpi2AutoComplete.js"></script>
-
         <script type="text/javascript">
             $("input#auto-complete").mpi2AutoComplete({delay: 100});
         </script>
@@ -42,10 +43,12 @@
         <div id="search-input">
         </div>
 
-        <script type="text/javascript" src="mpi2SearchInput.js"></script>
+        <div id="fake-search-target">
+        </div>
 
         <script type="text/javascript">
-            $("div#search-input").mpi2SearchInput();
+            $("div#fake-search-target").bind("search", function (event, queryParams) { console.log(queryParams); });
+            $("div#search-input").mpi2SearchInput({target: "div#fake-search-target"});
         </script>
     </body>
 </html>
