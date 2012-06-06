@@ -91,7 +91,6 @@
         // the loops thru each item in the list
         // and highlight the match string
         _renderItem: function( ul, item ) {
-            console.log(item);
             // highlight the matching characters in string
             var term = this.term.split(' ').join('|');
             var wildCard = term.replace(/\*/g, "\\w+");
@@ -125,7 +124,7 @@
                 var fld = matches[1];
                 var val = fld == 'Id' ? termVal.replace(":", "\\:") : '"' + termVal + '"';
                 var solrQry = termMapping[fld] + ':' + val;
-                console.log('solr qry: ' + solrQry);
+                //console.log('solr qry: ' + solrQry);
                 self._fetch_MP_related_genes_from_solr(solrQry);
             }
         },
@@ -148,7 +147,7 @@
         },
 
         _parseJsonMPGene: function(json) {
-            console.log(json);
+            // console.log(json);
 
             var self = this;
 
@@ -206,14 +205,14 @@
                                         if (fld == 'marker_synonym'){
                                             MPI2.AutoComplete.mapping[thisVal] = geneId;
                                         }
-                                        list.push(srcLabel[fld] + " : " +  thisVal);
+                                        list.push({label: srcLabel[fld] + " : " +  thisVal, value: geneId});
                                     }
                                 }
                             }
                             else {
                                 if ( val.toLowerCase().indexOf(query) != -1 || query.indexOf('*') != -1 ){
                                     MPI2.AutoComplete.mapping[val] = geneId;
-                                    list.push(srcLabel[fld] + " : " +  val);
+                                    list.push({label: srcLabel[fld] + " : " +  val, value: geneId});
                                 }
                             }
                         }
@@ -227,11 +226,11 @@
         _getUnique: function (list) {
             var u = {}, a = [];
             for(var i = 0, l = list.length; i < l; ++i){
-                if(list[i] in u){
+                if(list[i].value in u){
                     continue;
                 }
                 a.push(list[i]);
-                u[list[i]] = 1;
+                u[list[i].value] = 1;
             }
             return a;
         },
