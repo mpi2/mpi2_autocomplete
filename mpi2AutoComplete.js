@@ -44,17 +44,24 @@
 
                 thisWidget.options.mouseSelected = 1;
                 var termVal = ui.item.value.replace(/^(.+)\s(:)\s(.+)/, '$3');
-                var geneIds = [];
-
-                if ( MPI2.AutoComplete.mapping[termVal] ){
-                    var geneId = MPI2.AutoComplete.mapping[termVal].replace(":","\\:");
-                    thisWidget._trigger("loadGenePage", null, { queryString: geneId });
-                }
-                else {
-                    // user should have selected a term other than gene Id/name/synonym
-                    // fetch all MGI gene ids annotated to this term
-                    thisWidget._fetch_mgi_accession_ids_by_MP(ui.item.value, termVal);
-                }
+                                
+				if ( MPI2.AutoComplete.mapping[termVal] ){
+					var geneId = MPI2.AutoComplete.mapping[termVal];
+					
+					var solrQStr = thisWidget.options.grouppingId + ':(' + geneId.replace(/:/g,"\\:") + ')';
+					var solrParams = thisWidget._makeSolrURLParams(solrQStr);					
+					
+					thisWidget._trigger("loadGenePage", null, { queryString: solrQStr, queryParams: solrParams});						
+				}	
+				else {				
+					// user should have selected a term other than gene Id/name/synonym
+					// fetch all MGI gene ids annotated to this term
+					var solrField = /MP Term Synonym/.test(ui.item.value) ? 'mp_term_synonym' : 'mp_term';
+					var solrQStr = solrField + ':' + '"' + termVal + '"';
+					var solrParams = thisWidget._makeSolrURLParams(solrQStr);					
+					
+					thisWidget._trigger("loadGenePage", null, { queryString: solrQStr, queryParams: solrParams});														
+				}				
             },
             close : function(event, ui){ // result dropdown list closed
                 $('div#solrInfo').html('');
@@ -107,68 +114,20 @@
             }
         },
 
-        _fetch_mgi_accession_ids_by_MP: function(prefixedVal, termVal){
-            var self = this;
-
-            if ( /^MP (.*) : (.+)$/.test(prefixedVal) ){
-                //IMPC.listSelectMp = true;
-                //IMPC.selectedId = false;
-
-                var termMapping = {'Id' : 'mp_id',
-                                   'Term' : 'mp_term',
-                                   'Term Synonym' : 'mp_term_synonym'
-                                  };
-
-                var pattern = /^MP (.*) :/;
-                var matches = prefixedVal.match(pattern);
-                var fld = matches[1];
-                var val = fld == 'Id' ? termVal.replace(":", "\\:") : '"' + termVal + '"';
-                var solrQry = termMapping[fld] + ':' + val;
-                //console.log('solr qry: ' + solrQry);
-                self._fetch_MP_related_genes_from_solr(solrQry);
-            }
-        },
-
-        _fetch_MP_related_genes_from_solr: function(solrQry){
-            var self = this;
-            self.options.queryParams.q = solrQry;
-            self.options.queryParams.fl = 'mgi_accession_id';
-            var solrUrl = self.options.solrURL;
-
-            $.ajax({
-                'url': solrUrl,
-                'data': self.options.queryParams,
-                'dataType': 'jsonp',
-                'jsonp': 'json.wrf',
-                'success': function(json) {
-                    self._parseJsonMPGene(json);
-                }
-            });
-        },
-
-        _parseJsonMPGene: function(json) {
-            // console.log(json);
-
-            var self = this;
-
-            self.options.solrJsonResponse = json;
-
-            var geneIds = [];
-            // using grouping here is to ensure no duplicates
-            //var maxRow = json.responseHeader.params.rows;
-            var g = json.grouped.mgi_accession_id;
-            var matchesFound = json.grouped.mgi_accession_id.matches;
-            var groups = g.groups;
-            for (var i in groups ){
-                geneIds.push(groups[i].groupValue.replace(":", "\\:"));
-            }
-            $('div#solrInfo').html(">>> "+ matchesFound + " matches found in database");
-
-            self._trigger("loadGenePage", null,
-                          {queryString: geneIds.join(" or "),
-                           solrJsonResonse: json,
-                           userEvent: 'select'});
-        },
+ 		_makeSolrURLParams: function(solrQStr){   
+        	var self = this;
+        	delete self.options.queryParams.q;
+        	var p = this.options.queryParams;
+        	var aSolrParams = [];
+        	for( var i in p ){        		
+        		aSolrParams.push(i + '=' + p[i]);
+        	}
+        	//var solrQStr = 'q=' + self.options.grouppingId + ':(' + qry.replace(/:/g,"\\:") + ')';
+        	//self.options.solrQStr = solrQStr;
+        	
+        	aSolrParams.push('q='+solrQStr);
+        	return 	aSolrParams.join('&');
+        },        
 
         _parseSolrGroupedJson: function (json, query) {
             var self = this;
