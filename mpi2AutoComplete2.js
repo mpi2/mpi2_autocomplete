@@ -130,14 +130,14 @@
 				  			  'wt':'json',
 				  			  'q': solrQStr
 				  			  }; 
-			console.log(queryParams);
+			//console.log(queryParams);
 			$.ajax({ 				 					
 				'url': solrUrl, 					
 				'data': queryParams,		
 				'dataType': 'jsonp',
 				'jsonp': 'json.wrf',
 				'success': function(json) {	
-					console.log(json);
+					//console.log(json);
 					self._trigger("loadSideBar", null, { 
 							matchesFound: json.response.numFound, 
 							queryString: solrQStr																					   
@@ -265,7 +265,7 @@
  	    	q = q.replace(":", "\\:");  // so that mgi:* would work
  	    	q = q.toLowerCase();        // so that capitalized search would work as solr analyzer used use only lowercase
  	    	self.options.queryParams.q = q;
- 	    	console.log(q);
+ 	    	
         	$.ajax({
             	    url: self.options.solrURL,
             	    data: self.options.queryParams,
