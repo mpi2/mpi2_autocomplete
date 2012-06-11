@@ -165,7 +165,7 @@
 
                                         if ( fld == 'marker_synonym'){
                                             MPI2.AutoComplete.mapping[thisVal] = geneId;
-											console.log('syn: ' + thisVal ' : ' + geneId);			
+											console.log('syn: ' + thisVal + ' : ' + geneId);			
                                         }
                                         list.push({label: srcLabel[fld] + " : " + thisVal, value: geneId});
                                     }
@@ -174,7 +174,7 @@
                             else {
                                 if ( val.toLowerCase().indexOf(query) != -1 || query.indexOf('*') != -1 ){
                                     MPI2.AutoComplete.mapping[val] = geneId;
-									console.log('mgi: ' + val ' : ' + geneId);		
+									console.log('mgi: ' + val + ' : ' + geneId);		
                                     list.push({label: srcLabel[fld] + " : " + val, value: geneId});
                                 }
                             }
