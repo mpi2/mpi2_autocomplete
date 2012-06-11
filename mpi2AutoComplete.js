@@ -242,6 +242,7 @@
 
             var q = request.term.replace(/^\s+|\s+$/g, ""); // trim away leading/trailing spaces
             q = q.replace(":", "\\:"); // so that mgi:* would work
+			q = q.toLowerCase();        // so that capitalized search would work as solr analyzer used use only lowercase
             self.options.queryParams.q = q;
 
             $.ajax({
