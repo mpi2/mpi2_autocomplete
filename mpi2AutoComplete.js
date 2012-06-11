@@ -16,13 +16,14 @@
             grouppingId : 'mgi_accession_id',
             searchFields: ["symbol", "mgi_accession_id", "marker_name", "marker_synonym"],
             srcLabel : { // what appears to the user in the AC dropdown list, ie, how a term is prefixed for a particular solr field
-                marker_symbol : 'Gene Symbol',
-                marker_name : 'Gene Name',
-                marker_synonym : 'Gene Synonym',
+                marker_symbol    : 'Gene Symbol',
+                marker_name      : 'Gene Name',
+				synonym          : 'Gene Synonym',
+                marker_synonym   : 'Gene Synonym',
                 mgi_accession_id : 'MGI ID',
-                mp_id : 'MP ID',
-                mp_term : 'MP Term',
-                mp_term_synonym : 'MP Term Synonym'
+                mp_id            : 'MP ID',
+                mp_term          : 'MP Term',
+                mp_term_synonym  : 'MP Term Synonym'
             },
             queryParams: {'start':0,
                           'rows':50,
