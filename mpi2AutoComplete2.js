@@ -36,8 +36,8 @@
 				thisWidget.options.mouseSelected = 1;
 				var termVal = ui.item.value.replace(/^(.+)\s(:)\s(.+)/, '$3');
 												
-				if ( MPI2.AutoComplete2.mapping[termVal] ){
-					var geneId = MPI2.AutoComplete2.mapping[termVal];
+				if ( MPI2.AutoComplete.mapping[termVal] ){
+					var geneId = MPI2.AutoComplete.mapping[termVal];
 					
 					var solrQStr = thisWidget.options.grouppingId + ':(' + geneId.replace(/:/g,"\\:") + ')';
 					var solrParams = thisWidget._makeSolrURLParams(solrQStr);					
