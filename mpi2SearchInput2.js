@@ -22,9 +22,8 @@
 
             self.container = this.element;
             self.container.addClass('mpi2-search-input');
-
-            self.input = $('<input type="text" placeholder="e.g. Cbx1"></input>');
-            self.container.append(self.input);
+             self.input = $('input#userInput');
+            //self.container.append("<input#userInput>");
             self.input.mpi2AutoComplete({
                 select: function (event, ui) {
                     $(self.options.target).trigger('search', [{q: "mgi_accession_id:\""+ui.item.value+"\""}]);
@@ -38,8 +37,8 @@
                 return false;
             });
 
-            self.button = $('<button class="search">Search</button>');
-            self.container.append(self.button);
+           // self.container.append(self.button);
+			self.button = $('button#acSearch');
             self.button.bind('click', function () {
                 self._simpleSearchOnTarget(self.input.val());
             });
