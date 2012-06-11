@@ -31,13 +31,13 @@
             solrJsonResponse: {},          
             solrURL: 'http://ikmc.vm.bytemark.co.uk:8983/solr/gene_autosuggest/select',
 			select: function(event, ui) {				
-				var thisWidget = $(this).data().mpi2AutoComplete; // this widget
+				var thisWidget = $(this).data().mpi2AutoComplete2; // this widget
 								
 				thisWidget.options.mouseSelected = 1;
 				var termVal = ui.item.value.replace(/^(.+)\s(:)\s(.+)/, '$3');
 												
-				if ( MPI2.AutoComplete.mapping[termVal] ){
-					var geneId = MPI2.AutoComplete.mapping[termVal];
+				if ( MPI2.AutoComplete2.mapping[termVal] ){
+					var geneId = MPI2.AutoComplete2.mapping[termVal];
 					
 					var solrQStr = thisWidget.options.grouppingId + ':(' + geneId.replace(/:/g,"\\:") + ')';
 					var solrParams = thisWidget._makeSolrURLParams(solrQStr);					
