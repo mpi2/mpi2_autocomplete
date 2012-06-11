@@ -44,7 +44,7 @@
 
                 thisWidget.options.mouseSelected = 1;
                 var termVal = ui.item.value.replace(/^(.+)\s(:)\s(.+)/, '$3');
-                console.log('val: ' + termVal);                
+                console.log(ui.item.value + ' --- val: ' + termVal);                
 				if ( MPI2.AutoComplete.mapping[termVal] ){
 					var geneId = MPI2.AutoComplete.mapping[termVal];
 					
