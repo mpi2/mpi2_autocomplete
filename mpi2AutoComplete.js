@@ -154,7 +154,7 @@
                             //console.log('field: '+ fld + ' -- val: ' + val + ' : ' + typeof val);
                             // marker_synonym, mp_id, mp_term, mp_term_synonym are all multivalued
                            // if (fld == 'marker_synonym' ){// || fld == 'mp_id' || fld == 'mp_term' || fld == 'mp_term_synonym' ){
-							if (fld == 'synonym' || fld == 'marker_synonym' || 'fld == 'mp_id' || fld == 'mp_term' || fld == 'mp_term_synonym' ){
+							if (fld == 'synonym' || fld == 'marker_synonym' || fld == 'mp_id' || fld == 'mp_term' || fld == 'mp_term_synonym' ){
                                 var aVals = docs[d][fld];
                                 for ( var v in aVals ){
                                     var thisVal = aVals[v];
