@@ -153,7 +153,8 @@
                             var val = docs[d][fld];
                             //console.log('field: '+ fld + ' -- val: ' + val + ' : ' + typeof val);
                             // marker_synonym, mp_id, mp_term, mp_term_synonym are all multivalued
-                            if (fld == 'marker_synonym' ){// || fld == 'mp_id' || fld == 'mp_term' || fld == 'mp_term_synonym' ){
+                           // if (fld == 'marker_synonym' ){// || fld == 'mp_id' || fld == 'mp_term' || fld == 'mp_term_synonym' ){
+							if (fld == 'synonym' || fld == 'marker_synonym' || 'fld == 'mp_id' || fld == 'mp_term' || fld == 'mp_term_synonym' ){
                                 var aVals = docs[d][fld];
                                 for ( var v in aVals ){
                                     var thisVal = aVals[v];
@@ -161,7 +162,7 @@
                                     // only want indexed terms that have string match to query keyword
                                     if ( thisVal.toLowerCase().indexOf(query) != -1 || query.indexOf('*') != -1 ){
 
-                                        if (fld == 'marker_synonym'){
+                                        if (fld == 'synonym' || fld == 'marker_synonym'){
                                             MPI2.AutoComplete.mapping[thisVal] = geneId;
                                         }
                                         list.push({label: srcLabel[fld] + " : " + thisVal, value: geneId});
