@@ -14,7 +14,7 @@
 				this.sourceCallback.apply(this, arguments);				
 			},
 			grouppingId : 'mgi_accession_id',
-			searchFields: ["marker_symbol", "mgi_accession_id_key", "marker_name", "synonym", "marker_synonym"],
+			searchFields: ["marker_symbol", "mgi_accession_id_key", "marker_name", "synonym", "marker_synonym", "allele"],
 			queryParams: {'start':0,
 				  			'rows':50, 
 				  			'wt':'json', 
@@ -22,7 +22,7 @@
 				  			'group.field':'mgi_accession_id', 
 				  			'defType':'edismax',
 				  			'qf':'auto_suggest', 
-				  			'fl':"marker_name,marker_synonym,marker_symbol,mgi_accession_id"},	
+				  			'fl':"marker_name,marker_synonym,marker_symbol,mgi_accession_id,allele"},	
 			srcLabel: {},			
 			mouseSelected: 0,
 			rowShown: 50,
@@ -216,7 +216,7 @@
         					var val = docs[d][fld];		
         					//console.log('field: '+ fld + ' -- val: ' + val + ' : ' + typeof val);
         					// marker_synonym, mp_id, mp_term, mp_term_synonym are all multivalued
-        					if ( fld == 'marker_synonym' || fld == 'mp_id' || fld == 'mp_term' || fld == 'mp_term_synonym' ){
+        					if ( fld == 'marker_synonym' || fld == 'allele' || fld == 'mp_id' || fld == 'mp_term' || fld == 'mp_term_synonym' ){
         						var aVals = docs[d][fld];
         						for ( var v in aVals ){						
         							var thisVal = aVals[v];
@@ -224,7 +224,7 @@
         							// only want indexed terms that have string match to query keyword
         							if ( thisVal.toLowerCase().indexOf(query) != -1 || query.indexOf('*') != -1 ){
         								
-        								if (fld == 'marker_synonym'){
+        								if (fld == 'marker_synonym' || fld == 'allele'){
         									MPI2.AutoComplete.mapping[thisVal] = geneId;        									
         								} 
         								list.push(srcLabel[fld] + " : " +  thisVal);
