@@ -193,7 +193,7 @@
 				
 		_parseSolrGroupedJson: function (json, query) {
 			var self = this;              
-			//console.log(json);
+			console.log(json);
            	var g = json.grouped[self.options.grouppingId]; 
            	var maxRow = json.responseHeader.params.rows;
            	var matchesFound = g.matches;
@@ -214,7 +214,7 @@
         				if ( docs[d][aFields[f]] ){					
         					var fld = aFields[f];
         					var val = docs[d][fld];		
-        					//console.log('field: '+ fld + ' -- val: ' + val + ' : ' + typeof val);
+        					console.log('field: '+ fld + ' -- val: ' + val + ' : ' + typeof val);
         					// marker_synonym, mp_id, mp_term, mp_term_synonym are all multivalued
         					if ( fld == 'marker_synonym' || fld == 'allele' || fld == 'mp_id' || fld == 'mp_term' || fld == 'mp_term_synonym' ){
         						var aVals = docs[d][fld];
