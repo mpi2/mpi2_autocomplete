@@ -76,15 +76,15 @@
 	    		}	    			    		
 	    		var table = "<table id='gFacet'>" + trs + "</table>";				
 	    		$('div#geneFacet div.facetCatList').html(table);
-				self._applyGeneGridResultFilterByMarkerSubType($('table#gFacet td.geneSubtype'));	    		
+				self._applyGeneGridResultFilterByMarkerSubType($('table#gFacet td.geneSubtypeCount'));	    		
     		}
 	    },
 		_applyGeneGridResultFilterByMarkerSubType: function(thisCell){
 			var self = this;
 
 			thisCell.click(function(){
-				//$('table#gFacet td').removeClass('highlight');
-				//$(this).siblings('td.geneSubtype').addClass('highlight');
+				$('table#gFacet td').removeClass('highlight');
+				$(this).siblings('td.geneSubtype').addClass('highlight');
 				var geneGridId = self.options.geneGridId;
 				var marker_subType = $(this).attr('rel');
 				var q = self.options.data.queryString;              
