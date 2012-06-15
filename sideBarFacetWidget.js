@@ -71,7 +71,7 @@
 	    			console.log( facets[i] + ' ' + facets[i+1]);
 					var type = facets[i];
 					var count = facets[i+1];
-	    			trs += "<tr><td rel='" + type + "'>" + type + "</td><td>" + count + "</td></tr>";
+	    			trs += "<tr><td rel='" + type + "'>" + type + "</td><td class='geneSubtype'>" + count + "</td></tr>";
 	    			i += 2;
 	    		}	    			    		
 	    		var table = "<table id='gFacet'>" + trs + "</table>";				
