@@ -71,7 +71,7 @@
 	    			console.log( facets[i] + ' ' + facets[i+1]);
 					var type = facets[i];
 					var count = facets[i+1];
-	    			trs += "<tr><td rel='" + type + "'>" + type + "</td><td class='geneSubtype'>" + count + "</td></tr>";
+	    			trs += "<tr><td>" + type + "</td><td rel='" + type + "' class='geneSubtype'>" + count + "</td></tr>";
 	    			i += 2;
 	    		}	    			    		
 	    		var table = "<table id='gFacet'>" + trs + "</table>";				
@@ -85,7 +85,7 @@
 			thisCell.click(function(){
 				var geneGridId = self.options.geneGridId;
 				var marker_subType = $(this).attr('rel');
-				var q = self.options.data.queryString + '&fq=marker_type:' + '"'+ marker_subType + '"';
+				var q = 'q=' + self.options.data.queryString + '&fq=marker_type:' + '"'+ marker_subType + '"';
 				console.log('query: '+ q);
  				$(self.options.geneGridId).trigger('search', [{q: q}]); 				
 			});
