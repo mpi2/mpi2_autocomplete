@@ -4,7 +4,8 @@
     
     	options: {
     		mpAnnotSources: ['empress', 'mgi']
-			
+			solrURL: '',
+    		geneFacet: {}
 	    },
 	    
     	_create: function(){
@@ -15,8 +16,7 @@
 	    // want to use _init instead of _create to allow the widget being called each time
 	    _init : function () {
 	    	var self = this;  
-	    	
-	    	$('div#mpTopLevelFacet .facetCat').toggle(
+	    	$('div#phenotypeFacet .facetCat, div#geneFacet .facetCat').toggle(
 					function(){
 						$(this).addClass('facetCatUp');
 						$(this).parent().siblings('.facetCatList').show();
@@ -25,14 +25,57 @@
 						$(this).removeClass('facetCatUp');
 						$(this).parent().siblings('.facetCatList').hide();
 					}
-			);					    		    	
-	    		
+			);		    		    	
+	    	// gene subtype facet
+	    	self._doGeneSubTypeFacet();	
 	    	
 	    	// fire off solr query
-	    	self._doMPFacet();
+	    	//self._doMPFacet();
+	    	
+	    },
+
+	    _doGeneSubTypeFacet: function(){
+	    	var self = this;
+	    	
+	    	self.options.geneFacet.solrURL = 'http://ikmc.vm.bytemark.co.uk:8983/solr/gene_autosuggest/select',
+		
+	    	self.options.geneFacet.queryParams = {
+				'start': 0,
+				'rows': 0,
+				'facet': 'on',								
+				'facet.mincount': 1,
+				'facet.field': 'marker_type',										
+				'wt': 'json',				
+				'q': self.options.data.queryString
+			};
+	    	$.ajax({ 				 					
+	    		'url': self.options.geneFacet.solrURL,
+	    		'data': self.options.geneFacet.queryParams,
+	    		'dataType': 'jsonp',
+	    		'jsonp': 'json.wrf',
+	    		'success': function(json) {	 
+	    			console.log('gene subtype facet:');
+	    			console.log(json);
+	    			self._displayGeneSubTypeFacet(json);	    				
+	    		}		
+	    	});
 	    	
 	    },
 	    
+	    _displayGeneSubTypeFacet: function(json){
+	    	
+	    	if (json.response.numFound > 0){
+	    		var trs = '';
+	    		var facets = json.facet_counts['facet_fields']['marker_type'];
+	    		for ( var i=0; i<facets.length; ){		    			
+	    			console.log( facets[i] + ' ' + facets[i+1]);
+	    			trs += "<tr><td>" + facets[i] + "</td><td>" + facets[i+1] + "</td></tr>";
+	    			i += 2;
+	    		}	    			    		
+	    		var table = "<table id='gFacet'>" + trs + "</table>";				
+	    		$('div#geneFacet div.facetCatList').html(table);	    		
+    		}
+	    },
 	    _doMPFacet: function(){
 	    	var self = this;
 	    		    	
