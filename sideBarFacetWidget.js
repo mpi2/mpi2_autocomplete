@@ -84,7 +84,7 @@
 
 			thisCell.click(function(){
 				$('table#gFacet td').removeClass('highlight');
-				$(this).siblings('td.geneSubtype').addClass('highlight')
+				//$(this).siblings('td.geneSubtype').addClass('highlight');
 				var geneGridId = self.options.geneGridId;
 				var marker_subType = $(this).attr('rel');
 				var q = self.options.data.queryString;              
