@@ -88,7 +88,7 @@
 				//var q = 'q=' + self.options.data.queryString + '&fq=marker_type:' + '"'+ marker_subType + '"';
                 var q = 'q=' + self.options.data.queryString + '&fq=marker_type:"unclassified"';
 				console.log('query: '+ q + ' id:'+ self.options.geneGridId );
- 				$(self.options.geneGridId).trigger('search', [{q: q}]); 
+ 				$('div#'+self.options.geneGridId).trigger('search', [{q: q}]); 
 								
 			});
 		},
