@@ -37,14 +37,14 @@
 	    _doGeneSubTypeFacet: function(){
 	    	var self = this;
 	    	
-	    	//self.options.geneFacet.solrURL = 'http://ikmc.vm.bytemark.co.uk:8983/solr/gene_autosuggest/select',
-			self.options.geneFacet.solrURL = 'http://172.22.70.60:8983/solr/gene_autosuggest/select',
+	    	self.options.geneFacet.solrURL = 'http://ikmc.vm.bytemark.co.uk:8983/solr/gene_autosuggest/select',
+			//self.options.geneFacet.solrURL = 'http://172.22.70.60ikmc.vm.bytemark.co.uk:8983/solr/gene_autosuggest/select',
 	    	self.options.geneFacet.queryParams = {
 				'start': 0,
 				'rows': 0,
 				'facet': 'on',								
 				'facet.mincount': 1,
-				'facet.field': 'marker_subtype',										
+				'facet.field': 'marker_type',										
 				'wt': 'json',				
 				'q': self.options.data.queryString
 			};
@@ -66,7 +66,7 @@
 	    	var self = this;
 	    	if (json.response.numFound > 0){
 	    		var trs = '';
-	    		var facets = json.facet_counts['facet_fields']['marker_subtype'];
+	    		var facets = json.facet_counts['facet_fields']['marker_type'];
 	    		for ( var i=0; i<facets.length; ){		    			
 	    			console.log( facets[i] + ' ' + facets[i+1]);
 					var type = facets[i];
@@ -86,7 +86,7 @@
 				var geneGridId = self.options.geneGridId;
 				var marker_subType = $(this).attr('rel');
 				var q = self.options.data.queryString;              
-                var subTypeFilter = "marker_subtype:(protein coding gene)";
+                var subTypeFilter = "marker_type:(protein coding gene)";
 				console.log('query: '+ q + ' id:'+ self.options.geneGridId + ' :login ' + self.options.isLogIn);
 				var callerElem = $('div#'+self.options.geneGridId);
 				console.log(callerElem);				
