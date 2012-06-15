@@ -96,7 +96,7 @@
 					callerElem.mpi2SearchRegisterInterest({inputElements: false});
 				}
 				else {				
-					callerElem..mpi2Search({inputElements: false});
+					callerElem.mpi2Search({inputElements: false});
 				}				 				
 				callerElem.trigger('search', [{q: self.options.data.queryString, fq: subTypeFilter}]); 								
 			});
