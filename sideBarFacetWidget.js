@@ -88,21 +88,17 @@
 				var q = self.options.data.queryString;              
                 var subTypeFilter = "marker_type:(" + marker_subType + ")";
 				
+				// refresh geneGrid with marker_subtype
 				var callerElem = $('div#'+self.options.geneGridId);				
-				callerElem.trigger('destroy');
+				callerElem.trigger('destroy'); 
 
-				if ( self.options.isLogIn ){
-					//$('div#mpi2-search2').mpi2SearchRegisterInterest({inputElements: false});
+				if ( self.options.isLogIn ){				
 					callerElem.mpi2SearchRegisterInterest({inputElements: false});
 				}
-				else {
-					//$('div#mpi2-search2').mpi2Search({inputElements: false});
+				else {				
 					callerElem.mpi2SearchRegisterInterest({inputElements: false});
-				}
-				
- 				//$('div#mpi2-search2').trigger('search', [{q: self.options.data.queryString, fq: subTypeFilter}]); 
-				callerElem.trigger('search', [{q: self.options.data.queryString, fq: subTypeFilter}]); 
-								
+				}				 				
+				callerElem.trigger('search', [{q: self.options.data.queryString, fq: subTypeFilter}]); 								
 			});
 		},
 
