@@ -89,16 +89,19 @@
                 var subTypeFilter = "marker_type:(" + marker_subType + ")";
 				
 				var callerElem = $('div#'+self.options.geneGridId);				
-				callerElem.html('');
+				callerElem.trigger('destroy');
 
 				if ( self.options.isLogIn ){
-					$('div#mpi2-search2').mpi2SearchRegisterInterest({inputElements: false});
+					//$('div#mpi2-search2').mpi2SearchRegisterInterest({inputElements: false});
+					callerElem.mpi2SearchRegisterInterest({inputElements: false});
 				}
 				else {
-					$('div#mpi2-search2').mpi2Search({inputElements: false});
+					//$('div#mpi2-search2').mpi2Search({inputElements: false});
+					callerElem.mpi2SearchRegisterInterest({inputElements: false});
 				}
 				
- 				$('div#mpi2-search2').trigger('search', [{q: self.options.data.queryString, fq: subTypeFilter}]); 
+ 				//$('div#mpi2-search2').trigger('search', [{q: self.options.data.queryString, fq: subTypeFilter}]); 
+				callerElem.trigger('search', [{q: self.options.data.queryString, fq: subTypeFilter}]); 
 								
 			});
 		},
