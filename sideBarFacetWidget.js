@@ -87,17 +87,15 @@
 				var marker_subType = $(this).attr('rel');
 				var q = self.options.data.queryString;              
                 var subTypeFilter = "marker_type:(protein coding gene)";
-				console.log('query: '+ q + ' id:'+ self.options.geneGridId + ' :login ' + self.options.isLogIn);
-				var callerElem = $('div#'+self.options.geneGridId);
-				console.log(callerElem);				
-				//callerElem.html('');
+				
+				var callerElem = $('div#'+self.options.geneGridId);				
 
-				if ( self.options.isLoggedIn ){
+				/*if ( self.options.isLogIn ){
 					callerElem.mpi2SearchRegisterInterest({inputElements: false});
 				}
 				else {
 					callerElem.mpi2Search({inputElements: false});
-				}
+				}*/
 				
  				callerElem.trigger('search', [{q: self.options.data.queryString, fq: subTypeFilter}]); 
 								
