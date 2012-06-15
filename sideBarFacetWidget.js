@@ -85,7 +85,7 @@
 			thisCell.click(function(){
 				var geneGridId = self.options.geneGridId;
 				var marker_subType = $(this).attr('rel');
-				              
+				var q = self.data.queryString;              
                 var subTypeFilter = "marker_type:(protein coding gene)";
 				console.log('query: '+ q + ' id:'+ self.options.geneGridId + ' :login ' + self.options.isLoggedIn);
 				var callerElem = $('div#'+self.options.geneGridId);
