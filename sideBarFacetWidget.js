@@ -91,14 +91,14 @@
 				var callerElem = $('div#'+self.options.geneGridId);				
 				callerElem.trigger('destroy');
 
-				/*if ( self.options.isLogIn ){
+				if ( self.options.isLogIn ){
 					$('div#mpi2-search2').mpi2SearchRegisterInterest({inputElements: false});
 				}
 				else {
 					$('div#mpi2-search2').mpi2Search({inputElements: false});
 				}
 				
- 				$('div#mpi2-search2').trigger('search', [{q: self.options.data.queryString, fq: subTypeFilter}]); */
+ 				$('div#mpi2-search2').trigger('search', [{q: self.options.data.queryString, fq: subTypeFilter}]); 
 								
 			});
 		},
