@@ -89,7 +89,8 @@
                 var subTypeFilter = "marker_type:(" + marker_subType + ")";
 				
 				var callerElem = $('div#'+self.options.geneGridId);				
-				
+				callerElem.html('');
+
 				if ( self.options.isLogIn ){
 					$('div#mpi2-search2').mpi2SearchRegisterInterest({inputElements: false});
 				}
