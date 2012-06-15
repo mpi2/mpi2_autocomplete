@@ -87,7 +87,14 @@
 				var marker_subType = $(this).attr('rel');
 				//var q = 'q=' + self.options.data.queryString + '&fq=marker_type:' + '"'+ marker_subType + '"';
                 var q = 'q=' + self.options.data.queryString + '&fq=marker_type:"unclassified"';
-				console.log('query: '+ q + ' id:'+ self.options.geneGridId );
+				console.log('query: '+ q + ' id:'+ self.options.geneGridId + ' :login ' + self.options.isLoggedIn);
+				if ( self.options.isLoggedIn ){
+					$('div#'+self.options.geneGridId).mpi2SearchRegisterInterest({inputElements: false});
+				}
+				else {
+					$('div#'+self.options.geneGridId).mpi2Search({inputElements: false});
+				}
+				
  				$('div#'+self.options.geneGridId).trigger('search', [{q: q}]); 
 								
 			});
