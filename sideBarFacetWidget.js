@@ -90,7 +90,7 @@
 				console.log('query: '+ q + ' id:'+ self.options.geneGridId + ' :login ' + self.options.isLogIn);
 				var callerElem = $('div#'+self.options.geneGridId);
 				console.log(callerElem);				
-				callerElem.html('');
+				//callerElem.html('');
 
 				if ( self.options.isLoggedIn ){
 					callerElem.mpi2SearchRegisterInterest({inputElements: false});
