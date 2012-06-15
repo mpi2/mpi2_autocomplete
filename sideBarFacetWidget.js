@@ -63,7 +63,7 @@
 	    },
 	    
 	    _displayGeneSubTypeFacet: function(json){
-	    	
+	    	var self = this;
 	    	if (json.response.numFound > 0){
 	    		var trs = '';
 	    		var facets = json.facet_counts['facet_fields']['marker_type'];
