@@ -85,7 +85,7 @@
 			thisCell.click(function(){
 				var geneGridId = self.options.geneGridId;
 				var marker_subType = $(this).attr('rel');
-				var q += self.options.data.queryString + '&fq=marker_type:' + '"'+ marker_subType + '"';
+				var q = self.options.data.queryString + '&fq=marker_type:' + '"'+ marker_subType + '"';
 				console.log('query: '+ q);
  				$(self.options.geneGridId).trigger('search', [{q: q}]); 
 				
