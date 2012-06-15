@@ -69,7 +69,9 @@
 	    		var facets = json.facet_counts['facet_fields']['marker_type'];
 	    		for ( var i=0; i<facets.length; ){		    			
 	    			console.log( facets[i] + ' ' + facets[i+1]);
-	    			trs += "<tr><td>" + facets[i] + "</td><td>" + facets[i+1] + "</td></tr>";
+					var type = facets[i];
+					var count = facets[i+1];
+	    			trs += "<tr><td rel='" + type + "'>" + type + "</td><td>" + count + "</td></tr>";
 	    			i += 2;
 	    		}	    			    		
 	    		var table = "<table id='gFacet'>" + trs + "</table>";				
