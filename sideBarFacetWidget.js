@@ -86,11 +86,10 @@
 				var geneGridId = self.options.geneGridId;
 				var marker_subType = $(this).attr('rel');
 				var q = self.options.data.queryString;              
-                var subTypeFilter = "marker_type:(protein coding gene)";
+                var subTypeFilter = "marker_type:(" + marker_subType + ")";
 				
 				var callerElem = $('div#'+self.options.geneGridId);				
-				//callerElem.trigger('destroy');
-
+				
 				if ( self.options.isLogIn ){
 					$('div#mpi2-search2').mpi2SearchRegisterInterest({inputElements: false});
 				}
