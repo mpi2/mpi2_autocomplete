@@ -86,7 +86,7 @@
 				var geneGridId = self.options.geneGridId;
 				var marker_subType = $(this).attr('rel');
 				//var q = 'q=' + self.options.data.queryString + '&fq=marker_type:' + '"'+ marker_subType + '"';
-                var q = 'q=' + self.options.data.queryString + '&fq=marker_type:"unclassified"';
+                var q = 'q=' + self.options.data.queryString + '&fq=marker_type:"unclassified gene"';
 				console.log('query: '+ q + ' id:'+ self.options.geneGridId + ' :login ' + self.options.isLoggedIn);
 				if ( self.options.isLoggedIn ){
 					$('div#'+self.options.geneGridId).mpi2SearchRegisterInterest({inputElements: false});
