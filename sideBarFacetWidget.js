@@ -75,9 +75,24 @@
 	    			i += 2;
 	    		}	    			    		
 	    		var table = "<table id='gFacet'>" + trs + "</table>";				
-	    		$('div#geneFacet div.facetCatList').html(table);	    		
+	    		$('div#geneFacet div.facetCatList').html(table);
+				self._applyGeneGridResultFilterByMarkerSubType($('table#gFacet td.geneSubtype'));	    		
     		}
 	    },
+		_applyGeneGridResultFilterByMarkerSubType: function(thisCell){
+			var self = this;
+
+			thisCell.click(function(){
+				var geneGridId = self.options.geneGridId;
+				var marker_subType = $(this).attr('rel');
+				var q += self.options.data.queryString + '&fq=marker_type:' + '"'+ marker_subType + '"';
+				console.log('query: '+ q);
+ 				$(self.options.geneGridId).trigger('search', [{q: q}]); 
+				
+			}
+
+		},
+
 	    _doMPFacet: function(){
 	    	var self = this;
 	    		    	
@@ -150,6 +165,7 @@
 	     * Released under MIT license.console.log(fld + ' : ' + val);
 	     */
 	    _naturalSort: function(a, b) {
+
 	            // setup temp-scope variables for comparison evauluation
 	            var x = a.toString().toLowerCase() || '', y = b.toString().toLowerCase() || '',
 	                    nC = String.fromCharCode(0),
