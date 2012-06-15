@@ -89,7 +89,7 @@
                 var subTypeFilter = "marker_type:(protein coding gene)";
 				
 				var callerElem = $('div#'+self.options.geneGridId);				
-				callerElem.trigger('destroy');
+				//callerElem.trigger('destroy');
 
 				if ( self.options.isLogIn ){
 					$('div#mpi2-search2').mpi2SearchRegisterInterest({inputElements: false});
