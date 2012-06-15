@@ -3,7 +3,7 @@
     $.widget('MPI2.mpi2LeftSideBar', {
     
     	options: {
-    		mpAnnotSources: ['empress', 'mgi']
+    		mpAnnotSources: ['empress', 'mgi'],
 			solrURL: '',
     		geneFacet: {}
 	    },
