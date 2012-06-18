@@ -292,7 +292,7 @@
             	    jsonp: 'json.wrf',
             	    timeout: 10000,
             	    success: function (solrResponse) {        	    	
-            	    	
+            	    	console.log(solrResponse);
             	       	response( self._parseSolrGroupedJson(solrResponse, q) );									                                                            
             	    },
             	    error: function (jqXHR, textStatus, errorThrown) {
