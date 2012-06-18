@@ -284,7 +284,7 @@
  	    	q = q.toLowerCase();        // so that capitalized search would work as solr analyzer used use only lowercase
  	    	self.options.queryParams.q = q;	
 			console.log('qry');
-			console.log(self.options.queryParams);
+			console.log(self._makeSolrURLParams(q));
         	$.ajax({
             	    url: self.options.solrURL,
             	    data: self.options.queryParams,
