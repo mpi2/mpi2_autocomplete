@@ -109,8 +109,13 @@
 				$('div#geneFacet div.facetCatList').html('');
             	$('div#phenotypeFacet span.facetCount').text('');
             	$('div#phenotypeFacet div.facetCatList').html('');
-            })
-            
+            });
+
+            self.element.change(function(){
+				$('div#geneFacet div.facetCatList').html('');            	
+            	$('div#phenotypeFacet div.facetCatList').html('');
+			)};
+
             // remove facet count for gene when input box is empty
             self.element.keyup(function(){            	
             	if ( self.element.val() == '' ){
