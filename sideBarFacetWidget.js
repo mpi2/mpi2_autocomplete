@@ -44,8 +44,7 @@
 				'rows': 0,
 				'facet': 'on',								
 				'facet.mincount': 1,
-				'facet.field': 'marker_type',	
-	            'fq': 'marker_type:*',  // exclude genes not having marker subtype
+				'facet.field': 'marker_type',		           
                 'qf': 'auto_suggest',
 				'defType': 'edismax',									
 				'wt': 'json',				
