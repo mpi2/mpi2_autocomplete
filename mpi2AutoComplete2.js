@@ -114,7 +114,7 @@
             self.element.change(function(){
 				$('div#geneFacet div.facetCatList').html('');            	
             	$('div#phenotypeFacet div.facetCatList').html('');
-			)};
+			});
 
             // remove facet count for gene when input box is empty
             self.element.keyup(function(){            	
