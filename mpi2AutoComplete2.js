@@ -288,7 +288,7 @@
         	$.ajax({
             	    url: self.options.solrURL,
             	    data: self.options.queryParams,
-            	    dataType: 'jsonp',
+            	    dataType: 'json',
             	    jsonp: 'json.wrf',
             	    timeout: 10000,
             	    success: function (solrResponse) {        	    	
