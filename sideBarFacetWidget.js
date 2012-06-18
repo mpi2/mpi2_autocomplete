@@ -44,7 +44,9 @@
 				'rows': 0,
 				'facet': 'on',								
 				'facet.mincount': 1,
-				'facet.field': 'marker_type',										
+				'facet.field': 'marker_type',	
+                'qf': 'auto_suggest',
+				'defType': 'edismax',									
 				'wt': 'json',				
 				'q': self.options.data.queryString
 			};
@@ -85,13 +87,13 @@
 			thisCell.click(function(){
 				$('table#gFacet td').removeClass('highlight');
 				$(this).siblings('td.geneSubtype').addClass('highlight');
-				var geneGridId = self.options.geneGridId;
+				
 				var marker_subType = $(this).attr('rel');
 				var q = self.options.data.queryString;              
                 var subTypeFilter = "marker_type:(" + marker_subType + ")";
 				
 				// refresh geneGrid with marker_subtype
-				var callerElem = $('div#'+self.options.geneGridId);				
+				var callerElem = $(self.options.geneGridElem);				
 				callerElem.trigger('destroy'); 
 
 				if ( self.options.isLogIn ){				
