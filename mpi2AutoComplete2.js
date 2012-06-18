@@ -193,11 +193,11 @@
 				
 		_parseSolrGroupedJson: function (json, query) {
 			var self = this;              
-			console.log(json);
+			//console.log(json);
            	var g = json.grouped[self.options.grouppingId]; 
            	var maxRow = json.responseHeader.params.rows;
            	var matchesFound = g.matches;
-			console.log('found: '+ matchesFound);
+			//console.log('found: '+ matchesFound);
            	self.options.matchesFound = matchesFound;
                       
 			//self._temp_synch(query);
@@ -284,7 +284,7 @@
  	    	q = q.toLowerCase();        // so that capitalized search would work as solr analyzer used use only lowercase
  	    	self.options.queryParams.q = q;	
 			
-			console.log(self.options.solrURL +'?'+ self._makeSolrURLParams(q));
+			//console.log(self.options.solrURL +'?'+ self._makeSolrURLParams(q));
         	$.ajax({
             	    url: self.options.solrURL,
             	    data: self.options.queryParams,
