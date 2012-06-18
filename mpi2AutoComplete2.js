@@ -45,7 +45,7 @@
 					
 					thisWidget._trigger("loadGenePage", null, { queryString: solrQStr, queryParams: solrParams});	
 					thisWidget._trigger("loadSideBar", null, { matchesFound: 1, 
-															   queryString: solrQStr															   														   
+															   queryString: solrQStr											   														   
 															});
 				}	
 				else {				
@@ -193,12 +193,14 @@
 				
 		_parseSolrGroupedJson: function (json, query) {
 			var self = this;              
-			//console.log(json);
+			console.log(json);
            	var g = json.grouped[self.options.grouppingId]; 
            	var maxRow = json.responseHeader.params.rows;
            	var matchesFound = g.matches;
            	self.options.matchesFound = matchesFound;
                       
+			//self._temp_synch(query);
+
            	$('div#geneFacet span.facetCount').text(matchesFound);
            	var groups   = g.groups;
            	var aFields  = self.options.searchFields;	
@@ -256,6 +258,20 @@
         	}
         	return a;
         },	
+
+		_temp_synch: function(){
+       		// this is here to make geneGrid and geneFacet count in synch before we sort things out
+            $.ajax({ 				 					
+            	'url': 'http://ikmc.vm.bytemark.co.uk:8983/solr/select?wt=json&start=0&rows=0', 					
+            	'data': "q=" + data.queryString,		
+            	'dataType': 'jsonp',
+            	'jsonp': 'json.wrf',
+            	'success': function(json) {
+                        //console.log(json);                        
+                        $('div#geneFacet span.facetCount').text(json.response.numFound); // number of genes found by the search keyword
+            	}		
+            });	              
+        },
         
         sourceCallback: function (request, response) {
         	var self = this;
@@ -265,8 +281,8 @@
  	    	var q = request.term.replace(/^\s+|\s+$/g, ""); // trim away leading/trailing spaces
  	    	q = q.replace(":", "\\:");  // so that mgi:* would work
  	    	q = q.toLowerCase();        // so that capitalized search would work as solr analyzer used use only lowercase
- 	    	self.options.queryParams.q = q;
- 	    	
+ 	    	self.options.queryParams.q = q;	
+
         	$.ajax({
             	    url: self.options.solrURL,
             	    data: self.options.queryParams,
