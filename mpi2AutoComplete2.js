@@ -117,7 +117,8 @@
             		$('div#geneFacet span.facetCount').text(''); 
            			$('div#geneFacet div.facetCatList').html('');
             	} 
-				else {				          	
+				else {		
+					$('div#geneFacet div.facetCatList').html('');		          	
             		$('div#phenotypeFacet div.facetCatList').html('');
 				}	
             });
