@@ -94,8 +94,7 @@
             	}
             	else {
             		var solrParams = self._makeSolrURLParams(self.term);
-            		self._trigger("loadGenePage", null, { queryString: self.term, queryParams: solrParams });
-            		
+            		self._trigger("loadGenePage", null, { queryString: self.term, queryParams: solrParams });            		
             		self._trigger("loadSideBar", null, { 
             			matchesFound: self.options.matchesFound, 
             			queryString: self.term																					   
@@ -107,14 +106,16 @@
             self.element.click(function(){
             	self.term = undefined; 
             	$('div#geneFacet span.facetCount').text('');
-            	$('div#mpTopLevelFacet span.facetCount').text('');
-            	$('div#mpTopLevelFacet div.facetCatList').html('');
+				$('div#geneFacet div.facetCatList').html('');
+            	$('div#phenotypeFacet span.facetCount').text('');
+            	$('div#phenotypeFacet div.facetCatList').html('');
             })
             
             // remove facet count for gene when input box is empty
             self.element.keyup(function(){            	
             	if ( self.element.val() == '' ){
-            		$('div#geneFacet span.facetCount').text('');            		
+            		$('div#geneFacet span.facetCount').text(''); 
+           			$('div#geneFacet div.facetCatList').html('');
             	} 	
             });
             
