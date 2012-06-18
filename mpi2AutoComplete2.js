@@ -283,7 +283,7 @@
  	    	q = q.replace(":", "\\:");  // so that mgi:* would work
  	    	q = q.toLowerCase();        // so that capitalized search would work as solr analyzer used use only lowercase
  	    	self.options.queryParams.q = q;	
-			console.log('qry');
+			
 			console.log(self.options.solrURL + self._makeSolrURLParams(q));
         	$.ajax({
             	    url: self.options.solrURL,
