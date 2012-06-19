@@ -56,8 +56,8 @@
 	    		'dataType': 'jsonp',
 	    		'jsonp': 'json.wrf',
 	    		'success': function(json) {	 
-	    			console.log('gene subtype facet:');
-	    			console.log(json);
+	    			//console.log('gene subtype facet:');
+	    			//console.log(json);
 	    			self._displayGeneSubTypeFacet(json);	    				
 	    		}		
 	    	});
@@ -146,7 +146,7 @@
 	    					oMpSrcCount[terms[i]] = {};	    				
 	    				}	    				    						
 	    				oMpSrcCount[terms[i]][mpAnnotSources[src]] = terms[i+1];
-	    				console.log(mpAnnotSources[src] + ' : '+ terms[i] + ' -- '+ terms[i+1] );
+	    				//console.log(mpAnnotSources[src] + ' : '+ terms[i] + ' -- '+ terms[i+1] );
 	    				i += 2;
 	    			}
 	    		}		    		
