@@ -70,7 +70,7 @@
 	    		var trs = '';
 	    		var facets = json.facet_counts['facet_fields']['marker_type'];
 	    		for ( var i=0; i<facets.length; ){		    			
-	    			console.log( facets[i] + ' ' + facets[i+1]);
+	    			//console.log( facets[i] + ' ' + facets[i+1]);
 					var type = facets[i];
 					var count = facets[i+1];
 	    			trs += "<tr><td class='geneSubtype'>" + type + "</td><td rel='" + type + "' class='geneSubtypeCount'>" + count + "</td></tr>";
