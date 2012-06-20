@@ -157,7 +157,7 @@
         	delete self.options.queryParams.q;
         	var p = this.options.queryParams;
         	var aSolrParams = [];
-        	for( var i in p ){        		
+        	for( var i=0; i<p.length; i++ ){        		
         		aSolrParams.push(i + '=' + p[i]);
         	}
         	//var solrQStr = 'q=' + self.options.grouppingId + ':(' + qry.replace(/:/g,"\\:") + ')';
@@ -213,12 +213,13 @@
            	var srcLabel = self.options.srcLabel;
            	var list     = [];
            	           	
-           	for ( var i in groups ){
+           	//for ( var i in groups ){
+			for ( var i=0; i<groups.length; i++){
         		var geneId = groups[i].groupValue;
         		        		
         		var docs = groups[i].doclist.docs;
-        		for ( var d in docs ){	
-        			for ( var f in aFields ){
+        		for ( var d=0; d<docs.length; d++ ){	
+        			for ( var f=0; f<aFields.length; f++ ){
         				if ( docs[d][aFields[f]] ){					
         					var fld = aFields[f];
         					var val = docs[d][fld];		
