@@ -68,6 +68,7 @@
 				$('div#geneFacet span.facetCount').text(1); // gene_symbol				
 			},
 			focusout: function(){
+				alert('focusout');
 				$('div#geneFacet span.facetCount').text(self.options.matchesFound);
 			}
         },
