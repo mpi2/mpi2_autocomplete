@@ -202,7 +202,7 @@
            	var g = json.grouped[self.options.grouppingId]; 
            	var maxRow = json.responseHeader.params.rows;
            	var matchesFound = g.matches;
-			//console.log('found: '+ matchesFound);
+			console.log('found: '+ matchesFound);
            	self.options.matchesFound = matchesFound;
                       
 			//self._temp_synch(query);
