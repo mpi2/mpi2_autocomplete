@@ -16,7 +16,7 @@
 	    // want to use _init instead of _create to allow the widget being called each time
 	    _init : function () {
 	    	var self = this;  
-	    	$('div#phenotypeFacet .facetCat, div#geneFacet .facetCat').toggle(
+	    	$('div#phenotypeFacet .facetCat, div#geneFacet .facetCat, div#pipelineFacet .facetCat').toggle(
 					function(){
 						$(this).addClass('facetCatUp');
 						$(this).parent().siblings('.facetCatList').show();
@@ -31,6 +31,8 @@
 	    	
 	    	// fire off solr query
 	    	//self._doMPFacet();
+
+			self._doPipelineFacet();
 	    	
 	    },
 
@@ -130,7 +132,39 @@
 	    		}		
 	    	});			
 	    },
-	    	    
+
+	    _doPipelineFacet: function(){
+			var self = this;
+
+			self.options.geneFacet.solrURL = 'http://ikmc.vm.bytemark.co.uk:8983/solr/pipeline/select',
+			
+	    	self.options.geneFacet.queryParams = {
+				'start': 0,
+				'rows': 0,
+				'facet': 'on',								
+				'facet.mincount': 1,
+				'facet.field': 'procedure_name',	
+				'wt': 'json',				
+				'q': '*:*'
+			};
+	    	$.ajax({ 				 					
+	    		'url': self.options.geneFacet.solrURL,
+	    		'data': self.options.geneFacet.queryParams,
+	    		'dataType': 'jsonp',
+	    		'jsonp': 'json.wrf',
+	    		'success': function(json) {	 
+	    			//console.log('gene subtype facet:');	    			
+	    			self._displayPipelineFacet(json);	    				
+	    		}		
+	    	});
+		},
+
+		_displayPipelineFacet: function(json){
+			var self = this;
+			console.log(json);
+
+		},
+	
 	    _parseJsonMPGene: function(json){
 	    	var self = this;
 	    		    	
