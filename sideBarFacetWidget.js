@@ -32,7 +32,7 @@
 	    	// fire off solr query
 	    	//self._doMPFacet();
 
-			//self._doPipelineFacet();
+			self._doPipelineFacet();
 	    	
 	    },
 
@@ -83,6 +83,7 @@
 				self._applyGeneGridResultFilterByMarkerSubType($('table#gFacet td.geneSubtypeCount'));	    		
     		}
 	    },
+
 		_applyGeneGridResultFilterByMarkerSubType: function(thisCell){
 			var self = this;
 
