@@ -61,9 +61,12 @@
 					thisWidget._fetch_matching_gene_count_by_search_term(solrQStr);					
 				}				
 			},
-			close : function(event, ui){  // result dropdown list closed
+			close: function(event, ui){  // result dropdown list closed
 	 			//nothing to do for now
 	 		},	
+			focus: function(){
+				console.log('hover');
+			}
         },
         
         _create : function () {
