@@ -66,11 +66,7 @@
 	 		},	
 			focus: function(){				
 				$('div#geneFacet span.facetCount').text(1); // gene_symbol				
-			},
-			focusout: function(){
-				alert('focusout');
-				$('div#geneFacet span.facetCount').text(self.options.matchesFound);
-			}
+			}			
         },
         
         _create : function () {
@@ -111,6 +107,11 @@
             	}
             });
             
+			self.element.focusout(function(){
+				alert('focusout');
+				$('div#geneFacet span.facetCount').text(self.options.matchesFound);
+			});
+
             self.element.click(function(){
             	self.term = undefined; 
             	$('div#geneFacet span.facetCount').text('');
