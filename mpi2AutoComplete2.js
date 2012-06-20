@@ -226,7 +226,7 @@
         					// marker_synonym, mp_id, mp_term, mp_term_synonym are all multivalued
         					if ( fld == 'marker_synonym' || fld == 'allele_synonym' || fld == 'mp_id' || fld == 'mp_term' || fld == 'mp_term_synonym' ){
         						var aVals = docs[d][fld];
-        						for ( var v=0, v<aVals.length; v++ ){						
+        						for ( var v=0; v<aVals.length; v++ ){						
         							var thisVal = aVals[v];
         							
 									alert(thisVal + ': '+ typeof thisVal);
