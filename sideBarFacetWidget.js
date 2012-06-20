@@ -162,7 +162,7 @@
 
 		_displayPipelineFacet: function(json){
 			var self = this;
-			console.log(json);
+			//console.log(json);
 
 		},
 	
