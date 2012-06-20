@@ -229,7 +229,7 @@
         						for ( var v in aVals ){						
         							var thisVal = aVals[v];
         							
-									alert(typeof thisVal);
+									alert(thisVal + ': '+ typeof thisVal);
         							// only want indexed terms that have string match to query keyword
         							if ( thisVal.toLowerCase().indexOf(query) != -1 || query.indexOf('*') != -1 ){
         								
