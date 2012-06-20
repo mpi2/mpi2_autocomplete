@@ -107,10 +107,10 @@
             	}
             });
             
-			self.element.data().mpi2AutoComplete2.focusout(function(){
-				alert('focusout');
+			//self.element.data().mpi2AutoComplete2.focusout(function(){
+				//alert('focusout');
 				//$('div#geneFacet span.facetCount').text(self.options.matchesFound);
-			});
+			//});
 
             self.element.click(function(){
             	self.term = undefined; 
