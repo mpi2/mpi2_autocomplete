@@ -32,12 +32,13 @@
             solrURL: 'http://ikmc.vm.bytemark.co.uk:8983/solr/gene_autosuggest/select',
 			select: function(event, ui) {				
 				//console.log(ui.item.value);
-				var thisWidget = $(this).data().mpi2AutoComplete2; // this widget
-								
+				var thisWidget = $(this).data().mpi2AutoComplete2; // this widget												
+
 				thisWidget.options.mouseSelected = 1;
 				var termVal = ui.item.value.replace(/^(.+)\s(:)\s(.+)/, '$3');
 												
 				if ( MPI2.AutoComplete.mapping[termVal] ){
+					$('div#geneFacet span.facetCount').text(1);
 					var geneId = MPI2.AutoComplete.mapping[termVal];
 					
 					var solrQStr = thisWidget.options.grouppingId + ':(' + geneId.replace(/:/g,"\\:") + ')';
@@ -78,7 +79,7 @@
                     // ie, users use keyboard, instead of mouse, to navigate the list and hit enter to choose a term
                     if (self.options.mouseSelected == 0 ){                    	
                     	// the value in the input box
-                    	
+                    	$('div#geneFacet span.facetCount').text(1);
                     	self._trigger("loadGenePage", null, { queryString: self.term, queryParams: solrParams });
                     	self._trigger("loadSideBar", null, { 
 							matchesFound: self.options.matchesFound, 
@@ -213,8 +214,7 @@
            	var srcLabel = self.options.srcLabel;
            	var list     = [];
            	           	
-           	//for ( var i in groups ){
-			for ( var i=0; i<groups.length; i++){
+           	for ( var i=0; i<groups.length; i++){
         		var geneId = groups[i].groupValue;
         		        		
         		var docs = groups[i].doclist.docs;
