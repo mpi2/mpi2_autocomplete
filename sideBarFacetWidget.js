@@ -32,7 +32,7 @@
 	    	// fire off solr query
 	    	//self._doMPFacet();
 
-			self._doPipelineFacet();
+			//self._doPipelineFacet();
 	    	
 	    },
 
