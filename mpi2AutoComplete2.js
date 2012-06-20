@@ -226,11 +226,12 @@
         					// marker_synonym, mp_id, mp_term, mp_term_synonym are all multivalued
         					if ( fld == 'marker_synonym' || fld == 'allele_synonym' || fld == 'mp_id' || fld == 'mp_term' || fld == 'mp_term_synonym' ){
         						var aVals = docs[d][fld];
-        						for ( var v in aVals ){						
+        						for ( var v=0, v<aVals.length; v++ ){						
         							var thisVal = aVals[v];
         							
 									alert(thisVal + ': '+ typeof thisVal);
         							// only want indexed terms that have string match to query keyword
+									
         							if ( thisVal.toLowerCase().indexOf(query) != -1 || query.indexOf('*') != -1 ){
         								
         								if (fld == 'marker_synonym' || fld == 'allele_synonym'){
