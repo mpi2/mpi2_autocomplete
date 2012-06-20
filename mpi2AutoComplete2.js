@@ -64,8 +64,8 @@
 			close: function(event, ui){  // result dropdown list closed
 	 			//nothing to do for now
 	 		},	
-			focus: function(){
-				console.log('hover');
+			focus: function(){				
+				$('div#geneFacet span.facetCount').text(1); // gene_symbol				
 			}
         },
         
