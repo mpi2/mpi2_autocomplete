@@ -56,8 +56,7 @@
 					var solrQStr = solrField + ':' + '"' + termVal + '"';
 					var solrParams = thisWidget._makeSolrURLParams(solrQStr);					
 					
-					thisWidget._trigger("loadGenePage", null, { queryString: solrQStr, queryParams: solrParams});	
-					
+					thisWidget._trigger("loadGenePage", null, { queryString: solrQStr, queryParams: solrParams});						
 					thisWidget._fetch_matching_gene_count_by_search_term(solrQStr);					
 				}				
 			},
