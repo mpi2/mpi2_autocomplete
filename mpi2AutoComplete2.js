@@ -117,12 +117,8 @@
             // remove facet count for gene when input box is empty/changed
             self.element.keyup(function(){            	
             	if ( self.element.val() == '' ){
-            		$('div#geneFacet span.facetCount').text(''); 
-           			//$('div#geneFacet div.facetCatList').html('');
-            	} 
-				else {		
-					//$('div#geneFacet div.facetCatList').html('');		          	            		
-				}	
+            		$('div#geneFacet span.facetCount').text('');            			
+            	} 				
             });
             
             $.ui.autocomplete.prototype._create.apply(this);			
