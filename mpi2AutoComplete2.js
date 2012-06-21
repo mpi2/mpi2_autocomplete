@@ -119,8 +119,7 @@
             self.element.keyup(function(){            	
             	if ( self.element.val() == '' ){
             		$('div#geneFacet span.facetCount').text('');            			
-            	} 					
-				self.element.val(self._showSearchMsg()); 				
+            	} 													
             });
             
             $.ui.autocomplete.prototype._create.apply(this);			
