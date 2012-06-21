@@ -95,14 +95,15 @@
             	if ( self.term == undefined ){
             		alert('Sorry, please enter your keyword in the input box for search - thank you');
             	}
-            	else {
-            		var solrParams = self._makeSolrURLParams(self.term);
+            	else {					
+            		var solrParams = self._makeSolrURLParams(self.term);					
+					self.element.val(self._showSearchMsg()); 
+
             		self._trigger("loadGenePage", null, { queryString: self.term, queryParams: solrParams });            		
             		self._trigger("loadSideBar", null, { 
             			matchesFound: self.options.matchesFound, 
             			queryString: self.term																					   
-            		}); 
-            		  
+            		});             		 
             	}
             });
             			
@@ -111,16 +112,15 @@
             	$('div#geneFacet span.facetCount').text('');	
 				$('div#geneFacet div.facetCatList').html('');			
             	$('div#phenotypeFacet span.facetCount').text('');       
-     			$('div#phenotypeFacet div.facetCatList').html('');
-				self._showSearchMsg();	
+     			$('div#phenotypeFacet div.facetCatList').html('');				
             });   
 
             // remove facet count for gene when input box is empty/changed
             self.element.keyup(function(){            	
             	if ( self.element.val() == '' ){
             		$('div#geneFacet span.facetCount').text('');            			
-            	} 
-				self._showSearchMsg();					
+            	} 					
+				self.element.val(self._showSearchMsg()); 				
             });
             
             $.ui.autocomplete.prototype._create.apply(this);			
