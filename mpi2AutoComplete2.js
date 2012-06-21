@@ -105,17 +105,11 @@
             		  
             	}
             });
-            
-			//self.element.data().mpi2AutoComplete2.focusout(function(){
-				//alert('focusout');
-				//$('div#geneFacet span.facetCount').text(self.options.matchesFound);
-			//});
-
+            			
             self.element.click(function(){
             	self.term = undefined; 
             	$('div#geneFacet span.facetCount').text('');				
-            	$('div#phenotypeFacet span.facetCount').text('');
-            	$('div#phenotypeFacet div.facetCatList').html('');
+            	$('div#phenotypeFacet span.facetCount').text('');            	
             });   
 
             // remove facet count for gene when input box is empty/changed
@@ -125,8 +119,7 @@
            			$('div#geneFacet div.facetCatList').html('');
             	} 
 				else {		
-					$('div#geneFacet div.facetCatList').html('');		          	
-            		$('div#phenotypeFacet div.facetCatList').html('');
+					$('div#geneFacet div.facetCatList').html('');		          	            		
 				}	
             });
             
