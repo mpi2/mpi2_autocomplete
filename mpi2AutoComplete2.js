@@ -7,8 +7,8 @@
     MPI2.AutoComplete = {};    
 	MPI2.AutoComplete.mapping = {};
 	
-    $.widget('MPI2.mpi2AutoComplete2', $.ui.autocomplete, {
-    
+    $.widget('MPI2.mpi2AutoComplete2', $.ui.autocomplete, {	
+
     	options: {
     		source: function () {
 				this.sourceCallback.apply(this, arguments);				
@@ -71,7 +71,7 @@
         
         _create : function () {
             var self = this;  
-            self.element.val('Search genes, MP terms by MGI/MP ID, gene symbol, synonym or name');  
+            self.element.val(self._showSearchMsg());  
             
             self.element.bind('keyup', function(e) {
             	            	
@@ -111,19 +111,25 @@
             	$('div#geneFacet span.facetCount').text('');	
 				$('div#geneFacet div.facetCatList').html('');			
             	$('div#phenotypeFacet span.facetCount').text('');       
-     			$('div#phenotypeFacet div.facetCatList').html('');	
+     			$('div#phenotypeFacet div.facetCatList').html('');
+				self._showSearchMsg();	
             });   
 
             // remove facet count for gene when input box is empty/changed
             self.element.keyup(function(){            	
             	if ( self.element.val() == '' ){
             		$('div#geneFacet span.facetCount').text('');            			
-            	} 				
+            	} 
+				self._showSearchMsg();					
             });
             
             $.ui.autocomplete.prototype._create.apply(this);			
         },   
-        
+
+        _showSearchMsg: function(){
+			return 'Search genes, MP terms by MGI/MP ID, gene symbol, synonym or name';
+		},
+
         _fetch_matching_gene_count_by_search_term: function(solrQStr) {
         	var self = this;
         		
