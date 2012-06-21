@@ -113,8 +113,7 @@
 
             self.element.click(function(){
             	self.term = undefined; 
-            	$('div#geneFacet span.facetCount').text('');
-				$('div#geneFacet div.facetCatList').html('');
+            	$('div#geneFacet span.facetCount').text('');				
             	$('div#phenotypeFacet span.facetCount').text('');
             	$('div#phenotypeFacet div.facetCatList').html('');
             });   
