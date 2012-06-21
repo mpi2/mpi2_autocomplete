@@ -81,12 +81,13 @@
                     // need to distinguish between enter on the input box and enter on the drop down list
                     // ie, users use keyboard, instead of mouse, to navigate the list and hit enter to choose a term
                     if (self.options.mouseSelected == 0 ){                    	
-                    	// the value in the input box                    	
+                    	// use the value in the input box for query 
                     	self._trigger("loadGenePage", null, { queryString: self.term, queryParams: solrParams });
                     	self._trigger("loadSideBar", null, { 
 							matchesFound: self.options.matchesFound, 
 							queryString: self.term																					   
-						});                    	
+						});  
+						self.element.val(self._showSearchMsg());          	
                     }					
                 }
             });
