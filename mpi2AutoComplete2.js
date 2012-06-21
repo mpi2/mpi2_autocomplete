@@ -108,18 +108,20 @@
             			
             self.element.click(function(){
             	self.term = undefined; 
-            	$('div#geneFacet span.facetCount').text('');				
-            	$('div#phenotypeFacet span.facetCount').text('');            	
+            	$('div#geneFacet span.facetCount').text('');	
+				$('div#geneFacet div.facetCatList').html('');			
+            	$('div#phenotypeFacet span.facetCount').text('');       
+     			$('div#phenotypeFacet div.facetCatList').html('');	
             });   
 
             // remove facet count for gene when input box is empty/changed
             self.element.keyup(function(){            	
             	if ( self.element.val() == '' ){
             		$('div#geneFacet span.facetCount').text(''); 
-           			$('div#geneFacet div.facetCatList').html('');
+           			//$('div#geneFacet div.facetCatList').html('');
             	} 
 				else {		
-					$('div#geneFacet div.facetCatList').html('');		          	            		
+					//$('div#geneFacet div.facetCatList').html('');		          	            		
 				}	
             });
             
