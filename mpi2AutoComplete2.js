@@ -38,7 +38,7 @@
 				var termVal = ui.item.value.replace(/^(.+)\s(:)\s(.+)/, '$3');
 												
 				if ( MPI2.AutoComplete.mapping[termVal] ){
-					$('div#geneFacet span.facetCount').text(1);
+					//$('div#geneFacet span.facetCount').text(1);
 					var geneId = MPI2.AutoComplete.mapping[termVal];
 					
 					var solrQStr = thisWidget.options.grouppingId + ':(' + geneId.replace(/:/g,"\\:") + ')';
@@ -64,7 +64,7 @@
 	 			//nothing to do for now
 	 		},	
 			focus: function(){				
-				$('div#geneFacet span.facetCount').text(1); // gene_symbol				
+				//$('div#geneFacet span.facetCount').text(1); // gene_symbol				
 			}			
         },
         
