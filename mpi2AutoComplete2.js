@@ -85,8 +85,7 @@
                     	self._trigger("loadSideBar", null, { 
 							matchesFound: self.options.matchesFound, 
 							queryString: self.term																					   
-						});  
-						self.element.val(self._showSearchMsg());          	
+						});  						      	
                     }					
                 }
             });
@@ -96,8 +95,7 @@
             		alert('Sorry, please enter your keyword in the input box for search - thank you');
             	}
             	else {					
-            		var solrParams = self._makeSolrURLParams(self.term);					
-					self.element.val(self._showSearchMsg()); 
+            		var solrParams = self._makeSolrURLParams(self.term);										
 
             		self._trigger("loadGenePage", null, { queryString: self.term, queryParams: solrParams });            		
             		self._trigger("loadSideBar", null, { 
