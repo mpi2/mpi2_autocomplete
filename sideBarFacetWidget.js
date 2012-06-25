@@ -230,7 +230,7 @@
 				
 				var marker_subType = $(this).attr('rel');
 				var q = self.options.data.queryString;              
-                var subTypeFilter = "marker_type_str:(" + marker_subType + ")";
+                var subTypeFilter = "marker_type_str:(\"" + marker_subType + "\")";
 				
 				// refresh geneGrid with marker_subtype
 				var callerElem = $(self.options.geneGridElem);				
