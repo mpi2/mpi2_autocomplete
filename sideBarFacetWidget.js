@@ -175,7 +175,7 @@
 	    _doGeneSubTypeFacet: function(){
 	    	var self = this;
 	    	
-	    	self.options.geneFacet.solrURL = 'http://ikmc.vm.bytemark.co.uk:8983/solr/gene_autosuggest/select',
+	    	self.options.geneFacet.solrURL = 'http://ikmc.vm.bytemark.co.uk:8983/solr/main/search',
 			//self.options.geneFacet.solrURL = 'http://172.22.70.60ikmc.vm.bytemark.co.uk:8983/solr/gene_autosuggest/select',
 
 	    	self.options.geneFacet.queryParams = {
