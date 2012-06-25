@@ -183,7 +183,7 @@
 				'rows': 0,
 				'facet': 'on',								
 				'facet.mincount': 1,
-				'facet.field': 'marker_type',		           
+				'facet.field': 'marker_type_str',
                 'qf': 'auto_suggest',
 				'defType': 'edismax',									
 				'wt': 'json',				
@@ -207,7 +207,7 @@
 	    	var self = this;
 	    	if (json.response.numFound > 0){
 	    		var trs = '';
-	    		var facets = json.facet_counts['facet_fields']['marker_type'];
+	    		var facets = json.facet_counts['facet_fields']['marker_type_str'];
 	    		for ( var i=0; i<facets.length; ){		    			
 	    			//console.log( facets[i] + ' ' + facets[i+1]);
 					var type = facets[i];
@@ -230,7 +230,7 @@
 				
 				var marker_subType = $(this).attr('rel');
 				var q = self.options.data.queryString;              
-                var subTypeFilter = "marker_type:(" + marker_subType + ")";
+                var subTypeFilter = "marker_type_str:(" + marker_subType + ")";
 				
 				// refresh geneGrid with marker_subtype
 				var callerElem = $(self.options.geneGridElem);				
