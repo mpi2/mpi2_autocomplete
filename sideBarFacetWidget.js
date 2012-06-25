@@ -61,7 +61,7 @@
 	    		'dataType': 'jsonp',
 	    		'jsonp': 'json.wrf',
 	    		'success': function(json) {	    			
-	    			console.log(json);
+	    			//console.log(json);
 	    			//self._fetch_procedures(json);
 	    			
 	    			var procedures_params = {};
