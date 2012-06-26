@@ -29,7 +29,7 @@
             minLength: 1,
             delay: 300,  
             solrJsonResponse: {},          
-            solrURL: 'http://ikmc.vm.bytemark.co.uk:8983/solr/main/search',
+            solrURL: 'http://ikmc.vm.bytemark.co.uk:8983/solr/gene_autosuggest/select',
 			select: function(event, ui) {				
 				//console.log(ui.item.value);
 				var thisWidget = $(this).data().mpi2AutoComplete2; // this widget												
