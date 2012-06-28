@@ -234,14 +234,6 @@
 				
 				// refresh geneGrid with marker_subtype
 				var callerElem = $(self.options.geneGridElem);				
-				callerElem.trigger('destroy'); 
-
-				if ( self.options.isLogIn ){				
-					callerElem.mpi2SearchRegisterInterest({inputElements: false});
-				}
-				else {				
-					callerElem.mpi2Search({inputElements: false});
-				}				 				
 				callerElem.trigger('search', [{q: self.options.data.queryString, fq: subTypeFilter}]); 								
 			});
 		},
