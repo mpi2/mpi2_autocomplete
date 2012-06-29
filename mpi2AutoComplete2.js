@@ -307,7 +307,7 @@
             	    dataType: 'jsonp',
             	    jsonp: 'json.wrf',
             	    timeout: 10000,
-            	    success: function (solrResponse) { 
+            	    success: function (geneSolrResponse) { 
 						self._doPipelineAutoSuggest(geneSolrResponse, q, response); 
             	    },
             	    error: function (jqXHR, textStatus, errorThrown) {
