@@ -213,14 +213,22 @@
 			var self = this;
 			var matchesFound = json.response.numFound;			
 			$('div#pipelineFacet span.facetCount').text(matchesFound);
-			
+			var fields = ['parameter_name', 'procedure_name'];
 			var list = [];
 			var docs = json.response.docs;
 			for ( var d=0; d<docs.length; d++ ){	
-				list.push('Parameter Name : ' + docs[d].parameter_name);				
+				for( var f=0; f<fields.length; f++){
+					var fld = fields[f];
+					var val = docs[d][fld];
+					if ( val ){
+						if ( val.toLowerCase().indexOf(query) != -1 || query.indexOf('*') != -1 ){				
+							list.push(fld + ' : ' + val);
+						}
+					}
+				}
 			}
 			
-			self.options.acList = self.options.acList.concat(self._getUnique(list));			
+			self.options.acList = self.options.acList.concat(self._getUnique(list));				
 		},		
 
 		_parseGeneGroupedJson: function (json, query) {
