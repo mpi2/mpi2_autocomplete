@@ -15,7 +15,7 @@
 			},
 			grouppingId : 'mgi_accession_id',
 			searchFields: ["marker_symbol", "mgi_accession_id_key", "marker_name", "synonym", "marker_synonym", "allele_synonym"],
-			queryParams: {'start':0,
+			queryParams_gene: {'start':0,
 				  			'rows':50, 
 				  			'wt':'json', 
 				  			'group':'on',					
@@ -27,9 +27,10 @@
 			mouseSelected: 0,
 			rowShown: 50,
             minLength: 1,
-            delay: 300,  
-            solrJsonResponse: {},          
-            solrURL: 'http://ikmc.vm.bytemark.co.uk:8983/solr/gene_autosuggest/select',
+            delay: 300,            
+			solrBaseURL_ebi: 'http://wwwdev.ebi.ac.uk/mi/solr/',
+            solrBaseURL_bytemark: 'http://ikmc.vm.bytemark.co.uk:8983/solr/', 
+            acList: [],                  
 			select: function(event, ui) {				
 				//console.log(ui.item.value);
 				var thisWidget = $(this).data().mpi2AutoComplete2; // this widget												
@@ -64,7 +65,7 @@
 	 			//nothing to do for now
 	 		},	
 			focus: function(){				
-				//$('div#geneFacet span.facetCount').text(1); // gene_symbol				
+				//nothing to do for now					
 			}			
         },
         
@@ -104,19 +105,26 @@
             		});             		 
             	}
             });
-            			
+
+            var facetDivs = ['geneFacet', 'phenotypeFacet', 'pipelineFacet'];			
+
             self.element.click(function(){
-            	self.term = undefined; 
-            	$('div#geneFacet span.facetCount').text('');	
-				$('div#geneFacet div.facetCatList').html('');			
-            	$('div#phenotypeFacet span.facetCount').text('');       
-     			$('div#phenotypeFacet div.facetCatList').html('');				
+            	self.term = undefined; 				
+				for( var i=0; i<facetDivs.length; i++ ){
+					$('div#' + divs[i] + ' span.facetCount').text('');
+					$('div#' + divs[i] + ' div.facetCatList').html('');	
+				}
+            	//$('div#geneFacet span.facetCount').text('');	
+				//$('div#geneFacet div.facetCatList').html('');			
+            	
             });   
 
             // remove facet count for gene when input box is empty/changed
             self.element.keyup(function(){            	
             	if ( self.element.val() == '' ){
-            		$('div#geneFacet span.facetCount').text('');            			
+            		for( var i=0; i<facetDivs.length; i++ ){
+            			$('div#' + facetDivs[i] + ' span.facetCount').text(''); 					 
+					}           			
             	} 													
             });
             
@@ -130,7 +138,7 @@
         _fetch_matching_gene_count_by_search_term: function(solrQStr) {
         	var self = this;
         		
-			var solrUrl = self.options.solrURL;
+			var solrUrl = self.options.solrBaseURL_bytemark + 'main/search';
 						
 			var queryParams = {'start':0,
 				  			  'rows':0, // limit display in AC dropdown list for performance & practicality
@@ -155,8 +163,8 @@
         
         _makeSolrURLParams: function(solrQStr){   
         	var self = this;
-        	delete self.options.queryParams.q;
-        	var p = this.options.queryParams;
+        	delete self.options.queryParams_gene.q;
+        	var p = this.options.queryParams_gene;
         	var aSolrParams = [];
         	for( var i=0; i<p.length; i++ ){        		
         		aSolrParams.push(i + '=' + p[i]);
@@ -170,8 +178,8 @@
         
         _setOption: function (key, value) {
             switch(key) {
-            case 'solrURL':
-                this.options.solrURL = value;
+            case 'solrBaseURL_bytemark':
+                this.options.solrBaseURL_bytemark = value;
                 break;
             }
             $.ui.autocomplete.prototype._setOption.apply(this, arguments);
@@ -180,33 +188,49 @@
 		// the loops thru each item in the list
         // and highlight the match string
 		_renderItem: function( ul, item ) { 
- 		
  			// highlight the matching characters in string 		
- 		 	var term = this.term.split(' ').join('|'); 			
- 			var wildCard = term.replace(/\*/g, "\\w+");
- 			wildCard = wildCard.replace(/\(/g, "\\(");
- 			wildCard = wildCard.replace(/\)/g, "\\)"); 	
+ 		 	var term = this.term.split(' ').join('|');
+ 		 	var sep = ' : ';
+ 		 	var vals = item.label.split(sep);
+ 		 	 		 	
+ 			var qStr = term.replace(/\*/g, "\\w+"); 			
+ 			qStr = qStr.replace(/\(/g, "\\(");
+ 			qStr = qStr.replace(/\)/g, "\\)"); 	
  		
- 			var re = new RegExp("(" + wildCard + ")", "gi") ;
- 			var t = item.label.replace(re,"<b>$1</b>");
+ 			var re = new RegExp("(" + qStr + ")", "gi") ;
+ 			//var t = item.label.replace(re,"<b>$1</b>");
+ 			var t = vals[1].replace(re,"<b>$1</b>");
  			if ( t.indexOf("<b>") > -1 ){
  				return $( "<li></li>" )
  		    		.data( "item.autocomplete", item )
- 		    		.append( "<a>" + t + "</a>" )
+ 		    		.append( "<a>" + vals[0] + sep + t + "</a>" )
  		    		.appendTo( ul ); 			 				
- 			}
+ 			} 			
 		},
-				
-		_parseSolrGroupedJson: function (json, query) {
+
+		_parseSopJson: function(json, q) {
+			//console.log(json);
+			var self = this;
+			var matchesFound = json.response.numFound;			
+			$('div#pipelineFacet span.facetCount').text(matchesFound);
+			
+			var list = [];
+			var docs = json.response.docs;
+			for ( var d=0; d<docs.length; d++ ){	
+				list.push('Parameter Name : ' + docs[d].parameter_name);				
+			}
+			
+			self.options.acList = self.options.acList.concat(self._getUnique(list));			
+		},		
+
+		_parseGeneGroupedJson: function (json, query) {
 			var self = this;              
 			//console.log(json);
            	var g = json.grouped[self.options.grouppingId]; 
            	var maxRow = json.responseHeader.params.rows;
            	var matchesFound = g.matches;
 			//console.log('found: '+ matchesFound);
-           	self.options.matchesFound = matchesFound;
-                      
-			//self._temp_synch(query);
+           	self.options.matchesFound = matchesFound;   
 
            	$('div#geneFacet span.facetCount').text(matchesFound);
            	var groups   = g.groups;
@@ -252,8 +276,7 @@
         			}		
         		}
         	}	     	
-           	
-            return self._getUnique(list);			
+           	self.options.acList = self._getUnique(list);             			
         },	
         
         _getUnique: function (list) {
@@ -267,20 +290,6 @@
         	}
         	return a;
         },	
-
-		_temp_synch: function(){
-       		// this is here to make geneGrid and geneFacet count in synch before we sort things out
-            $.ajax({ 				 					
-            	'url': 'http://ikmc.vm.bytemark.co.uk:8983/solr/select?wt=json&start=0&rows=0', 					
-            	'data': "q=" + data.queryString,		
-            	'dataType': 'jsonp',
-            	'jsonp': 'json.wrf',
-            	'success': function(json) {
-                        //console.log(json);                        
-                        $('div#geneFacet span.facetCount').text(json.response.numFound); // number of genes found by the search keyword
-            	}		
-            });	              
-        },
         
         sourceCallback: function (request, response) {
         	var self = this;
@@ -289,23 +298,53 @@
                        
  	    	var q = request.term.replace(/^\s+|\s+$/g, ""); // trim away leading/trailing spaces 	    	
  	    	q = q.toLowerCase();        // so that capitalized search would work as solr analyzer used use only lowercase
- 	    	self.options.queryParams.q = q;	
+ 	    	self.options.queryParams_gene.q = q;	
 			
 			//console.log(self.options.solrURL +'?'+ self._makeSolrURLParams(q));
         	$.ajax({
-            	    url: self.options.solrURL,
-            	    data: self.options.queryParams,
+            	    url: self.options.solrBaseURL_bytemark + 'main/search',
+            	    data: self.options.queryParams_gene,
             	    dataType: 'jsonp',
             	    jsonp: 'json.wrf',
             	    timeout: 10000,
-            	    success: function (solrResponse) {        	    	            	    
-            	       	response( self._parseSolrGroupedJson(solrResponse, q) );									                                                            
+            	    success: function (solrResponse) { 
+						self._doPipelineAutoSuggest(geneSolrResponse, q, response); 
             	    },
             	    error: function (jqXHR, textStatus, errorThrown) {
             	        response(['AJAX error']);
             	    }            	
         	});
+    	},
+
+		_doPipelineAutoSuggest: function(geneSolrResponse, q, response){
+    		
+    		var self = this;
+    		var queryParams = {    				
+    			'fq': 'pipeline_stable_id=IMPC_001',    			
+    			'fl': 'parameter_name',
+    			'qf': 'auto_suggest',
+    			'defType': 'edismax',
+    			'wt': 'json',
+    			'rows': 50,
+    			'q': q
+    		};
+    		$.ajax({
+        	    url: self.options.solrBaseURL_ebi + 'pipeline/select',
+        	    data: queryParams,
+        	    dataType: 'jsonp',
+        	    jsonp: 'json.wrf',
+        	    timeout: 10000,
+        	    success: function (sopSolrResponse) {
+        	    	//console.log(geneSolrResponse);
+        	    	//console.log(sopSolrResponse);  
+        	    	self._parseGeneGroupedJson(geneSolrResponse, q);        	    	
+        	    	self._parseSopJson(sopSolrResponse, q);
+        	    	response(self.options.acList);
+        	    },
+        	    error: function (jqXHR, textStatus, errorThrown) {
+        	        response(['AJAX error']);
+        	    }
+    		});    			
     	}        	
-    });
-    
+    });    
 }(jQuery));
