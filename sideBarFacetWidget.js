@@ -3,12 +3,13 @@
     $.widget('MPI2.mpi2LeftSideBar', {
         	
 	    options: {
-    		mpAnnotSources: ['empress', 'mgi'],
-    		solrURL: '',
+    		mpAnnotSources: ['empress', 'mgi'],    	
     		geneFacet: {},
     		phenotypeFacet: {},
     		tissueFacet: {},
-    		pipelineFacet: {}
+    		pipelineFacet: {},
+			solrBaseURL_ebi: 'http://wwwdev.ebi.ac.uk/mi/solr/',
+			solrBaseURL_bytemark: 'http://ikmc.vm.bytemark.co.uk:8983/solr/'
 	    },
 
     	_create: function(){
@@ -39,29 +40,96 @@
 	    	
 	    },
 
+		_doGeneSubTypeFacet: function(){
+	    	var self = this;
+	    		    			
+			var solrURL = self.options.solrBaseURL_bytemark + 'main/search';
+	    	var queryParams = {
+				'start': 0,
+				'rows': 0,
+				'facet': 'on',								
+				'facet.mincount': 1,
+				'facet.field': 'marker_type_str',
+                'qf': 'auto_suggest',
+				'defType': 'edismax',									
+				'wt': 'json',				
+				'q': self.options.data.queryString
+			};
+	    	$.ajax({ 				 					
+	    		'url': solrURL,
+	    		'data': queryParams,
+	    		'dataType': 'jsonp',
+	    		'jsonp': 'json.wrf',
+	    		'success': function(json) {	 	    			
+	    			//console.log(json);
+	    			self._displayGeneSubTypeFacet(json);	    				
+	    		}		
+	    	});
+	    	
+	    },
+	    
+	    _displayGeneSubTypeFacet: function(json){
+	    	var self = this;
+	    	if (json.response.numFound > 0){
+	    		var trs = '';
+	    		var facets = json.facet_counts['facet_fields']['marker_type_str'];
+	    		for ( var i=0; i<facets.length; ){		    			
+	    			//console.log( facets[i] + ' ' + facets[i+1]);
+					var type = facets[i];
+					var count = facets[i+1];
+					
+
+	    			trs += "<tr><td class='geneSubtype'>" + type + "</td><td rel='" + type + "' class='geneSubtypeCount'>" + count + "</td></tr>";
+	    			i += 2;
+	    		}	    			    		
+	    		var table = "<table id='gFacet'>" + trs + "</table>";				
+	    		$('div#geneFacet div.facetCatList').html(table);
+
+				self._applyGeneGridResultFilterByMarkerSubType($('table#gFacet td.geneSubtypeCount'));	    		
+    		}
+	    },
+
+		_applyGeneGridResultFilterByMarkerSubType: function(thisCell){
+			var self = this;
+
+			thisCell.click(function(){
+				$('table#gFacet td').removeClass('highlight');
+				$(this).siblings('td.geneSubtype').addClass('highlight');
+				
+				var marker_subType = $(this).attr('rel');
+				var q = self.options.data.queryString;              
+                var subTypeFilter = "marker_type_str:(\"" + marker_subType + "\")";
+				
+				// refresh geneGrid with marker_subtype
+				var callerElem = $(self.options.geneGridElem);				
+				callerElem.trigger('search', [{q: self.options.data.queryString, fq: subTypeFilter}]); 								
+			});
+		},
+
 		_doPipelineFacet: function(){
 	    	var self = this;
-	    	var aProcedure_names = [];
-	    	//self.options.pipelineFacet.solrURL = 'http://172.22.70.60:8983/solr/pipeline/select',	
-	    	self.options.pipelineFacet.solrURL = 'http://wwwdev.ebi.ac.uk/mi/solr/pipeline/select',
-	    	self.options.pipelineFacet.queryParams = {
-				'start': 0,
+	    	var aProcedure_names = [];	    	
+	    	var solrURL = self.options.solrBaseURL_ebi + 'pipeline/select';	    	
+	    	var queryParams = {	    		  		
+	    		'fq': 'pipeline_stable_id=IMPC_001',				
+				'qf': 'auto_suggest',
+				'defType': 'edismax',
 				'rows': 10000,
 				'facet': 'on',								
 				'facet.mincount': 1,
-				'facet.limit': 10000,
-				'facet.field': 'proc_param_names',
-				'fl': 'parameter_stable_key,procedure_name,procedure_stable_key,proc_param_names,proc_param_stable_ids',
-				'wt': 'json',
-				'q': '*:*' //self.options.data.queryString
+				'facet.limit': -1,
+				'facet.field': 'proc_param_name',
+				'fl': 'parameter_name,parameter_stable_key,parameter_stable_id,procedure_name,procedure_stable_key,procedure_stable_id',
+				'wt': 'json',				
+				'q': self.options.data.queryString				
 			};
 	    	$.ajax({ 				 					
-	    		'url': self.options.pipelineFacet.solrURL,
-	    		'data': self.options.pipelineFacet.queryParams,
+	    		'url': solrURL,
+	    		'data': queryParams,
 	    		'dataType': 'jsonp',
 	    		'jsonp': 'json.wrf',
 	    		'success': function(json) {	    			
-	    			//console.log(json);
+	    			console.log(json);
 	    			//self._fetch_procedures(json);
 	    			
 	    			var procedures_params = {};
@@ -70,7 +138,7 @@
 	    			var procedureName2IdKey = mappings[0];
 	    			var parameterName2IdKey = mappings[1];
 	    			
-	    			var facets = json.facet_counts['facet_fields']['proc_param_names'];    	
+	    			var facets = json.facet_counts['facet_fields']['proc_param_name'];    	
 	    	    	
 	        		for ( var i=0; i<facets.length; ){	        			
 	        			var names = facets[i].split('___');
@@ -106,7 +174,7 @@
 	        				var pmClass = pClass+'_param';
 	        				var tr = $('<tr></tr>').attr('class', pmClass);
 	        				var oParamCount = procedures_params[i][j];
-	        				//console.log('Param: '+ oParamCount.param_name + ':'+ oParamCount.count);
+	        				console.log('Param: '+ oParamCount.param_name + ':'+ oParamCount.count);
 	        				var a = $('<a></a>').attr({
 	        					href: 'http://www.mousephenotype.org/impress/impress/listParameters/'	        						
 	        						+ procedureName2IdKey[i].stable_key,	        						
@@ -117,48 +185,38 @@
 	        				table.append(tr.append(td.append(a)));	        				
 	        			}	        			
 	        		}
-	        		
+	        			    			
 	        		$('div#pipelineFacet .facetCatList').html(table);
 	        		$('table#pipeline td[class^=procedure]').toggle(
-	        				function(){	        					
-	        					var thisClass = $(this).attr('class');	        					
-	        					$(this).parent().siblings("tr." + thisClass + '_param').show();
-	        				},
-	        				function(){
-	        					var thisClass = $(this).attr('class');
-	        					$(this).parent().siblings("tr." + thisClass + "_param").hide();
-	        				}
+	        			function(){	        					
+	        				var thisClass = $(this).attr('class');	        					
+	        				$(this).parent().siblings("tr." + thisClass + '_param').show();
+	        			},
+	        			function(){
+	        				var thisClass = $(this).attr('class');
+	        				$(this).parent().siblings("tr." + thisClass + "_param").hide();
+	        			}
 	        		);
 	    		}		
 	    	});	    	
 	    },
 	    
 	    _doNames2IdMapping: function(response){
-	    	var node = response.docs[0];
-	    	
-	    	var procedureName2Key = {};
-	    	for (var i=0; i<node.procedure_name.length; i++){
-	    		var name = node.procedure_name[i];
-	    		if ( !procedureName2Key[name] ){
-	    			procedureName2Key[name] = {};
-	    		}
-	    		procedureName2Key[name] = node.procedure_stable_key[i];
-	    	}
-	    	
+	    	var nodes = response.docs;
 	    	var procedureName2IdKey = {};
 	    	var parameterName2IdKey = {};
 	    	
-	    	for (var i=0; i<node.proc_param_names.length; i++){
-	    		//console.log(node.parameter_name[i]);
-	    		var names = node.proc_param_names[i].split("___");
-	    		var procName = names[0];
-	    		var paramName = names[1];
+	    	for( var n=0; n<nodes.length; n++){
+	    		var node = nodes[n];	    		
+	    			    		
+	    		var procName = node.procedure_name;	    			    		
+	    		var procSId  = node.procedure_stable_id;
+	    		var procKey  = node.procedure_stable_key;
 	    		
-	    		var ids = node.proc_param_stable_ids[i].split("___");
-	    		var procId = ids[0];
-	    		var procKey = procedureName2Key[procName];
-	    		var paramId = ids[1];
-	    		var paramKey = node.parameter_stable_key[i];
+	    		var paramName = node.parameter_name;
+	    		var paramSId   = node.parameter_stable_id;
+	    		var paramKey  = node.parameter_stable_key;
+	    		
 	    			    		
 	    		if ( !procedureName2IdKey[procName] ){
 	    			procedureName2IdKey[procName] = {};
@@ -166,78 +224,12 @@
 	    		if ( !parameterName2IdKey[paramName] ){
 	    			parameterName2IdKey[paramName] = {};
 	    		}
-	    		procedureName2IdKey[procName] = {stable_id: procId, stable_key: procKey};
-	    		parameterName2IdKey[paramName] = {stable_id: paramId, stable_key: paramKey};
+	    		procedureName2IdKey[procName] = {stable_id: procSId, stable_key: procKey};
+	    		parameterName2IdKey[paramName] = {stable_id: paramSId, stable_key: paramKey};	    		
 	    	}
 	    	return [procedureName2IdKey, parameterName2IdKey];
 	    },
-	    
-	    _doGeneSubTypeFacet: function(){
-	    	var self = this;
-	    	
-	    	self.options.geneFacet.solrURL = 'http://ikmc.vm.bytemark.co.uk:8983/solr/main/search',
-			//self.options.geneFacet.solrURL = 'http://172.22.70.60ikmc.vm.bytemark.co.uk:8983/solr/gene_autosuggest/select',
-
-	    	self.options.geneFacet.queryParams = {
-				'start': 0,
-				'rows': 0,
-				'facet': 'on',								
-				'facet.mincount': 1,
-				'facet.field': 'marker_type_str',
-                'qf': 'auto_suggest',
-				'defType': 'edismax',									
-				'wt': 'json',				
-				'q': self.options.data.queryString
-			};
-	    	$.ajax({ 				 					
-	    		'url': self.options.geneFacet.solrURL,
-	    		'data': self.options.geneFacet.queryParams,
-	    		'dataType': 'jsonp',
-	    		'jsonp': 'json.wrf',
-	    		'success': function(json) {	 
-	    			//console.log('gene subtype facet:');
-	    			//console.log(json);
-	    			self._displayGeneSubTypeFacet(json);	    				
-	    		}		
-	    	});
-	    	
-	    },
-	    
-	    _displayGeneSubTypeFacet: function(json){
-	    	var self = this;
-	    	if (json.response.numFound > 0){
-	    		var trs = '';
-	    		var facets = json.facet_counts['facet_fields']['marker_type_str'];
-	    		for ( var i=0; i<facets.length; ){		    			
-	    			//console.log( facets[i] + ' ' + facets[i+1]);
-					var type = facets[i];
-					var count = facets[i+1];
-	    			trs += "<tr><td class='geneSubtype'>" + type + "</td><td rel='" + type + "' class='geneSubtypeCount'>" + count + "</td></tr>";
-	    			i += 2;
-	    		}	    			    		
-	    		var table = "<table id='gFacet'>" + trs + "</table>";				
-	    		$('div#geneFacet div.facetCatList').html(table);
-				self._applyGeneGridResultFilterByMarkerSubType($('table#gFacet td.geneSubtypeCount'));	    		
-    		}
-	    },
-
-		_applyGeneGridResultFilterByMarkerSubType: function(thisCell){
-			var self = this;
-
-			thisCell.click(function(){
-				$('table#gFacet td').removeClass('highlight');
-				$(this).siblings('td.geneSubtype').addClass('highlight');
-				
-				var marker_subType = $(this).attr('rel');
-				var q = self.options.data.queryString;              
-                var subTypeFilter = "marker_type_str:(\"" + marker_subType + "\")";
-				
-				// refresh geneGrid with marker_subtype
-				var callerElem = $(self.options.geneGridElem);				
-				callerElem.trigger('search', [{q: self.options.data.queryString, fq: subTypeFilter}]); 								
-			});
-		},
-
+	    	    
 	    _doMPFacet: function(){
 	    	var self = this;
 	    		    	
@@ -252,7 +244,7 @@
 	    	//console.log(self.options.queryParams);
 		    		
 	    	$.ajax({ 				 					
-	    		'url': self.options.solrURL + '?' + self._composeSolrParams(),							
+	    		'url': self.options.solrBaseURL_ebi + '?' + self._composeSolrParams(),							
 	    		'dataType': 'jsonp',
 	    		'jsonp': 'json.wrf',
 	    		'success': function(json) {
