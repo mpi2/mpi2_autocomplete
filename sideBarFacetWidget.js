@@ -128,10 +128,8 @@
 	    		'data': queryParams,
 	    		'dataType': 'jsonp',
 	    		'jsonp': 'json.wrf',
-	    		'success': function(json) {	    			
-	    			console.log(json);
-	    			//self._fetch_procedures(json);
-	    			
+	    		'success': function(json) {	    			  			
+	    			    			
 	    			var procedures_params = {};
 	    			
 	    			var mappings = self._doNames2IdMapping(json.response);
@@ -174,7 +172,7 @@
 	        				var pmClass = pClass+'_param';
 	        				var tr = $('<tr></tr>').attr('class', pmClass);
 	        				var oParamCount = procedures_params[i][j];
-	        				console.log('Param: '+ oParamCount.param_name + ':'+ oParamCount.count);
+	        				//console.log('Param: '+ oParamCount.param_name + ':'+ oParamCount.count);
 	        				var a = $('<a></a>').attr({
 	        					href: 'http://www.mousephenotype.org/impress/impress/listParameters/'	        						
 	        						+ procedureName2IdKey[i].stable_key,	        						
