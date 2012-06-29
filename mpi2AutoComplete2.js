@@ -111,8 +111,8 @@
             self.element.click(function(){
             	self.term = undefined; 				
 				for( var i=0; i<facetDivs.length; i++ ){
-					$('div#' + divs[i] + ' span.facetCount').text('');
-					$('div#' + divs[i] + ' div.facetCatList').html('');	
+					$('div#' + facetDivs[i] + ' span.facetCount').text('');
+					$('div#' + facetDivs[i] + ' div.facetCatList').html('');	
 				}
             	//$('div#geneFacet span.facetCount').text('');	
 				//$('div#geneFacet div.facetCatList').html('');			
