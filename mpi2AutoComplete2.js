@@ -208,7 +208,7 @@
  			} 			
 		},
 
-		_parseSopJson: function(json, q) {
+		_parseSopJson: function(json, query) {
 			//console.log(json);
 			var self = this;
 			var matchesFound = json.response.numFound;			
