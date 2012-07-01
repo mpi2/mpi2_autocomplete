@@ -73,26 +73,30 @@
 			var self = this;
 			var termVal = input.replace(/^(.+)\s(:)\s(.+)/, '$3');
 			var solrField = input.replace(/^(.+)\s(:)\s(.+)/, '$1').replace(/ /g, '_').toLowerCase();	
-							
+			var solrQStr = input;
+			var solrParams= null;
+	
 			if ( MPI2.AutoComplete.mapping[termVal] ){
 				//$('div#geneFacet span.facetCount').text(1);
 				var geneId = MPI2.AutoComplete.mapping[termVal];
 					
-				var solrQStr = self.options.grouppingId + ':"' + geneId.replace(/:/g,"\\:") + '"';
-				var solrParams = self._makeSolrURLParams(solrQStr);					
-				//console.log('MOUSE1: '+ solrQStr + ' -- ' + ui.item.value + ' termVal: ' + termVal);
-				self._trigger("loadGenePage", null, { queryString: solrQStr, queryParams: solrParams});	
+				solrQStr = self.options.grouppingId + ':"' + geneId.replace(/:/g,"\\:") + '"';
+				solrParams = self._makeSolrURLParams(solrQStr);					
+				//console.log('MOUSE1: '+ solrQStr + ' -- ' + ui.item.value + ' termVal: ' + termVal);				
 				self._trigger("loadSideBar", null, { queryString: solrQStr, geneFound: 1 });
 			}	
-			else {				
+			else if (input.indexOf(':') != -1 ) {				
 				// user should have selected a term other than gene Id/name/synonym
 				// fetch all MGI gene ids annotated to this term					
-				var solrQStr = solrField + ':' + '"' + termVal + '"';
-				var solrParams = self._makeSolrURLParams(solrQStr);					
-				//console.log('MOUSE2: '+ solrQStr + ' -- ' + ui.item.value + ' termVal: ' + termVal);
-				self._trigger("loadGenePage", null, { queryString: solrQStr, queryParams: solrParams});						
+				solrQStr = solrField + ':' + '"' + termVal + '"';
+				solrParams = self._makeSolrURLParams(solrQStr);					
+				//console.log('MOUSE2: '+ solrQStr + ' -- ' + ui.item.value + ' termVal: ' + termVal);									
 				self._trigger("loadSideBar", null, { queryString: solrQStr });								
 			}					
+			else {
+				self._trigger("loadSideBar", null, { queryString: solrQStr });
+			}
+			self._trigger("loadGenePage", null, { queryString: solrQStr, queryParams: solrParams});	
 		},
 
         _create : function () {
@@ -123,7 +127,7 @@
             		alert('Sorry, please enter your keyword in the input box for search - thank you');
             	}
             	else {					
-            		var solrParams = self._makeSolrURLParams(self.term);										
+            		var solrParams = self._makeSolrURLParams(self.term);															
 					self._inputValMappingForCallBack(self.term);
             		/*self._trigger("loadGenePage", null, { queryString: self.term, queryParams: solrParams });            		
             		self._trigger("loadSideBar", null, {matchesFound: self.options.matchesFound, 
