@@ -204,11 +204,11 @@
 
 		_parseGeneGroupedJson: function (json, query) {
 			var self = this;              
-			console.log(query);
+			//console.log(query);
            	var g = json.grouped[self.options.grouppingId]; 
            	var maxRow = json.responseHeader.params.rows;
            	var matchesFound = g.matches;
-			console.log('found: '+ matchesFound);
+			//console.log('found: '+ matchesFound);
            	self.options.matchesFound = matchesFound;   
 
            	$('div#geneFacet span.facetCount').text(matchesFound);
