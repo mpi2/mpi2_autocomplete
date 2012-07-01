@@ -62,6 +62,7 @@
 	    		'jsonp': 'json.wrf',
 	    		'success': function(json) {	 	    			
 	    			console.log(json);
+					$('div#geneFacet span.facetCount').text(data.geneFound);   
 	    			self._displayGeneSubTypeFacet(json);	    				
 	    		}		
 	    	});
