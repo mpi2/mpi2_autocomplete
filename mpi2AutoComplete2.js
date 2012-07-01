@@ -67,7 +67,7 @@
 				solrQStr = solrField + ':' + '"' + termVal + '"';
 				solrParams = self._makeSolrURLParams(solrQStr);					
 				//console.log('MOUSE2: '+ solrQStr + ' -- ' + ui.item.value + ' termVal: ' + termVal);									
-				self._trigger("loadSideBar", null, { queryString: solrQStr });								
+				self._trigger("loadSideBar", null, { queryString: solrQStr, geneFound: 0 });								
 			}					
 			else {
 				self._trigger("loadSideBar", null, { queryString: solrQStr });
