@@ -229,7 +229,7 @@
         				if ( docs[d][aFields[f]] ){					
         					var fld = aFields[f];
         					var val = docs[d][fld];		
-        					//alert('field: '+ fld + ' -- val: ' + val + ' : ' + typeof val);
+        					console.log('field: '+ fld + ' -- val: ' + val + ' : ' + typeof val);
         					// marker_synonym, mp_id, mp_term, mp_term_synonym are all multivalued
         					if ( fld === 'marker_name' || fld == 'marker_synonym' || fld == 'synonym' || fld == 'allele_synonym' || fld == 'mp_id' || fld == 'mp_term' || fld == 'mp_term_synonym' ){
         						var aVals = docs[d][fld];
