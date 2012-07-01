@@ -45,7 +45,7 @@
 					
 					var solrQStr = thisWidget.options.grouppingId + ':(' + geneId.replace(/:/g,"\\:") + ')';
 					var solrParams = thisWidget._makeSolrURLParams(solrQStr);					
-					console.log('MOUSE1: '+ solrQStr + ' -- ' + ui.item.value);
+					console.log('MOUSE1: '+ solrQStr + ' -- ' + ui.item.value + ' termVal: ' + termVal);
 					thisWidget._trigger("loadGenePage", null, { queryString: solrQStr, queryParams: solrParams});	
 					thisWidget._trigger("loadSideBar", null, { queryString: solrQStr });
 				}	
@@ -54,7 +54,7 @@
 					// fetch all MGI gene ids annotated to this term					
 					var solrQStr = solrField + ':' + '"' + termVal + '"';
 					var solrParams = thisWidget._makeSolrURLParams(solrQStr);					
-					console.log('MOUSE2: '+ solrQStr + ' -- ' + ui.item.value);
+					console.log('MOUSE2: '+ solrQStr + ' -- ' + ui.item.value + ' termVal: ' + termVal);
 					thisWidget._trigger("loadGenePage", null, { queryString: solrQStr, queryParams: solrParams});						
 					thisWidget._trigger("loadSideBar", null, { queryString: solrQStr });								
 				}				
@@ -238,7 +238,7 @@
 									
         							if ( thisVal.toLowerCase().indexOf(query) != -1 || query.indexOf('*') != -1 ){
         								
-        								if (fld == 'marker_synonym' || fld == 'allele_synonym'){
+        								if (fld === 'marker_name' || fld == 'marker_synonym' || fld == 'allele_synonym'){
         									MPI2.AutoComplete.mapping[thisVal] = geneId;        									
         								} 
         								list.push(srcLabel[fld] + " : " +  thisVal);
@@ -247,6 +247,7 @@
         					}
         					else {        						
         						if ( val.toLowerCase().indexOf(query) != -1 || query.indexOf('*') != -1 ){
+									console.log(fld + ' : ' + val);
         							MPI2.AutoComplete.mapping[val] = geneId;        										
         							list.push(srcLabel[fld] + " : " +  val);
         						}	
