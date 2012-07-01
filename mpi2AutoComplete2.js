@@ -45,16 +45,16 @@
 					
 					var solrQStr = thisWidget.options.grouppingId + ':"' + geneId.replace(/:/g,"\\:") + '"';
 					var solrParams = thisWidget._makeSolrURLParams(solrQStr);					
-					//console.log('MOUSE1: '+ solrQStr + ' -- ' + ui.item.value + ' termVal: ' + termVal);
+					console.log('MOUSE1: '+ solrQStr + ' -- ' + ui.item.value + ' termVal: ' + termVal);
 					thisWidget._trigger("loadGenePage", null, { queryString: solrQStr, queryParams: solrParams});	
-					thisWidget._trigger("loadSideBar", null, { queryString: solrQStr });
+					thisWidget._trigger("loadSideBar", null, { queryString: solrQStr, geneFound: thisWidget.options.matchesFound });
 				}	
 				else {				
 					// user should have selected a term other than gene Id/name/synonym
 					// fetch all MGI gene ids annotated to this term					
 					var solrQStr = solrField + ':' + '"' + termVal + '"';
 					var solrParams = thisWidget._makeSolrURLParams(solrQStr);					
-					//console.log('MOUSE2: '+ solrQStr + ' -- ' + ui.item.value + ' termVal: ' + termVal);
+					console.log('MOUSE2: '+ solrQStr + ' -- ' + ui.item.value + ' termVal: ' + termVal);
 					thisWidget._trigger("loadGenePage", null, { queryString: solrQStr, queryParams: solrParams});						
 					thisWidget._trigger("loadSideBar", null, { queryString: solrQStr });								
 				}				
@@ -208,7 +208,7 @@
            	var g = json.grouped[self.options.grouppingId]; 
            	var maxRow = json.responseHeader.params.rows;
            	var matchesFound = g.matches;
-			//console.log('found: '+ matchesFound);
+			console.log('found: '+ matchesFound);
            	self.options.matchesFound = matchesFound;   
 
            	$('div#geneFacet span.facetCount').text(matchesFound);
