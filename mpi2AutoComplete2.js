@@ -124,11 +124,11 @@
             	}
             	else {					
             		var solrParams = self._makeSolrURLParams(self.term);										
-
-            		self._trigger("loadGenePage", null, { queryString: self.term, queryParams: solrParams });            		
+					self._inputValMappingForCallBack(self.term);
+            		/*self._trigger("loadGenePage", null, { queryString: self.term, queryParams: solrParams });            		
             		self._trigger("loadSideBar", null, {matchesFound: self.options.matchesFound, 
             			queryString: self.term																					   
-            		});             		 
+            		});*/             		 
             	}
             });
 
