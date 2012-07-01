@@ -62,6 +62,7 @@
 	    		'jsonp': 'json.wrf',
 	    		'success': function(json) {	 	    			
 	    			console.log(json);
+					console.log(self.options.data.geneFound);
 					$('div#geneFacet span.facetCount').text(self.options.data.geneFound);   
 	    			self._displayGeneSubTypeFacet(json);	    				
 	    		}		
