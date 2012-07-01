@@ -43,7 +43,7 @@
 					//$('div#geneFacet span.facetCount').text(1);
 					var geneId = MPI2.AutoComplete.mapping[termVal];
 					
-					var solrQStr = thisWidget.options.grouppingId + ':(' + geneId.replace(/:/g,"\\:") + ')';
+					var solrQStr = thisWidget.options.grouppingId + ':"' + geneId.replace(/:/g,"\\:") + '"';
 					var solrParams = thisWidget._makeSolrURLParams(solrQStr);					
 					console.log('MOUSE1: '+ solrQStr + ' -- ' + ui.item.value + ' termVal: ' + termVal);
 					thisWidget._trigger("loadGenePage", null, { queryString: solrQStr, queryParams: solrParams});	
@@ -248,7 +248,7 @@
         					}
         					else {        						
         						if ( val.toLowerCase().indexOf(query) != -1 || query.indexOf('*') != -1 ){
-									console.log(fld + ' : ' + val + ' id: ' + geneId);
+									//console.log(fld + ' : ' + val + ' id: ' + geneId);
         							MPI2.AutoComplete.mapping[val] = geneId;        										
         							list.push(srcLabel[fld] + " : " +  val);
         						}	
