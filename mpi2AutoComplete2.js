@@ -33,33 +33,9 @@
             acList: [],                  
 			select: function(event, ui) {				
 				//console.log(ui.item.value);
-				var thisWidget = $(this).data().mpi2AutoComplete2; // this widget												
-
+				var thisWidget = $(this).data().mpi2AutoComplete2; // this widget
 				thisWidget.options.mouseSelected = 1;
 				thisWidget._inputValMappingForCallBack(ui.item.value);
-
-				/*var termVal = ui.item.value.replace(/^(.+)\s(:)\s(.+)/, '$3');
-				var solrField = ui.item.value.replace(/^(.+)\s(:)\s(.+)/, '$1').replace(/ /g, '_').toLowerCase();	
-							
-				if ( MPI2.AutoComplete.mapping[termVal] ){
-					//$('div#geneFacet span.facetCount').text(1);
-					var geneId = MPI2.AutoComplete.mapping[termVal];
-					
-					var solrQStr = thisWidget.options.grouppingId + ':"' + geneId.replace(/:/g,"\\:") + '"';
-					var solrParams = thisWidget._makeSolrURLParams(solrQStr);					
-					//console.log('MOUSE1: '+ solrQStr + ' -- ' + ui.item.value + ' termVal: ' + termVal);
-					thisWidget._trigger("loadGenePage", null, { queryString: solrQStr, queryParams: solrParams});	
-					thisWidget._trigger("loadSideBar", null, { queryString: solrQStr, geneFound: 1 });
-				}	
-				else {				
-					// user should have selected a term other than gene Id/name/synonym
-					// fetch all MGI gene ids annotated to this term					
-					var solrQStr = solrField + ':' + '"' + termVal + '"';
-					var solrParams = thisWidget._makeSolrURLParams(solrQStr);					
-					//console.log('MOUSE2: '+ solrQStr + ' -- ' + ui.item.value + ' termVal: ' + termVal);
-					thisWidget._trigger("loadGenePage", null, { queryString: solrQStr, queryParams: solrParams});						
-					thisWidget._trigger("loadSideBar", null, { queryString: solrQStr });								
-				}	*/			
 			},
 			close: function(event, ui){  // result dropdown list closed
 	 			//nothing to do for now
@@ -77,7 +53,7 @@
 			var solrParams= null;
 	
 			if ( MPI2.AutoComplete.mapping[termVal] ){
-				//$('div#geneFacet span.facetCount').text(1);
+				
 				var geneId = MPI2.AutoComplete.mapping[termVal];
 					
 				solrQStr = self.options.grouppingId + ':"' + geneId.replace(/:/g,"\\:") + '"';
@@ -128,11 +104,7 @@
             	}
             	else {					
             		var solrParams = self._makeSolrURLParams(self.term);															
-					self._inputValMappingForCallBack(self.term);
-            		/*self._trigger("loadGenePage", null, { queryString: self.term, queryParams: solrParams });            		
-            		self._trigger("loadSideBar", null, {matchesFound: self.options.matchesFound, 
-            			queryString: self.term																					   
-            		});*/             		 
+					self._inputValMappingForCallBack(self.term);            		          		 
             	}
             });
 
