@@ -247,7 +247,7 @@
         					}
         					else {        						
         						if ( val.toLowerCase().indexOf(query) != -1 || query.indexOf('*') != -1 ){
-									console.log(fld + ' : ' + val);
+									console.log(fld + ' : ' + val + ' id: ' + geneID);
         							MPI2.AutoComplete.mapping[val] = geneId;        										
         							list.push(srcLabel[fld] + " : " +  val);
         						}	
