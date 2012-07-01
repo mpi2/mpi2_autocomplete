@@ -37,7 +37,8 @@
 
 				thisWidget.options.mouseSelected = 1;
 				var termVal = ui.item.value.replace(/^(.+)\s(:)\s(.+)/, '$3');
-												
+				var solrField = ui.item.value.replace(/^(.+)\s(:)\s(.+)/, '$1').replace(/ /g, '_').toLowerCase();	
+							
 				if ( MPI2.AutoComplete.mapping[termVal] ){
 					//$('div#geneFacet span.facetCount').text(1);
 					var geneId = MPI2.AutoComplete.mapping[termVal];
@@ -46,19 +47,16 @@
 					var solrParams = thisWidget._makeSolrURLParams(solrQStr);					
 					
 					thisWidget._trigger("loadGenePage", null, { queryString: solrQStr, queryParams: solrParams});	
-					thisWidget._trigger("loadSideBar", null, { matchesFound: 1, 
-															   queryString: solrQStr											   														   
-															});
+					thisWidget._trigger("loadSideBar", null, { queryString: solrQStr });
 				}	
 				else {				
 					// user should have selected a term other than gene Id/name/synonym
-					// fetch all MGI gene ids annotated to this term
-					var solrField = /MP Term Synonym/.test(ui.item.value) ? 'mp_term_synonym' : 'mp_term';
+					// fetch all MGI gene ids annotated to this term					
 					var solrQStr = solrField + ':' + '"' + termVal + '"';
 					var solrParams = thisWidget._makeSolrURLParams(solrQStr);					
 					
 					thisWidget._trigger("loadGenePage", null, { queryString: solrQStr, queryParams: solrParams});						
-					thisWidget._fetch_matching_gene_count_by_search_term(solrQStr);					
+					thisWidget._trigger("loadSideBar", null, { queryString: solrQStr });								
 				}				
 			},
 			close: function(event, ui){  // result dropdown list closed
@@ -78,6 +76,7 @@
                 if (e.keyCode == 13) {
                     self.close();
                     var solrParams = self._makeSolrURLParams(self.term);
+					
                     // need to distinguish between enter on the input box and enter on the drop down list
                     // ie, users use keyboard, instead of mouse, to navigate the list and hit enter to choose a term
                     if (self.options.mouseSelected == 0 ){                    	
@@ -99,8 +98,7 @@
             		var solrParams = self._makeSolrURLParams(self.term);										
 
             		self._trigger("loadGenePage", null, { queryString: self.term, queryParams: solrParams });            		
-            		self._trigger("loadSideBar", null, { 
-            			matchesFound: self.options.matchesFound, 
+            		self._trigger("loadSideBar", null, {matchesFound: self.options.matchesFound, 
             			queryString: self.term																					   
             		});             		 
             	}
@@ -132,34 +130,8 @@
         },   
 
         _showSearchMsg: function(){
-			return 'Search genes, MP terms by MGI/MP ID, gene symbol, synonym or name';
-		},
-
-        _fetch_matching_gene_count_by_search_term: function(solrQStr) {
-        	var self = this;
-        		
-			var solrUrl = self.options.solrBaseURL_bytemark + 'main/search';
-						
-			var queryParams = {'start':0,
-				  			  'rows':0, // limit display in AC dropdown list for performance & practicality
-				  			  'wt':'json',
-				  			  'q': solrQStr
-				  			  }; 
-			//console.log(queryParams);
-			$.ajax({ 				 					
-				'url': solrUrl, 					
-				'data': queryParams,		
-				'dataType': 'jsonp',
-				'jsonp': 'json.wrf',
-				'success': function(json) {	
-					//console.log(json);
-					self._trigger("loadSideBar", null, { 
-							matchesFound: json.response.numFound, 
-							queryString: solrQStr																					   
-						});
-				}		
-			});	        	
-        },           
+			return 'Search genes, MP terms, SOP by MGI/MP ID, gene symbol, synonym or name';
+		},     
         
         _makeSolrURLParams: function(solrQStr){   
         	var self = this;
@@ -213,6 +185,8 @@
 			var self = this;
 			var matchesFound = json.response.numFound;			
 			$('div#pipelineFacet span.facetCount').text(matchesFound);
+			$('div#pipelineFacet .facetCatList').html(''); 
+
 			var fields = ['parameter_name', 'procedure_name'];
 			var list = [];
 			var docs = json.response.docs;
@@ -222,7 +196,7 @@
 					var val = docs[d][fld];
 					if ( val ){
 						if ( val.toLowerCase().indexOf(query) != -1 || query.indexOf('*') != -1 ){				
-							list.push(fld + ' : ' + val);
+							list.push(self.options.srcLabel[fld] + ' : ' + val);
 						}
 					}
 				}
