@@ -142,8 +142,6 @@
         	for( var i=0; i<p.length; i++ ){        		
         		aSolrParams.push(i + '=' + p[i]);
         	}
-        	//var solrQStr = 'q=' + self.options.grouppingId + ':(' + qry.replace(/:/g,"\\:") + ')';
-        	//self.options.solrQStr = solrQStr;
         	
         	aSolrParams.push('q='+solrQStr);
         	return 	aSolrParams.join('&');
