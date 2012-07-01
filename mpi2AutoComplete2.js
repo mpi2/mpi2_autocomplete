@@ -218,12 +218,13 @@
            	var list     = [];
            	           	
            	for ( var i=0; i<groups.length; i++){
-        		var geneId = groups[i].groupValue;
+        		//var geneId = groups[i].groupValue;
         		        		
         		var docs = groups[i].doclist.docs;
         		for ( var d=0; d<docs.length; d++ ){	
         			for ( var f=0; f<aFields.length; f++ ){
-        				if ( docs[d][aFields[f]] ){					
+        				if ( docs[d][aFields[f]] ){	
+							var geneId = docs[d][self.options.grouppingId];			
         					var fld = aFields[f];
         					var val = docs[d][fld];		
         					//console.log('field: '+ fld + ' -- val: ' + val + ' : ' + typeof val);
