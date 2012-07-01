@@ -204,7 +204,7 @@
 
 		_parseGeneGroupedJson: function (json, query) {
 			var self = this;              
-			//console.log(json);
+			console.log(json);
            	var g = json.grouped[self.options.grouppingId]; 
            	var maxRow = json.responseHeader.params.rows;
            	var matchesFound = g.matches;
