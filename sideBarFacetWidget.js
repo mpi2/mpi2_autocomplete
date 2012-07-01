@@ -50,9 +50,9 @@
 				'facet': 'on',								
 				'facet.mincount': 1,
 				'facet.field': 'marker_type_str',
-                'qf': 'auto_suggest',
-				'defType': 'edismax',									
-				'wt': 'json',				
+                //'qf': 'auto_suggest',
+				//'defType': 'edismax',									
+				//'wt': 'json',				
 				'q': self.options.data.queryString
 			};
 	    	$.ajax({ 				 					
@@ -61,7 +61,7 @@
 	    		'dataType': 'jsonp',
 	    		'jsonp': 'json.wrf',
 	    		'success': function(json) {	 	    			
-	    			//console.log(json);
+	    			console.log(json);
 	    			self._displayGeneSubTypeFacet(json);	    				
 	    		}		
 	    	});
