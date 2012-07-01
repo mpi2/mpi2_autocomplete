@@ -111,10 +111,7 @@
 				for( var i=0; i<facetDivs.length; i++ ){
 					$('div#' + facetDivs[i] + ' span.facetCount').text('');
 					$('div#' + facetDivs[i] + ' div.facetCatList').html('');	
-				}
-            	//$('div#geneFacet span.facetCount').text('');	
-				//$('div#geneFacet div.facetCatList').html('');			
-            	
+				}            	
             });   
 
             // remove facet count for gene when input box is empty/changed
