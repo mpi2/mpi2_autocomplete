@@ -45,7 +45,7 @@
 					
 					var solrQStr = thisWidget.options.grouppingId + ':"' + geneId.replace(/:/g,"\\:") + '"';
 					var solrParams = thisWidget._makeSolrURLParams(solrQStr);					
-					console.log('MOUSE1: '+ solrQStr + ' -- ' + ui.item.value + ' termVal: ' + termVal);
+					//console.log('MOUSE1: '+ solrQStr + ' -- ' + ui.item.value + ' termVal: ' + termVal);
 					thisWidget._trigger("loadGenePage", null, { queryString: solrQStr, queryParams: solrParams});	
 					thisWidget._trigger("loadSideBar", null, { queryString: solrQStr, geneFound: 1 });
 				}	
@@ -54,7 +54,7 @@
 					// fetch all MGI gene ids annotated to this term					
 					var solrQStr = solrField + ':' + '"' + termVal + '"';
 					var solrParams = thisWidget._makeSolrURLParams(solrQStr);					
-					console.log('MOUSE2: '+ solrQStr + ' -- ' + ui.item.value + ' termVal: ' + termVal);
+					//console.log('MOUSE2: '+ solrQStr + ' -- ' + ui.item.value + ' termVal: ' + termVal);
 					thisWidget._trigger("loadGenePage", null, { queryString: solrQStr, queryParams: solrParams});						
 					thisWidget._trigger("loadSideBar", null, { queryString: solrQStr });								
 				}				
@@ -227,7 +227,7 @@
 							var geneId = docs[d][self.options.grouppingId];			
         					var fld = aFields[f];
         					var val = docs[d][fld];		
-        					console.log('field: '+ fld + ' -- val: ' + val + ' : ' + typeof val);
+        					//console.log('field: '+ fld + ' -- val: ' + val + ' : ' + typeof val);
         					// marker_synonym, mp_id, mp_term, mp_term_synonym are all multivalued
         					if ( fld == 'marker_name' || fld == 'marker_synonym' || fld == 'synonym' || fld == 'allele_synonym' || fld == 'mp_id' || fld == 'mp_term' || fld == 'mp_term_synonym' ){
         						var aVals = docs[d][fld];
