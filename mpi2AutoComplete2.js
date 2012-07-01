@@ -45,7 +45,7 @@
 					
 					var solrQStr = thisWidget.options.grouppingId + ':(' + geneId.replace(/:/g,"\\:") + ')';
 					var solrParams = thisWidget._makeSolrURLParams(solrQStr);					
-					console.log('MOUSE: '+ solrQStr);
+					console.log('MOUSE: '+ solrQStr + ' -- ' + ui.item.value);
 					thisWidget._trigger("loadGenePage", null, { queryString: solrQStr, queryParams: solrParams});	
 					thisWidget._trigger("loadSideBar", null, { queryString: solrQStr });
 				}	
@@ -54,7 +54,7 @@
 					// fetch all MGI gene ids annotated to this term					
 					var solrQStr = solrField + ':' + '"' + termVal + '"';
 					var solrParams = thisWidget._makeSolrURLParams(solrQStr);					
-					console.log('MOUSE: '+ solrQStr);
+					console.log('MOUSE: '+ solrQStr + ' -- ' + ui.item.value);
 					thisWidget._trigger("loadGenePage", null, { queryString: solrQStr, queryParams: solrParams});						
 					thisWidget._trigger("loadSideBar", null, { queryString: solrQStr });								
 				}				
