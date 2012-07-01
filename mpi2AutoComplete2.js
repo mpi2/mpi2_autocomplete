@@ -36,7 +36,9 @@
 				var thisWidget = $(this).data().mpi2AutoComplete2; // this widget												
 
 				thisWidget.options.mouseSelected = 1;
-				var termVal = ui.item.value.replace(/^(.+)\s(:)\s(.+)/, '$3');
+				self._inputValMappingForCallBack(ui.item.value);
+
+				/*var termVal = ui.item.value.replace(/^(.+)\s(:)\s(.+)/, '$3');
 				var solrField = ui.item.value.replace(/^(.+)\s(:)\s(.+)/, '$1').replace(/ /g, '_').toLowerCase();	
 							
 				if ( MPI2.AutoComplete.mapping[termVal] ){
@@ -57,7 +59,7 @@
 					//console.log('MOUSE2: '+ solrQStr + ' -- ' + ui.item.value + ' termVal: ' + termVal);
 					thisWidget._trigger("loadGenePage", null, { queryString: solrQStr, queryParams: solrParams});						
 					thisWidget._trigger("loadSideBar", null, { queryString: solrQStr });								
-				}				
+				}	*/			
 			},
 			close: function(event, ui){  // result dropdown list closed
 	 			//nothing to do for now
@@ -67,6 +69,32 @@
 			}			
         },
         
+		_inputValMappingForCallBack: function(input){
+			var self = this;
+			var termVal = input.replace(/^(.+)\s(:)\s(.+)/, '$3');
+			var solrField = input.replace(/^(.+)\s(:)\s(.+)/, '$1').replace(/ /g, '_').toLowerCase();	
+							
+			if ( MPI2.AutoComplete.mapping[termVal] ){
+				//$('div#geneFacet span.facetCount').text(1);
+				var geneId = MPI2.AutoComplete.mapping[termVal];
+					
+				var solrQStr = self.options.grouppingId + ':"' + geneId.replace(/:/g,"\\:") + '"';
+				var solrParams = self._makeSolrURLParams(solrQStr);					
+				//console.log('MOUSE1: '+ solrQStr + ' -- ' + ui.item.value + ' termVal: ' + termVal);
+				self._trigger("loadGenePage", null, { queryString: solrQStr, queryParams: solrParams});	
+				self._trigger("loadSideBar", null, { queryString: solrQStr, geneFound: 1 });
+			}	
+			else {				
+				// user should have selected a term other than gene Id/name/synonym
+				// fetch all MGI gene ids annotated to this term					
+				var solrQStr = solrField + ':' + '"' + termVal + '"';
+				var solrParams = self._makeSolrURLParams(solrQStr);					
+				//console.log('MOUSE2: '+ solrQStr + ' -- ' + ui.item.value + ' termVal: ' + termVal);
+				self._trigger("loadGenePage", null, { queryString: solrQStr, queryParams: solrParams});						
+				self._trigger("loadSideBar", null, { queryString: solrQStr });								
+			}					
+		},
+
         _create : function () {
             var self = this;  
             self.element.val(self._showSearchMsg());  
