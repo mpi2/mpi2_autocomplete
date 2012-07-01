@@ -183,8 +183,13 @@
 	        				table.append(tr.append(td.append(a)));	        				
 	        			}	        			
 	        		}
-	        			    			
+
+	        		$('div#pipelineFacet .facetCount').text(json.response.numFound);
+	        		if (json.response.numFound == 0 ){
+	        			table = null;
+	        		}	    			
 	        		$('div#pipelineFacet .facetCatList').html(table);
+
 	        		$('table#pipeline td[class^=procedure]').toggle(
 	        			function(){	        					
 	        				var thisClass = $(this).attr('class');	        					
