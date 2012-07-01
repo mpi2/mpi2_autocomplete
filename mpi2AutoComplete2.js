@@ -47,7 +47,7 @@
 					var solrParams = thisWidget._makeSolrURLParams(solrQStr);					
 					console.log('MOUSE1: '+ solrQStr + ' -- ' + ui.item.value + ' termVal: ' + termVal);
 					thisWidget._trigger("loadGenePage", null, { queryString: solrQStr, queryParams: solrParams});	
-					thisWidget._trigger("loadSideBar", null, { queryString: solrQStr, geneFound: thisWidget.options.matchesFound });
+					thisWidget._trigger("loadSideBar", null, { queryString: solrQStr, geneFound: 1 });
 				}	
 				else {				
 					// user should have selected a term other than gene Id/name/synonym
