@@ -239,7 +239,7 @@
 									
         							if ( thisVal.toLowerCase().indexOf(query) != -1 || query.indexOf('*') != -1 ){
         								
-        								if (fld === 'marker_name' || fld == 'marker_synonym' || fld == 'allele_synonym'){
+        								if (fld == 'marker_name' || fld == 'marker_synonym' || fld == 'allele_synonym'){
         									MPI2.AutoComplete.mapping[thisVal] = geneId;        									
         								} 
         								list.push(srcLabel[fld] + " : " +  thisVal);
