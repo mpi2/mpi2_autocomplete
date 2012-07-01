@@ -36,7 +36,7 @@
 				var thisWidget = $(this).data().mpi2AutoComplete2; // this widget												
 
 				thisWidget.options.mouseSelected = 1;
-				self._inputValMappingForCallBack(ui.item.value);
+				thisWidget._inputValMappingForCallBack(ui.item.value);
 
 				/*var termVal = ui.item.value.replace(/^(.+)\s(:)\s(.+)/, '$3');
 				var solrField = ui.item.value.replace(/^(.+)\s(:)\s(.+)/, '$1').replace(/ /g, '_').toLowerCase();	
