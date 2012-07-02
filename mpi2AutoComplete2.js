@@ -51,8 +51,11 @@
 			var solrField = input.replace(/^(.+)\s(:)\s(.+)/, '$1').replace(/ /g, '_').toLowerCase();	
 			var solrQStr = input;
 			var solrParams= null;
-	
-			if ( MPI2.AutoComplete.mapping[termVal] ){
+			
+			if { input.indexOf(':') == -1 ){
+				self._trigger("loadSideBar", null, { queryString: solrQStr });
+			}
+			else if ( MPI2.AutoComplete.mapping[termVal] ){
 				
 				var geneId = MPI2.AutoComplete.mapping[termVal];
 					
@@ -69,9 +72,7 @@
 				//console.log('MOUSE2: '+ solrQStr + ' -- ' + ui.item.value + ' termVal: ' + termVal);									
 				self._trigger("loadSideBar", null, { queryString: solrQStr, geneFound: 0 });								
 			}					
-			else {
-				self._trigger("loadSideBar", null, { queryString: solrQStr });
-			}
+			
 			self._trigger("loadGenePage", null, { queryString: solrQStr, queryParams: solrParams});	
 		},
 
