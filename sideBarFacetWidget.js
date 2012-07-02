@@ -101,7 +101,7 @@
 				var q = self.options.data.queryString;              
                 var subTypeFilter = "marker_type_str:(\"" + marker_subType + "\")";
 				
-				// refresh geneGrid with marker_subtype
+				// refresh geneGrid with selected marker_subtype
 				var callerElem = $(self.options.geneGridElem);				
 				callerElem.trigger('search', [{q: self.options.data.queryString, fq: subTypeFilter}]); 								
 			});
