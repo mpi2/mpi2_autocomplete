@@ -52,7 +52,7 @@
 			var solrQStr = input;
 			var solrParams= null;
 			
-			if { input.indexOf(':') == -1 ){
+			if ( input.indexOf(':') == -1 ){
 				self._trigger("loadSideBar", null, { queryString: solrQStr });
 			}
 			else if ( MPI2.AutoComplete.mapping[termVal] ){
