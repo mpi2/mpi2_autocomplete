@@ -124,6 +124,7 @@
             	if ( self.element.val() == '' ){
             		for( var i=0; i<facetDivs.length; i++ ){
             			$('div#' + facetDivs[i] + ' span.facetCount').text(''); 					 
+						$('div#' + facetDivs[i] + ' div.facetCatList').html('');
 					}           			
             	} 													
             });
