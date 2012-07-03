@@ -81,9 +81,10 @@
             self.element.val(self._showSearchMsg());  
             
             self.element.bind('keyup', function(e) {
-				console.log('enter');
+				console.log('keyup');
             	//self.close();           	
                 if (e.keyCode == 13) {
+					console.log('enter');
                     self.close();
                     var solrParams = self._makeSolrURLParams(self.term);
 					
