@@ -86,7 +86,7 @@
                 if (e.keyCode == 13) {
 					console.log('enter1');
                     self.close();					
-					console.log('enter2');
+					
                     var solrParams = self._makeSolrURLParams(self.term);
 					
                     // need to distinguish between enter on the input box and enter on the drop down list
@@ -98,7 +98,7 @@
 							matchesFound: self.options.matchesFound, 
 							queryString: self.term																					   
 						});  						      	
-                    }					
+                    }								
                 }}	
 
             );
