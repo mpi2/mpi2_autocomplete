@@ -83,7 +83,7 @@
             self.element.bind('keyup', function(e) {
             	//self.close();           	
                 if (e.keyCode == 13) {
-                    //self.close();
+                    self.close();
                     var solrParams = self._makeSolrURLParams(self.term);
 					
                     // need to distinguish between enter on the input box and enter on the drop down list
