@@ -82,7 +82,7 @@
             
             self.element.bind('keyup', function(e) {
 				console.log('keyup');
-            	//self.close();           	
+            	self.close();           	
                 if (e.keyCode == 13) {
 					console.log('enter1');
                     self.close();					
