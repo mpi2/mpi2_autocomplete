@@ -27,7 +27,7 @@
 			mouseSelected: 0,
 			rowShown: 50,
             minLength: 1,
-            delay: 300,            
+            delay: 100,            
 			solrBaseURL_ebi: 'http://wwwdev.ebi.ac.uk/mi/solr/',
             solrBaseURL_bytemark: 'http://ikmc.vm.bytemark.co.uk:8983/solr/', 
             acList: [],                  
@@ -81,7 +81,7 @@
             self.element.val(self._showSearchMsg());  
             
             self.element.bind('keyup', function(e) {
-            	 self.close();           	
+            	//self.close();           	
                 if (e.keyCode == 13) {
                     //self.close();
                     var solrParams = self._makeSolrURLParams(self.term);
