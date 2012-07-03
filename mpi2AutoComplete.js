@@ -76,7 +76,7 @@
 			self._trigger("loadGenePage", null, { queryString: solrQStr, queryParams: solrParams});	
 		},
 		_search: function() {
-			console.log(self.term);
+			console.log('term: ' + self.term);
 
 		},
 
@@ -85,7 +85,7 @@
             self.element.val(self._showSearchMsg());  
             
             self.element.bind('keyup', function(e) {
-				console.log('keyup');
+				//console.log('keyup');
             	   	
                 if (e.keyCode == 13) {
 					console.log('enter1');
