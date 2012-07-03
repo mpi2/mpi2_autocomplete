@@ -1,6 +1,6 @@
 (function ($) {
 	'use strict';
-    $.widget('MPI2.mpi2LeftSideBar2', {
+    $.widget('MPI2.mpi2LeftSideBar', {
         	
 	    options: {
     		mpAnnotSources: ['empress', 'mgi'],    	
