@@ -121,12 +121,12 @@
 
             // remove facet count for gene when input box is empty/changed
             self.element.keyup(function(){            	
-            	if ( self.element.val() == '' ){
+            	//if ( self.element.val() == '' ){
             		for( var i=0; i<facetDivs.length; i++ ){
             			$('div#' + facetDivs[i] + ' span.facetCount').text(''); 					 
 						$('div#' + facetDivs[i] + ' div.facetCatList').html('');
 					}           			
-            	} 													
+            	//} 													
             });
             
             $.ui.autocomplete.prototype._create.apply(this);			
