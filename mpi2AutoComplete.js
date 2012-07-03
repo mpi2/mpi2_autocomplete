@@ -75,15 +75,9 @@
 			
 			self._trigger("loadGenePage", null, { queryString: solrQStr, queryParams: solrParams});	
 		},
-		_init: function(){
-			var self = this;              
-            
-            self.element.bind('keyup', function(e) {
-				if (e.keyCode == 13) {
-					console.log('keyup - init');
-					self.close();
-				}
-			});
+		_search: function() {
+			console.log(self.term);
+
 		},
 
         _create : function () {
