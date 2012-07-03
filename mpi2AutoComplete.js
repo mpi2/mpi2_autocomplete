@@ -85,7 +85,8 @@
             	//self.close();           	
                 if (e.keyCode == 13) {
 					console.log('enter');
-                    self.close().close();
+                    self.close();
+					self.close();
 				
                     var solrParams = self._makeSolrURLParams(self.term);
 					
