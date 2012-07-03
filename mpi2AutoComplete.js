@@ -86,7 +86,7 @@
                 if (e.keyCode == 13) {
 					console.log('enter');
                     self.close();
-					self.close();
+					$('button#acSearch').click();
 				
                     var solrParams = self._makeSolrURLParams(self.term);
 					
