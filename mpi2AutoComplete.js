@@ -81,6 +81,7 @@
             self.element.val(self._showSearchMsg());  
             
             self.element.bind('keyup', function(e) {
+				console.log('enter');
             	//self.close();           	
                 if (e.keyCode == 13) {
                     self.close();
@@ -96,10 +97,7 @@
 							queryString: self.term																					   
 						});  						      	
                     }					
-                }},
-				'blur', function (e) {
-             		self.close();
-        		}
+                }}	
 
             );
             
