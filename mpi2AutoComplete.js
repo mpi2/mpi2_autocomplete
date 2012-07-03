@@ -27,7 +27,7 @@
 			mouseSelected: 0,
 			rowShown: 50,
             minLength: 1,
-            delay: 100,            
+            delay: 300,            
 			solrBaseURL_ebi: 'http://wwwdev.ebi.ac.uk/mi/solr/',
             solrBaseURL_bytemark: 'http://ikmc.vm.bytemark.co.uk:8983/solr/', 
             acList: [],                  
@@ -75,22 +75,15 @@
 			
 			self._trigger("loadGenePage", null, { queryString: solrQStr, queryParams: solrParams});	
 		},
-		_search: function() {
-			console.log('term: ' + self.term);
-
-		},
 
         _create : function () {
             var self = this;  
             self.element.val(self._showSearchMsg());  
             
             self.element.bind('keyup', function(e) {
-				//console.log('keyup');
-            	   	
+            	            	
                 if (e.keyCode == 13) {
-					console.log('enter1');
-                    self.close();					
-					
+                    self.close();
                     var solrParams = self._makeSolrURLParams(self.term);
 					
                     // need to distinguish between enter on the input box and enter on the drop down list
@@ -102,10 +95,9 @@
 							matchesFound: self.options.matchesFound, 
 							queryString: self.term																					   
 						});  						      	
-                    }								
-                }}	
-
-            );
+                    }					
+                }
+            });
             
             $('button#acSearch').click(function(){            	
             	if ( self.term == undefined ){
