@@ -216,6 +216,8 @@
            	self.options.matchesFound = matchesFound;   
 
            	$('div#geneFacet span.facetCount').text(matchesFound);
+			$('div#geneFacet .facetCatList').html(''); 
+
            	var groups   = g.groups;
            	var aFields  = self.options.searchFields;	
            	var srcLabel = self.options.srcLabel;
