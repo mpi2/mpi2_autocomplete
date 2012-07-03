@@ -1,0 +1,114 @@
+	
+input#userInput {
+        width: 450px !important;
+	font-size: 10px;
+	color: gray;	
+}
+ul.ui-autocomplete {
+	font-size: 12px;
+	height: auto;
+	max-height: 300px;
+	width: auto;
+	min-width: 250px;
+	overflow: auto;
+	padding: 10px 15px;
+}
+ul.ui-autocomplete li {
+	border-bottom: 1px dashed #D1D1D1;
+	display: block !important; 
+}
+ul.ui-autocomplete li a {
+        float: left !important;
+        text-align: left !important;
+        display: block !important;
+
+}
+
+div#content .section {
+ margin-left: 90px;
+ min-width: 650px;
+ width: auto;
+}
+
+/* left panel */
+div#leftSideBar {
+        float: left;
+        margin: 50px 0 0 30px;	
+        width: 240px;
+        border: 1px solid gray;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+}
+div#leftSideBar a {
+	text-decoration: none !important;	
+	color: #104E8B !important;
+}
+div.facetCatList {
+	display: none;
+	padding: 5px 15px 0 20px;        
+	margin: 0 5px;
+}
+div.facetCat {	
+	cursor: pointer;
+	width: 70%;
+	font-weight: bold;
+	font-size: 12px;
+	color: #333366;
+	float: left;
+	padding: 3px 0 3px 20px;	
+	background-image: url('https://github.com/mpi2/mpi2_autocomplete/raw/master/images/down.gif');
+    background-repeat: no-repeat;
+    background-position: 2px 50%; /*x,y*/	
+}
+div.facetCatUp {
+	background-image: url('https://github.com/mpi2/mpi2_autocomplete/raw/master/images/up.gif');
+}
+span.facetCount {		
+	padding: 3px 15px 3px 0;
+	float: right;
+	font-weight: bold;
+}
+table#gFacet, table#pipeline {
+	width: 100%;
+	border-collapse: collapse;
+	margin: 0 0 15px 5px;
+}
+table#gFacet td, table#pipeline td {
+	border-bottom: 1px solid #CDC8B1;
+        font-size: 10px !important;
+}
+
+table#gFacet td:nth-child(2), table#pipeline td:nth-child(2){
+	text-align: right !important;
+}
+table#gFacet td.geneSubtypeCount {
+	cursor: pointer;	
+}
+table#pipeline td[class^=procedure]{
+	cursor: pointer;	
+}
+table#pipeline td[class^=procedure] td:nth-child(1) {
+	padding-left: 5px;
+}
+table#pipeline tr[class$=_param] {
+	display: none;
+	font-size: 10px;
+	color: gray;
+	cursor: text !important;
+}
+table#pipeline tr[class$=param] td:nth-child(1) {
+	padding-left: 10px;
+}
+table#pipeline caption {
+	background-color: #CDCDC1;
+	padding: 3px 5px;
+	margin-bottom: 3px;
+	text-align: center;
+	font-size: 10px !important;
+	font-weight: bold;
+}
+.highlight {
+   color: #D17023;
+}
+
+
