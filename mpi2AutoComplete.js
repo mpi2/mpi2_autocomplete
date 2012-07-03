@@ -96,7 +96,7 @@
 							queryString: self.term																					   
 						});  						      	
                     }					
-                },
+                }},
 				'blur', function (e) {
              		self.close();
         		}
