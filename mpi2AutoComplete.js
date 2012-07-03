@@ -85,7 +85,8 @@
             	//self.close();           	
                 if (e.keyCode == 13) {
 					console.log('enter');
-                    self.close();
+                    self.close().close();
+				
                     var solrParams = self._makeSolrURLParams(self.term);
 					
                     // need to distinguish between enter on the input box and enter on the drop down list
