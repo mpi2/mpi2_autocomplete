@@ -7,7 +7,7 @@
     MPI2.AutoComplete = {};    
 	MPI2.AutoComplete.mapping = {};
 	
-    $.widget('MPI2.mpi2AutoComplete2', $.ui.autocomplete, {	
+    $.widget('MPI2.mpi2AutoComplete', $.ui.autocomplete, {	
 
     	options: {
     		source: function () {
@@ -33,7 +33,7 @@
             acList: [],                  
 			select: function(event, ui) {				
 				//console.log(ui.item.value);
-				var thisWidget = $(this).data().mpi2AutoComplete2; // this widget
+				var thisWidget = $(this).data().mpi2AutoComplete; // this widget
 				thisWidget.options.mouseSelected = 1;
 				thisWidget._inputValMappingForCallBack(ui.item.value);
 			},
