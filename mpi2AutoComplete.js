@@ -96,8 +96,12 @@
 							queryString: self.term																					   
 						});  						      	
                     }					
-                }
-            });
+                },
+				'blur', function (e) {
+             		self.close();
+        		}
+
+            );
             
             $('button#acSearch').click(function(){            	
             	if ( self.term == undefined ){
