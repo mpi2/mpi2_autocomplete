@@ -33,7 +33,7 @@
             acList: [],                  
 			select: function(event, ui) {				
 				//console.log(ui.item.value);
-				var thisWidget = $(this).data().mpi2AutoComplete2; // this widget
+				var thisWidget = $(this).data().mpi2AutoComplete; // this widget
 				thisWidget.options.mouseSelected = 1;
 				thisWidget._inputValMappingForCallBack(ui.item.value);
 			},
