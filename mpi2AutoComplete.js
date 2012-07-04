@@ -20,9 +20,10 @@
 				  			'wt':'json', 
 				  			'group':'on',					
 				  			'group.field':'mgi_accession_id', 
-				  			'defType':'edismax',
-				  			'qf':'auto_suggest', 
-				  			'fl':"marker_name,marker_synonym,marker_symbol,mgi_accession_id,allele_synonym"},	
+				  			//'defType':'edismax',
+				  			//'qf':'auto_suggest', 
+				  			//'fl':"marker_name,marker_synonym,marker_symbol,mgi_accession_id,allele_synonym"
+			},	
 			srcLabel: {},			
 			mouseSelected: 0,
 			rowShown: 50,
