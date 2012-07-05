@@ -99,6 +99,9 @@
                     if (self.options.mouseSelected == 0 ){                    	
                     	// use the value in the input box for query 
 						//console.log( '2: genefound: '+ self.options.geneFound + ' vs ' + 'sopfound: '+ self.options.sopFound);
+						
+						var pathname = window.location.pathname;
+						console.log('page: ' + pathname);
 						window.location.replace("http://dev.mousephenotype.org/search-widget-prototype-3");
                     	self._trigger("loadGenePage", null, { queryString: self.term, type: self._setSearchMode(), queryParams: solrParams });
                     	self._trigger("loadSideBar", null, { 
