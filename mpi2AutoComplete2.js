@@ -284,9 +284,11 @@
 
 			// work out search mode to trigger geneGrid or sopGrid
 			if ( self.options.geneFound != 0 ){
+				console.log(self.options.geneFound);
 				return 'gene';
 			}
 			else if ( self.options.geneFound == 0 && self.options.sopFound != 0 ){
+				console.log(self.options.geneFound ' vs ' + self.options.sopFound);
 					return 'parameter';						
 			}			
 		},	
