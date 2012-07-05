@@ -282,6 +282,8 @@
 		_setSearchMode: function(){
 			var self = this;
 
+			console.log('sop: ' + self.options.sopFound + ' --- ' + 'gene: '+ self.options.geneFound); 
+
 			// work out search mode to trigger geneGrid or sopGrid
 			if ( self.options.geneFound != 0 ){
 				console.log(self.options.geneFound);
