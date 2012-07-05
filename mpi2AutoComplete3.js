@@ -83,7 +83,7 @@
 
 			var pathname = window.location.pathname;
 			if ( pathname != '/search-widget-prototype-3' ){
-				var params = "?type=" + self._setSearchMode() + "&solrParams=" + self.term + "&geneFound=" + self.options.geneFound;
+				var params = "?type=" + self._setSearchMode() + "&solrParams=" + solrQStr + "&geneFound=" + self.options.geneFound;
 				window.location.replace("http://dev.mousephenotype.org/search-widget-prototype-3" + params );				
 			}
 
