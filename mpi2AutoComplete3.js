@@ -108,7 +108,7 @@
 						//console.log( '2: genefound: '+ self.options.geneFound + ' vs ' + 'sopfound: '+ self.options.sopFound);
 						
 						var pathname = window.location.pathname;
-						if ( pathname != '/search-widget-prototype-3' ){
+						if ( pathname.indexOf('/search-widget-prototype-3') == -1 ){
 							var params = "?type=" + self._setSearchMode() + "&solrParams=" + self.term + "&geneFound=" + self.options.geneFound;
 							window.location.replace("http://dev.mousephenotype.org/search-widget-prototype-3" + params );
 							console.log('new');
@@ -123,7 +123,11 @@
                 }
             });
             
-            $('button#acSearch').click(function(){            	
+            $('button#acSearch').click(function(){
+				if ( window.location.href != 'http://dev.mousephenotype.org/search-widget-prototype-3' ) {
+            		window.location.replace("http://dev.mousephenotype.org/search-widget-prototype-3"); 
+				}
+
             	if ( self.term == undefined ){
             		alert('Sorry, please enter your keyword in the input box for search - thank you');
             	}
