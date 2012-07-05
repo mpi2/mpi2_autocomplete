@@ -82,9 +82,11 @@
 		
 
 			var pathname = window.location.pathname;
-			if ( pathname.indexOf('/search-widget-prototype-3') == -1  ){
-				var params = "?type=" + self._setSearchMode() + "&solrParams=" + solrQStr + "&geneFound=" + self.options.geneFound;
-				window.location.replace("http://dev.mousephenotype.org/search-widget-prototype-3" + params );				
+			//if ( pathname.indexOf('/search-widget-prototype-3') == -1  ){
+			if ( pathname != '/search-widget-prototype-3' ){
+				//var params = "?type=" + self._setSearchMode() + "&solrParams=" + solrQStr + "&geneFound=" + self.options.geneFound;
+				//window.location.replace("http://dev.mousephenotype.org/search-widget-prototype-3" + params );				
+				self._trigger("redirectedSearch", null, { queryString: self.term, type: self._setSearchMode(), geneFound: self.options.geneFound });
 			}						
 
 			//console.log('1: genefound: '+ self.options.geneFound + ' vs ' + 'sopfound: '+ self.options.sopFound);
