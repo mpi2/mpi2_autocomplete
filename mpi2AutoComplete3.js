@@ -80,6 +80,13 @@
 				self._trigger("loadSideBar", null, { queryString: solrQStr });								
 			}						
 		
+
+			var pathname = window.location.pathname;
+			if ( pathname != '/search-widget-prototype-3' ){
+				var params = "?type=" + self._setSearchMode() + "&solrParams=" + self.term + "&geneFound=" + self.options.geneFound;
+				window.location.replace("http://dev.mousephenotype.org/search-widget-prototype-3" + params );				
+			}
+
 			//console.log('1: genefound: '+ self.options.geneFound + ' vs ' + 'sopfound: '+ self.options.sopFound);
 			self._trigger("loadGenePage", null, {queryString: solrQStr, type: self._setSearchMode(), queryParams: solrParams});	
 		},
@@ -106,7 +113,7 @@
 							window.location.replace("http://dev.mousephenotype.org/search-widget-prototype-3" + params );
 							console.log('new');
 						}
-						console.log('here');						
+											
                     	self._trigger("loadGenePage", null, { queryString: self.term, type: self._setSearchMode(), queryParams: solrParams });
                     	self._trigger("loadSideBar", null, { 
 							geneFound: self.options.geneFound, 
