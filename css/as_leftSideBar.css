@@ -1,6 +1,3 @@
-div#hidden_search_params{
-	display: none;
-}
 input#userInput {
     width: 450px !important;
 	font-size: 10px;
