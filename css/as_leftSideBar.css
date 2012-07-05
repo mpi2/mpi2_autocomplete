@@ -1,6 +1,8 @@
-
+div#hidden_search_params{
+	display: none;
+}
 input#userInput {
-        width: 450px !important;
+    width: 450px !important;
 	font-size: 10px;
 	color: gray;	
 }
@@ -18,26 +20,25 @@ ul.ui-autocomplete li {
 	display: block !important; 
 }
 ul.ui-autocomplete li a {
-        float: left !important;
-        text-align: left !important;
-        display: block !important;
-
+	float: left !important;
+	text-align: left !important;
+	display: block !important;
 }
 
 div#content .section {
- margin-left: 90px;
- min-width: 650px;
- width: auto;
+	margin-left: 90px;
+	min-width: 650px;
+	width: auto;
 }
 
 /* left panel */
 div#leftSideBar {
-        float: left;
-        margin: 50px 0 0 30px;	
-        width: 240px;
-        border: 1px solid gray;
-        -moz-border-radius: 3px;
-        border-radius: 3px;
+	float: left;
+	margin: 50px 0 0 30px;	
+	width: 240px;
+	border: 1px solid gray;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
 }
 div#leftSideBar a {
 	text-decoration: none !important;	
@@ -75,7 +76,7 @@ table#gFacet, table#pipeline {
 }
 table#gFacet td, table#pipeline td {
 	border-bottom: 1px solid #CDC8B1;
-        font-size: 10px !important;
+    font-size: 10px !important;
 }
 
 table#gFacet td:nth-child(2), table#pipeline td:nth-child(2){
