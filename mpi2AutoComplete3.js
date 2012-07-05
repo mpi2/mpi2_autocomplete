@@ -115,7 +115,10 @@
 							window.location.replace("http://dev.mousephenotype.org/search-widget-prototype-3");
 							console.log('new');
 						}
-											
+						else {
+							$('div#hidden_search_params').html('');
+						}								
+					
                     	self._trigger("loadGenePage", null, { queryString: self.term, type: self._setSearchMode(), queryParams: solrParams });
                     	self._trigger("loadSideBar", null, { 
 							geneFound: self.options.geneFound, 
