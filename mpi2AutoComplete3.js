@@ -102,7 +102,7 @@
 						
 						var pathname = window.location.pathname;
 						console.log('page: ' + pathname);
-						window.location.replace("http://dev.mousephenotype.org/search-widget-prototype-3");
+						//window.location.replace("http://dev.mousephenotype.org/search-widget-prototype-3");
                     	self._trigger("loadGenePage", null, { queryString: self.term, type: self._setSearchMode(), queryParams: solrParams });
                     	self._trigger("loadSideBar", null, { 
 							geneFound: self.options.geneFound, 
