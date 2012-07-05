@@ -71,7 +71,7 @@
 				self._trigger("loadSideBar", null, { queryString: solrQStr, geneFound: 0 });								
 			}					
 			
-			console.log( 'genefound: '+ self.options.geneFound + ' vs ' + 'sopfound: '+ self.options.sopFound);
+			console.log('1: genefound: '+ self.options.geneFound + ' vs ' + 'sopfound: '+ self.options.sopFound);
 			self._trigger("loadGenePage", null, {queryString: solrQStr, type: self._setSearchMode(), queryParams: solrParams});	
 		},
 
@@ -89,7 +89,7 @@
                     // ie, users use keyboard, instead of mouse, to navigate the list and hit enter to choose a term
                     if (self.options.mouseSelected == 0 ){                    	
                     	// use the value in the input box for query 
-						console.log( 'genefound: '+ self.options.geneFound + ' vs ' + 'sopfound: '+ self.options.sopFound);
+						console.log( '2: genefound: '+ self.options.geneFound + ' vs ' + 'sopfound: '+ self.options.sopFound);
                     	self._trigger("loadGenePage", null, { queryString: self.term, type: self._setSearchMode(), queryParams: solrParams });
                     	self._trigger("loadSideBar", null, { 
 							geneFound: self.options.geneFound, 
