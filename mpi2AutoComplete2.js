@@ -288,7 +288,7 @@
 			}
 			else {
 				if ( options.sopFound != 0 ){
-					return 'sop';
+					return 'parameter';
 				}		
 			}
 			return 'gene' // default
