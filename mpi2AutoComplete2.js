@@ -286,12 +286,9 @@
 			if ( self.options.geneFound != 0 ){
 				return 'gene';
 			}
-			else {
-				if ( self.options.sopFound != 0 ){
-					return 'parameter';
-				}		
-			}
-			return 'gene' // default
+			else if ( self.options.geneFound == 0 && self.options.sopFound != 0 ){
+					return 'parameter';						
+			}			
 		},	
 
         sourceCallback: function (request, response) {
