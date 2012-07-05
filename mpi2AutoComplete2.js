@@ -54,23 +54,33 @@
 				self._trigger("loadSideBar", null, { queryString: solrQStr });
 			}
 			else if ( MPI2.AutoComplete.mapping[termVal] ){
-				
+				self.options.geneFound = 1;
+				self.options.sopFound  = 0;
+
 				var geneId = MPI2.AutoComplete.mapping[termVal];
 					
 				solrQStr = self.options.grouppingId + ':"' + geneId.replace(/:/g,"\\:") + '"';
 				solrParams = self._makeSolrURLParams(solrQStr);					
 				//console.log('MOUSE1: '+ solrQStr + ' -- ' + ui.item.value + ' termVal: ' + termVal);				
+				
 				self._trigger("loadSideBar", null, { queryString: solrQStr, geneFound: 1 });
 			}	
 			else if (input.indexOf(':') != -1 ) {				
 				// user should have selected a term other than gene Id/name/synonym
 				// fetch all MGI gene ids annotated to this term					
 				solrQStr = solrField + ':' + '"' + termVal + '"';
-				solrParams = self._makeSolrURLParams(solrQStr);					
+				solrParams = self._makeSolrURLParams(solrQStr);	
+
+				if ( solrField.indexOf('parameter') != -1 ){
+					self.options.geneFound = 0;
+					self.options.sopFound  = 1;
+				}				
+				
 				//console.log('MOUSE2: '+ solrQStr + ' -- ' + ui.item.value + ' termVal: ' + termVal);									
-				self._trigger("loadSideBar", null, { queryString: solrQStr, geneFound: 0 });								
-			}					
-			
+				self._trigger("loadSideBar", null, { queryString: solrQStr });								
+			}						
+		
+			//console.log('1: genefound: '+ self.options.geneFound + ' vs ' + 'sopfound: '+ self.options.sopFound);
 			self._trigger("loadGenePage", null, {queryString: solrQStr, type: self._setSearchMode(), queryParams: solrParams});	
 		},
 
@@ -88,7 +98,7 @@
                     // ie, users use keyboard, instead of mouse, to navigate the list and hit enter to choose a term
                     if (self.options.mouseSelected == 0 ){                    	
                     	// use the value in the input box for query 
-						
+						//console.log( '2: genefound: '+ self.options.geneFound + ' vs ' + 'sopfound: '+ self.options.sopFound);
                     	self._trigger("loadGenePage", null, { queryString: self.term, type: self._setSearchMode(), queryParams: solrParams });
                     	self._trigger("loadSideBar", null, { 
 							geneFound: self.options.geneFound, 
@@ -282,8 +292,10 @@
 		_setSearchMode: function(){
 			var self = this;
 
+			//console.log('sop: ' + self.options.sopFound + ' --- ' + 'gene: '+ self.options.geneFound); 
+
 			// work out search mode to trigger geneGrid or sopGrid
-			if ( self.options.geneFound != 0 ){				
+			if ( self.options.geneFound != 0 ){
 				return 'gene';
 			}
 			else if ( self.options.geneFound == 0 && self.options.sopFound != 0 ){				
