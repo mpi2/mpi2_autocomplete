@@ -110,7 +110,7 @@
 						var pathname = window.location.pathname;
 						//if ( pathname.indexOf('/search-widget-prototype-3') == -1 ){
 						if ( pathname != '/search-widget-prototype-3' ){
-							//var params = "?type=" + self._setSearchMode() + "&solrParams=" + self.term + "&geneFound=" + self.options.geneFound;
+							//var params = "?type=" + self._setSearchMode() + "&queryString=" + self.term + "&geneFound=" + self.options.geneFound;
 							//var params = {type: self._setSearchMode(), solrParams: self.term, geneFound: self.options.geneFound};
 							//$('div#hidden_search_params').html(params);
 							//window.location.replace("http://dev.mousephenotype.org/search-widget-prototype-3" + params);							
