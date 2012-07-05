@@ -101,8 +101,10 @@
 						//console.log( '2: genefound: '+ self.options.geneFound + ' vs ' + 'sopfound: '+ self.options.sopFound);
 						
 						var pathname = window.location.pathname;
-						console.log('page: ' + pathname);
-						//window.location.replace("http://dev.mousephenotype.org/search-widget-prototype-3");
+						if ( pathname != '/search-widget-prototype-3' ){
+							window.location.replace("http://dev.mousephenotype.org/search-widget-prototype-3");
+						}
+						console.log('here');						
                     	self._trigger("loadGenePage", null, { queryString: self.term, type: self._setSearchMode(), queryParams: solrParams });
                     	self._trigger("loadSideBar", null, { 
 							geneFound: self.options.geneFound, 
