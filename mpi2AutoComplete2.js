@@ -287,7 +287,7 @@
 				return 'gene';
 			}
 			else {
-				if ( options.sopFound != 0 ){
+				if ( self.options.sopFound != 0 ){
 					return 'parameter';
 				}		
 			}
