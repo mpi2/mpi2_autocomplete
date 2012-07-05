@@ -28,7 +28,7 @@
             delay: 300,            
 			solrBaseURL_ebi: 'http://wwwdev.ebi.ac.uk/mi/solr/',
             solrBaseURL_bytemark: 'http://ikmc.vm.bytemark.co.uk:8983/solr/', 
-            acList: [],                  
+            acList: [], 			  		       
 			select: function(event, ui) {				
 				//console.log(ui.item.value);
 				var thisWidget = $(this).data().mpi2AutoComplete; // this widget
@@ -71,7 +71,7 @@
 				self._trigger("loadSideBar", null, { queryString: solrQStr, geneFound: 0 });								
 			}					
 			
-			self._trigger("loadGenePage", null, { queryString: solrQStr, queryParams: solrParams});	
+			self._trigger("loadGenePage", null, {queryString: solrQStr, type: self._setSearchMode, queryParams: solrParams});	
 		},
 
         _create : function () {
@@ -88,9 +88,9 @@
                     // ie, users use keyboard, instead of mouse, to navigate the list and hit enter to choose a term
                     if (self.options.mouseSelected == 0 ){                    	
                     	// use the value in the input box for query 
-                    	self._trigger("loadGenePage", null, { queryString: self.term, queryParams: solrParams });
+                    	self._trigger("loadGenePage", null, { queryString: self.term, type: self._setSarchMode, queryParams: solrParams });
                     	self._trigger("loadSideBar", null, { 
-							matchesFound: self.options.matchesFound, 
+							geneFound: self.options.geneFound, 
 							queryString: self.term																					   
 						});  						      	
                     }					
@@ -182,7 +182,9 @@
 		_parseSopJson: function(json, query) {
 			//console.log(json);
 			var self = this;
-			var matchesFound = json.response.numFound;			
+			var matchesFound = json.response.numFound;
+			self.options.sopFound = matchesFound;
+		
 			$('div#pipelineFacet span.facetCount').text(matchesFound);
 			$('div#pipelineFacet .facetCatList').html(''); 
 
@@ -211,7 +213,7 @@
            	var maxRow = json.responseHeader.params.rows;
            	var matchesFound = g.matches;
 			//console.log('found: '+ matchesFound);
-           	self.options.matchesFound = matchesFound;   
+           	self.options.geneFound = matchesFound;   
 
            	$('div#geneFacet span.facetCount').text(matchesFound);
 			$('div#geneFacet .facetCatList').html(''); 
@@ -276,6 +278,21 @@
         	return a;
         },	
         
+		_setSearchMode: function(){
+			var self = this;
+
+			// work out search mode to trigger geneGrid or sopGrid
+			if ( self.options.geneFound != 0 ){
+				return 'gene';
+			}
+			else {
+				if ( options.sopFound != 0 ){
+					return 'sop';
+				}		
+			}
+			return 'gene' // default
+		},	
+
         sourceCallback: function (request, response) {
         	var self = this;
         	
