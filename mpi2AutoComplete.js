@@ -19,7 +19,7 @@
 				  			'rows':50, 
 				  			'wt':'json', 
 				  			'group':'on',					
-				  			'group.field':'mgi_accession_id'				  			
+				  			'group.field':'mgi_accession_id'
 			},	
 			srcLabel: {},			
 			mouseSelected: 0,
@@ -28,7 +28,7 @@
             delay: 300,            
 			solrBaseURL_ebi: 'http://wwwdev.ebi.ac.uk/mi/solr/',
             solrBaseURL_bytemark: 'http://ikmc.vm.bytemark.co.uk:8983/solr/', 
-            acList: [],                  
+            acList: [], 			  		       
 			select: function(event, ui) {				
 				//console.log(ui.item.value);
 				var thisWidget = $(this).data().mpi2AutoComplete; // this widget
@@ -71,7 +71,7 @@
 				self._trigger("loadSideBar", null, { queryString: solrQStr, geneFound: 0 });								
 			}					
 			
-			self._trigger("loadGenePage", null, { queryString: solrQStr, queryParams: solrParams});	
+			self._trigger("loadGenePage", null, {queryString: solrQStr, type: self._setSearchMode(), queryParams: solrParams});	
 		},
 
         _create : function () {
@@ -88,9 +88,10 @@
                     // ie, users use keyboard, instead of mouse, to navigate the list and hit enter to choose a term
                     if (self.options.mouseSelected == 0 ){                    	
                     	// use the value in the input box for query 
-                    	self._trigger("loadGenePage", null, { queryString: self.term, queryParams: solrParams });
+						
+                    	self._trigger("loadGenePage", null, { queryString: self.term, type: self._setSearchMode(), queryParams: solrParams });
                     	self._trigger("loadSideBar", null, { 
-							matchesFound: self.options.matchesFound, 
+							geneFound: self.options.geneFound, 
 							queryString: self.term																					   
 						});  						      	
                     }					
@@ -122,6 +123,7 @@
             	if ( self.element.val() == '' ){
             		for( var i=0; i<facetDivs.length; i++ ){
             			$('div#' + facetDivs[i] + ' span.facetCount').text(''); 					 
+						$('div#' + facetDivs[i] + ' div.facetCatList').html('');
 					}           			
             	} 													
             });
@@ -181,7 +183,9 @@
 		_parseSopJson: function(json, query) {
 			//console.log(json);
 			var self = this;
-			var matchesFound = json.response.numFound;			
+			var matchesFound = json.response.numFound;
+			self.options.sopFound = matchesFound;
+		
 			$('div#pipelineFacet span.facetCount').text(matchesFound);
 			$('div#pipelineFacet .facetCatList').html(''); 
 
@@ -205,14 +209,16 @@
 
 		_parseGeneGroupedJson: function (json, query) {
 			var self = this;              
-			console.log(json);
+			//console.log(query);
            	var g = json.grouped[self.options.grouppingId]; 
            	var maxRow = json.responseHeader.params.rows;
            	var matchesFound = g.matches;
-			console.log('found: '+ matchesFound);
-           	self.options.matchesFound = matchesFound;   
+			//console.log('found: '+ matchesFound);
+           	self.options.geneFound = matchesFound;   
 
            	$('div#geneFacet span.facetCount').text(matchesFound);
+			$('div#geneFacet .facetCatList').html(''); 
+
            	var groups   = g.groups;
            	var aFields  = self.options.searchFields;	
            	var srcLabel = self.options.srcLabel;
@@ -273,6 +279,20 @@
         	return a;
         },	
         
+		_setSearchMode: function(){
+			var self = this;
+
+			// work out search mode to trigger geneGrid or sopGrid
+			if ( self.options.geneFound != 0 ){
+				console.log(self.options.geneFound);
+				return 'gene';
+			}
+			else if ( self.options.geneFound == 0 && self.options.sopFound != 0 ){
+				console.log(self.options.geneFound + ' vs ' + self.options.sopFound);
+					return 'parameter';						
+			}			
+		},	
+
         sourceCallback: function (request, response) {
         	var self = this;
         	
