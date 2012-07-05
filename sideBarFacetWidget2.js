@@ -103,7 +103,10 @@
 				
 				// refresh geneGrid with selected marker_subtype
 				var callerElem = $(self.options.geneGridElem);				
-				callerElem.trigger('search', [{q: self.options.data.queryString, fq: subTypeFilter}]); 								
+				callerElem.trigger('search', [{type: 'gene', 
+											   solrParams: {q: self.options.data.queryString, fq: subTypeFilter}
+											  }
+											 ]); 								
 			});
 		},
 
