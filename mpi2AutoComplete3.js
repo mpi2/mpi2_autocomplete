@@ -7,7 +7,7 @@
     MPI2.AutoComplete = {};    
 	MPI2.AutoComplete.mapping = {};
 	
-    $.widget('MPI2.mpi2AutoComplete', jQuery.ui.autocomplete, {	
+    $.widget('MPI2.mpi2AutoComplete', $.ui.autocomplete, {	
 
     	options: {
     		source: function () {
@@ -162,7 +162,7 @@
             	} 													
             });
             
-            jQuery.ui.autocomplete.prototype._create.apply(this);			
+            $.ui.autocomplete.prototype._create.apply(this);			
         },   
 
         _showSearchMsg: function(){
@@ -188,7 +188,7 @@
                 this.options.solrBaseURL_bytemark = value;
                 break;
             }
-            jQuery.ui.autocomplete.prototype._setOption.apply(this, arguments);
+            $.ui.autocomplete.prototype._setOption.apply(this, arguments);
         },
         
 		// the loops thru each item in the list
