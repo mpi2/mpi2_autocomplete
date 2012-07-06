@@ -7,7 +7,7 @@
     MPI2.AutoComplete = {};    
 	MPI2.AutoComplete.mapping = {};
 	
-    $.widget('MPI2.mpi2AutoComplete', $.ui.autocomplete, {	
+    $.widget('MPI2.mpi2AutoComplete', jQuery.ui.autocomplete, {	
 
     	options: {
     		source: function () {
@@ -26,8 +26,8 @@
 			rowShown: 50,
             minLength: 1,
             delay: 300,            
-		    search_pathname: '/search-widget-prototype-2',
-			solrBaseURL_ebi: 'http://wwwdev.ebi.ac.uk/mi/solr/',
+	    search_pathname: '/search-widget-prototype-2',
+	    solrBaseURL_ebi: 'http://wwwdev.ebi.ac.uk/mi/solr/',
             solrBaseURL_bytemark: 'http://ikmc.vm.bytemark.co.uk:8983/solr/', 
             acList: [], 			  		       
 			select: function(event, ui) {				
@@ -162,7 +162,7 @@
             	} 													
             });
             
-            $.ui.autocomplete.prototype._create.apply(this);			
+            jQuery.ui.autocomplete.prototype._create.apply(this);			
         },   
 
         _showSearchMsg: function(){
@@ -188,7 +188,7 @@
                 this.options.solrBaseURL_bytemark = value;
                 break;
             }
-            $.ui.autocomplete.prototype._setOption.apply(this, arguments);
+            jQuery.ui.autocomplete.prototype._setOption.apply(this, arguments);
         },
         
 		// the loops thru each item in the list
