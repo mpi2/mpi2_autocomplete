@@ -26,6 +26,7 @@
 			rowShown: 50,
             minLength: 1,
             delay: 300,            
+		    search_pathname: '/search-widget-prototype-2',
 			solrBaseURL_ebi: 'http://wwwdev.ebi.ac.uk/mi/solr/',
             solrBaseURL_bytemark: 'http://ikmc.vm.bytemark.co.uk:8983/solr/', 
             acList: [], 			  		       
@@ -83,7 +84,7 @@
 
 			var pathname = window.location.pathname;
 			//if ( pathname.indexOf('/search-widget-prototype-3') == -1  ){
-			if ( pathname != '/search-widget-prototype-2' ){
+			if ( pathname != self.options.search_pathname ){
 				//var params = "?type=" + self._setSearchMode() + "&solrParams=" + solrQStr + "&geneFound=" + self.options.geneFound;
 				//window.location.replace("http://dev.mousephenotype.org/search-widget-prototype-3" + params );				
 				self._trigger("redirectedSearch", null, { queryString: solrQStr, type: self._setSearchMode(), geneFound: self.options.geneFound });
@@ -111,7 +112,7 @@
 						
 						var pathname = window.location.pathname;
 						//if ( pathname.indexOf('/search-widget-prototype-3') == -1 ){
-						if ( pathname != '/search-widget-prototype-2' ){
+						if ( pathname != self.options.search_pathname ){
 							//var params = "?type=" + self._setSearchMode() + "&queryString=" + self.term + "&geneFound=" + self.options.geneFound;
 							//var params = {type: self._setSearchMode(), solrParams: self.term, geneFound: self.options.geneFound};
 							//$('div#hidden_search_params').html(params);
