@@ -34,17 +34,15 @@
 					function(){
 						$(this).addClass('facetCatUp');
 						$(this).parent().siblings('.facetCatList').show();
-						//console.log('q: '+ self.options.data.queryString);
-						var facetId = $(this).parent().parent().attr('id');
-						// also triggers SOP grid	
 						
-						var solrSrchParams = {q: self.options.data.queryString};
-						console.log('facet id: '+ facetId);
-						if (facetId == 'pipelineFacet'){
-							console.log('1: ');	console.log(solrSrchParams);	
+						var facetId = $(this).parent().parent().attr('id');
+
+						// also triggers SOP/gene grid depending on what facet is clicked							
+						var solrSrchParams = {q: self.options.data.queryString};						
+						if (facetId == 'pipelineFacet'){							
 							self.options.facetId2SearchType[facetId].params.q = solrSrchParams.q;
                             solrSrchParams = self.options.facetId2SearchType[facetId].params;																				
-							console.log('2: ');	console.log(solrSrchParams);							
+													
 						}
 						$('#mpi2-search').trigger('search', [{type: self.options.facetId2SearchType[facetId].type, solrParams: solrSrchParams}]); 					
 					},
