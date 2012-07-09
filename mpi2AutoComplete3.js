@@ -345,8 +345,7 @@
     		
     		var self = this;
     		var queryParams = {    				
-    			'fq': 'pipeline_stable_id=IMPC_001',    			
-    			//'fl': 'parameter_name,procedure_name',
+    			'fq': 'pipeline_stable_id=IMPC_001',    			    			
     			'qf': 'auto_suggest',
     			'defType': 'edismax',
     			'wt': 'json',
