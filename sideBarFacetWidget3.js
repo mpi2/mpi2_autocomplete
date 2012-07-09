@@ -29,27 +29,7 @@
     	
 	    // want to use _init instead of _create to allow the widget being called each time
 	    _init : function () {
-	    	var self = this;  
-	    	/*$('div#phenotypeFacet .facetCat, div#geneFacet .facetCat, div#pipelineFacet .facetCat').toggle(
-					function(){
-						$(this).addClass('facetCatUp');
-						$(this).parent().siblings('.facetCatList').show();
-						
-						var facetId = $(this).parent().parent().attr('id');
-
-						// also triggers SOP/gene grid depending on what facet is clicked							
-						var solrSrchParams = {q: self.options.data.queryString};						
-						if (facetId == 'pipelineFacet'){							
-							self.options.facetId2SearchType[facetId].params.q = solrSrchParams.q;
-                            solrSrchParams = self.options.facetId2SearchType[facetId].params;	
-						}
-						$('#mpi2-search').trigger('search', [{type: self.options.facetId2SearchType[facetId].type, solrParams: solrSrchParams}]); 					
-					},
-					function(){
-						$(this).removeClass('facetCatUp');
-						$(this).parent().siblings('.facetCatList').hide();
-					}
-			);*/	
+	    	var self = this;  	    	
 			$('div.facetCat').click(function(){
 					
 				if ( $(this).parent().siblings('.facetCatList').is(':visible') ){					
@@ -93,10 +73,7 @@
 				'rows': 0,
 				'facet': 'on',								
 				'facet.mincount': 1,
-				'facet.field': 'marker_type_str',
-                //'qf': 'auto_suggest',
-				//'defType': 'edismax',									
-				//'wt': 'json',				
+				'facet.field': 'marker_type_str',               		
 				'q': self.options.data.queryString
 			};
 	    	$.ajax({ 				 					
