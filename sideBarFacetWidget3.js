@@ -55,13 +55,13 @@
 				if ( $(this).parent().siblings('.facetCatList').is(':visible') ){					
 					$('div.facetCatList').hide(); // collapse all other facets 
 					$(this).parent().siblings('.facetCatList').hide(); // hide itself
+					$(this).removeClass('facetCatUp');
 				}
 				else {
 					$('div.facetCatList').hide(); // collapse all other facets 
 					$(this).parent().siblings('.facetCatList').show(); // hide itself
-				}
-				/*$(this).addClass('facetCatUp');
-				$(this).parent().siblings('.facetCatList').show();
+					$(this).addClass('facetCatUp');
+				}				
 						
 				var facetId = $(this).parent().parent().attr('id');
 
@@ -71,13 +71,9 @@
 					self.options.facetId2SearchType[facetId].params.q = solrSrchParams.q;
                     solrSrchParams = self.options.facetId2SearchType[facetId].params;	
 				}
-				$('#mpi2-search').trigger('search', [{type: self.options.facetId2SearchType[facetId].type, solrParams: solrSrchParams}]); 					
-			
-					function(){
-						$(this).removeClass('facetCatUp');
-						$(this).parent().siblings('.facetCatList').hide();
-					}*/
+				$('#mpi2-search').trigger('search', [{type: self.options.facetId2SearchType[facetId].type, solrParams: solrSrchParams}]); 								
 			});			    		    	
+
 	    	// gene subtype facet
 	    	self._doGeneSubTypeFacet();	
 	    	
