@@ -323,11 +323,11 @@
                        
  	    	var q = request.term.replace(/^\s+|\s+$/g, ""); // trim away leading/trailing spaces 	    	
  	    	q = q.toLowerCase(); // so that capitalized search would work as solr analyzer uses only lowercase
-
+				
 			if ( q == '*' ){
-				q = '*:*';
+				q = '*:*'; // when user types *
 			}	
-
+			console.log('query: ' + q);
  	    	self.options.queryParams_gene.q = q;	
 			
 			//console.log(self.options.solrURL +'?'+ self._makeSolrURLParams(q));
