@@ -52,6 +52,8 @@
     	
 	    // want to use _init instead of _create to allow the widget being called each time
 	    _init : function () {
+			var self = this;
+
 	    	// gene subtype facet
 	    	self._doGeneSubTypeFacet();	
 	    	
