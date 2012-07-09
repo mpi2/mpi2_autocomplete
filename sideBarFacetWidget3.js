@@ -24,7 +24,10 @@
 					function(){
 						$(this).addClass('facetCatUp');
 						$(this).parent().siblings('.facetCatList').show();
-						console.log('q: '+ self.options.data.queryString);	
+						//console.log('q: '+ self.options.data.queryString);	
+						// also triggers SOP grid
+						$('#mpi2-search').trigger('search', [{type: data.type, solrParams: {q: data.queryString}}]); 
+						
 					},
 					function(){
 						$(this).removeClass('facetCatUp');
