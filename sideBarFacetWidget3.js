@@ -39,10 +39,12 @@
 						// also triggers SOP grid	
 						
 						var solrSrchParams = {q: self.options.data.queryString};
+						console.log('facet id: '+ facetId);
 						if (facetId == 'pipelineFacet'){
+							console.log('1: ' + solrSrchParams);	
 							solrSrchParams = self.options.facetId2SearchType[facetId][params];
 							solrSrchParams.q = self.options.data.queryString;								
-							console.log(solrSrchParams);								
+							console.log('2: ' + solrSrchParams);								
 						}
 						$('#mpi2-search').trigger('search', [{type: self.options.facetId2SearchType[facetId][type], solrParams: solrSrchParams}]); 					
 					},
