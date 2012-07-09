@@ -12,12 +12,11 @@
 			solrBaseURL_bytemark: 'http://ikmc.vm.bytemark.co.uk:8983/solr/',
 			facetId2SearchType: {
 								 geneFacet : {type: 'gene', params: {}},
-								 pipelineFacet: {type: 'parameter', params: {'fq': 'pipeline_stable_id=IMPC_001',    			
-    																		 //'fl': 'parameter_name,procedure_name',
+								 pipelineFacet: {type: 'parameter', params: {'fq': 'pipeline_stable_id=IMPC_001', 
     																		 'qf': 'auto_suggest',
     																		 'defType': 'edismax',
     																		 'wt': 'json',
-    			                                                             'rows': 50,
+    			                                                             'rows': 50
     																		 }}
 								}
 	    },
