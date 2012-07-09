@@ -84,11 +84,11 @@
 
 			var pathname = window.location.pathname;			
 			if ( pathname != self.options.search_pathname ){				
-				self._trigger("redirectedSearch", null, { queryString: solrQStr, type: self._setSearchMode(), geneFound: self.options.geneFound });
+				self._trigger("redirectedSearch", null, { queryString: solrQStr, type: self._setSearchMode(), explaination: input, geneFound: self.options.geneFound });
 			}						
 
 			//console.log('1: genefound: '+ self.options.geneFound + ' vs ' + 'sopfound: '+ self.options.sopFound);
-			self._trigger("loadGenePage", null, {queryString: solrQStr, type: self._setSearchMode(), queryParams: solrParams});	
+			self._trigger("loadGenePage", null, {queryString: solrQStr, type: self._setSearchMode(), queryParams: solrParams, explaination: input });	
 		},
 
         _create : function () {
