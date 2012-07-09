@@ -3,7 +3,6 @@ input#userInput {
 	font-size: 10px;
 	color: gray;	
 }
-
 ul.ui-autocomplete {
 	font-size: 12px;
 	height: auto;
@@ -22,9 +21,7 @@ ul.ui-autocomplete li a {
 	text-align: left !important;
 	display: block !important;
 }
-
 div#content .section {
-	margin-left: 90px;
 	min-width: 650px;
 	width: auto;
 }
