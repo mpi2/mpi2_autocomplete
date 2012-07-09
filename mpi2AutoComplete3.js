@@ -326,6 +326,7 @@
 				
 			if ( q == '*' ){
 				q = '*:*'; // when user types *
+                self.options.queryParams_gene.rows=10;
 			}	
 			
  	    	self.options.queryParams_gene.q = q;	
