@@ -47,21 +47,18 @@
                     solrSrchParams = self.options.facetId2SearchType[facetId].params;	
 				}
 				$('#mpi2-search').trigger('search', [{type: self.options.facetId2SearchType[facetId].type, solrParams: solrSrchParams}]); 								
-			});			    		    	
-
+			});			    		    		    	
+    	},
+    	
+	    // want to use _init instead of _create to allow the widget being called each time
+	    _init : function () {
 	    	// gene subtype facet
 	    	self._doGeneSubTypeFacet();	
 	    	
 	    	// fire off solr query
 	    	//self._doMPFacet();
 
-			self._doPipelineFacet();
-    	},
-    	
-	    // want to use _init instead of _create to allow the widget being called each time
-	    _init : function () {
-	    	
-	    	
+			self._doPipelineFacet();	    	
 	    },
 
 		_doGeneSubTypeFacet: function(){
