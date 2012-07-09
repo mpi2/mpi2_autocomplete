@@ -121,7 +121,7 @@
                 }
             });
             
-            $('button#acSearch').click(function(){				
+            $('input#acSearch').click(function(){				
             	if ( self.term == undefined ){
             		alert('Sorry, please enter your keyword in the input box for search - thank you');
             	}
