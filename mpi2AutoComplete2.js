@@ -26,7 +26,8 @@
 			rowShown: 50,
             minLength: 1,
             delay: 300,            
-			solrBaseURL_ebi: 'http://wwwdev.ebi.ac.uk/mi/solr/',
+	    	search_pathname: '/search-widget-prototype-2',
+	    	solrBaseURL_ebi: 'http://wwwdev.ebi.ac.uk/mi/solr/',
             solrBaseURL_bytemark: 'http://ikmc.vm.bytemark.co.uk:8983/solr/', 
             acList: [], 			  		       
 			select: function(event, ui) {				
@@ -80,6 +81,12 @@
 				self._trigger("loadSideBar", null, { queryString: solrQStr });								
 			}						
 		
+
+			var pathname = window.location.pathname;			
+			if ( pathname != self.options.search_pathname ){				
+				self._trigger("redirectedSearch", null, { queryString: solrQStr, type: self._setSearchMode(), geneFound: self.options.geneFound });
+			}						
+
 			//console.log('1: genefound: '+ self.options.geneFound + ' vs ' + 'sopfound: '+ self.options.sopFound);
 			self._trigger("loadGenePage", null, {queryString: solrQStr, type: self._setSearchMode(), queryParams: solrParams});	
 		},
@@ -99,6 +106,12 @@
                     if (self.options.mouseSelected == 0 ){                    	
                     	// use the value in the input box for query 
 						//console.log( '2: genefound: '+ self.options.geneFound + ' vs ' + 'sopfound: '+ self.options.sopFound);
+						
+						var pathname = window.location.pathname;						
+						if ( pathname != self.options.search_pathname ){											
+							self._trigger("redirectedSearch", null, { queryString: self.term, type: self._setSearchMode(), geneFound: self.options.geneFound });
+						}										
+					
                     	self._trigger("loadGenePage", null, { queryString: self.term, type: self._setSearchMode(), queryParams: solrParams });
                     	self._trigger("loadSideBar", null, { 
 							geneFound: self.options.geneFound, 
@@ -108,7 +121,7 @@
                 }
             });
             
-            $('button#acSearch').click(function(){            	
+            $('button#acSearch').click(function(){				
             	if ( self.term == undefined ){
             		alert('Sorry, please enter your keyword in the input box for search - thank you');
             	}
