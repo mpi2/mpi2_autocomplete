@@ -327,7 +327,7 @@
 			if ( q == '*' ){
 				q = '*:*'; // when user types *
 			}	
-			console.log('query: ' + q);
+			
  	    	self.options.queryParams_gene.q = q;	
 			
 			//console.log(self.options.solrURL +'?'+ self._makeSolrURLParams(q));
