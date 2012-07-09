@@ -24,12 +24,7 @@
 
     	_create: function(){
     		// execute only once 	
-    		
-    	},
-    	
-	    // want to use _init instead of _create to allow the widget being called each time
-	    _init : function () {
-	    	var self = this;  	    	
+    		var self = this;  	    	
 			$('div.facetCat').click(function(){
 				console.log('toggle test');	
 				if ( $(this).parent().siblings('.facetCatList').is(':visible') ){					
@@ -61,6 +56,11 @@
 	    	//self._doMPFacet();
 
 			self._doPipelineFacet();
+    	},
+    	
+	    // want to use _init instead of _create to allow the widget being called each time
+	    _init : function () {
+	    	
 	    	
 	    },
 
