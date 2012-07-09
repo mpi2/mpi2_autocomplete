@@ -13,7 +13,7 @@
 			facetId2SearchType: {
 								 geneFacet : {type: 'gene', params: {}},
 								 pipelineFacet: {type: 'parameter', params: {'fq': 'pipeline_stable_id=IMPC_001',    			
-    																		 'fl': 'parameter_name,procedure_name',
+    																		 //'fl': 'parameter_name,procedure_name',
     																		 'qf': 'auto_suggest',
     																		 'defType': 'edismax',
     																		 'wt': 'json',
@@ -46,7 +46,7 @@
 					self.options.facetId2SearchType[facetId].params.q = solrSrchParams.q;
                     solrSrchParams = self.options.facetId2SearchType[facetId].params;	
 				}
-				$('#mpi2-search').trigger('search', [{type: self.options.facetId2SearchType[facetId].type, solrParams: solrSrchParams}]); 								
+				$('#mpi2-search').trigger('search', [{type: self.options.facetId2SearchType[facetId].type, solrParams: solrSrchParams }]); 								
 			});			    		    		    	
     	},
     	
