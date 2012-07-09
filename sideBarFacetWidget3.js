@@ -40,8 +40,8 @@
 						
 						var solrSrchParams = {q: self.options.data.queryString};
 						if (facetId == 'pipelineFacet'){
-							self.options.facetId2SearchType[facetId][params].q = self.options.data.queryString;
 							solrSrchParams = self.options.facetId2SearchType[facetId][params];
+							solrSrchParams.q = self.options.data.queryString;								
 							console.log(solrSrchParams);								
 						}
 						$('#mpi2-search').trigger('search', [{type: self.options.facetId2SearchType[facetId][type], solrParams: solrSrchParams}]); 					
