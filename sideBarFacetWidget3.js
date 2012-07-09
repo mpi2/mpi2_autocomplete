@@ -26,7 +26,7 @@
     		// execute only once 	
     		var self = this;  	    	
 			$('div.facetCat').click(function(){
-				console.log('toggle test');	
+				
 				if ( $(this).parent().siblings('.facetCatList').is(':visible') ){					
 					$('div.facetCatList').hide(); // collapse all other facets 
 					$(this).parent().siblings('.facetCatList').hide(); // hide itself
