@@ -42,11 +42,11 @@
 						console.log('facet id: '+ facetId);
 						if (facetId == 'pipelineFacet'){
 							console.log('1: ');	console.log(solrSrchParams);	
-							solrSrchParams = self.options.facetId2SearchType[facetId].param;
+							solrSrchParams = self.options.facetId2SearchType[facetId].params;
 																								
 							console.log('2: ');	console.log(solrSrchParams);							
 						}
-						$('#mpi2-search').trigger('search', [{type: self.options.facetId2SearchType[facetId][type], solrParams: solrSrchParams}]); 					
+						$('#mpi2-search').trigger('search', [{type: self.options.facetId2SearchType[facetId].type, solrParams: solrSrchParams}]); 					
 					},
 					function(){
 						$(this).removeClass('facetCatUp');
