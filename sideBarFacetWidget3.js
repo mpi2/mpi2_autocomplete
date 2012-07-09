@@ -9,11 +9,15 @@
     		tissueFacet: {},
     		pipelineFacet: {},
 			solrBaseURL_ebi: 'http://wwwdev.ebi.ac.uk/mi/solr/',
-			solrBaseURL_bytemark: 'http://ikmc.vm.bytemark.co.uk:8983/solr/'
+			solrBaseURL_bytemark: 'http://ikmc.vm.bytemark.co.uk:8983/solr/',
+			facetId2SearchType: {
+								 geneFacet : 'gene',
+								 pipelineFacet: 'parameter'
+								}
 	    },
 
     	_create: function(){
-    		// execute only once 
+    		// execute only once 	
     		
     	},
     	
@@ -24,10 +28,10 @@
 					function(){
 						$(this).addClass('facetCatUp');
 						$(this).parent().siblings('.facetCatList').show();
-						//console.log('q: '+ self.options.data.queryString);	
+						//console.log('q: '+ self.options.data.queryString);
+						var facetId = $(this).parent().parent().attr('id');
 						// also triggers SOP grid
-						$('#mpi2-search').trigger('search', [{type: data.type, solrParams: {q: data.queryString}}]); 
-						
+						$('#mpi2-search').trigger('search', [{type: self.options.facetId2SearchType[facetId], solrParams: {q: self.options.data.queryString}}]); 					
 					},
 					function(){
 						$(this).removeClass('facetCatUp');
