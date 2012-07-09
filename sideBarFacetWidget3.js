@@ -7,12 +7,18 @@
     		geneFacet: {},
     		phenotypeFacet: {},
     		tissueFacet: {},
-    		pipelineFacet: {},
+    		pipelineFacet: {},			
 			solrBaseURL_ebi: 'http://wwwdev.ebi.ac.uk/mi/solr/',
 			solrBaseURL_bytemark: 'http://ikmc.vm.bytemark.co.uk:8983/solr/',
 			facetId2SearchType: {
-								 geneFacet : 'gene',
-								 pipelineFacet: 'parameter'
+								 geneFacet : {type: 'gene', params: {}}.
+								 pipelineFacet: {type: 'parameter', params: {'fq': 'pipeline_stable_id=IMPC_001',    			
+    																		 'fl': 'parameter_name,procedure_name',
+    																		 'qf': 'auto_suggest',
+    																		 'defType': 'edismax',
+    																		 'wt': 'json',
+    			                                                             'rows': 50,
+    																		 }}
 								}
 	    },
 
@@ -30,8 +36,14 @@
 						$(this).parent().siblings('.facetCatList').show();
 						//console.log('q: '+ self.options.data.queryString);
 						var facetId = $(this).parent().parent().attr('id');
-						// also triggers SOP grid
-						$('#mpi2-search').trigger('search', [{type: self.options.facetId2SearchType[facetId], solrParams: {q: self.options.data.queryString}}]); 					
+						// also triggers SOP grid	
+						
+						var solrSrchParams = {q: self.options.data.queryString};
+						if (facetId == 'pipelineFacet'){
+							self.options.facetId2SearchType[facetId][params].q = self.options.data.queryString;
+							solrSrchParams = self.options.facetId2SearchType[facetId][params];							
+						}
+						$('#mpi2-search').trigger('search', [{type: self.options.facetId2SearchType[facetId][type], solrParams: solrSrchParams}]); 					
 					},
 					function(){
 						$(this).removeClass('facetCatUp');
@@ -299,7 +311,7 @@
 	    	
 	    },
 	    	    
-	    _composeSolrParams: function(){
+	    _composeSolrParams: function(oParams){
 	    	var self = this;
 	    	var p = self.options.queryParams;
 	    	var aSolrParams = [];
