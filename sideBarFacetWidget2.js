@@ -24,6 +24,7 @@
 					function(){
 						$(this).addClass('facetCatUp');
 						$(this).parent().siblings('.facetCatList').show();
+						//console.log('q: '+ self.options.data.queryString);	
 					},
 					function(){
 						$(this).removeClass('facetCatUp');
