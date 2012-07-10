@@ -5,6 +5,7 @@ input#userInput {
 }
 button#acSearch {	
 	background: none;
+	border: none;
 }
 button#acSearch img {
 	height: 15px;	
