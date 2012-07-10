@@ -82,8 +82,8 @@ table#gFacet, table#pipeline {
 table#gFacet td, table#pipeline td {
 	border-bottom: 1px solid #CDC8B1;
     font-size: 10px !important;
+    padding: 0;
 }
-
 table#gFacet td:nth-child(2), table#pipeline td:nth-child(2){
 	text-align: right !important;
 }
