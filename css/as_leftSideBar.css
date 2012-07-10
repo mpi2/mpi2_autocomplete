@@ -2,6 +2,8 @@ input#userInput {
     width: 450px !important;
 	font-size: 10px;
 	color: gray;	
+}
+div#bannerSearch input#userInput {
 	margin-left: 100px;
 }
 button#acSearch {	
