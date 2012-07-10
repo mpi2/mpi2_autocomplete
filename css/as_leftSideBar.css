@@ -33,13 +33,13 @@ ul.ui-autocomplete li a {
 }
 div#content .section {
 	min-width: 650px;
-	width: auto;
+	/*width: auto;*/
 }
 
 /* left panel */
 div#leftSideBar {
 	float: left;
-	margin: 50px 0 0 30px;	
+	margin: 0 30px 0 0;  /*50px 0 0 30px;	*/
 	width: 240px;
 	border: 1px solid gray;
 	-moz-border-radius: 3px;
