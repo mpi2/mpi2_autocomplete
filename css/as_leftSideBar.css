@@ -6,6 +6,7 @@ input#userInput {
 button#acSearch {	
 	background: none;
 	border: none;
+	cursor: pointer;
 }
 button#acSearch img {
 	height: 20px;
