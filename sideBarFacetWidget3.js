@@ -25,15 +25,16 @@
     		// execute only once 	
     		var self = this;  	    	
 			$('div.facetCat').click(function(){
-				
+				$('div.facetCat').removeClass('facetCatUp');
 				if ( $(this).parent().siblings('.facetCatList').is(':visible') ){					
-					$('div.facetCatList').hide(); // collapse all other facets 
+					$('div.facetCatList').hide(); // collapse all other facets                     
 					$(this).parent().siblings('.facetCatList').hide(); // hide itself
 					$(this).removeClass('facetCatUp');
 				}
 				else {
 					$('div.facetCatList').hide(); // collapse all other facets 
 					$(this).parent().siblings('.facetCatList').show(); // hide itself
+					
 					$(this).addClass('facetCatUp');
 				}				
 						
