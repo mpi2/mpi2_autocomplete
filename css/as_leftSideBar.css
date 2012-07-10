@@ -2,6 +2,7 @@ input#userInput {
     width: 450px !important;
 	font-size: 10px;
 	color: gray;	
+	margin-left: 100px;
 }
 button#acSearch {	
 	background: none;
