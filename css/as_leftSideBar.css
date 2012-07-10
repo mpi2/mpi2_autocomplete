@@ -3,6 +3,13 @@ input#userInput {
 	font-size: 10px;
 	color: gray;	
 }
+button#acSearch {	
+	background: none;
+}
+button#acSearch img {
+	height: 15px;	
+	margin-right: 5px;
+}
 ul.ui-autocomplete {
 	font-size: 12px;
 	height: auto;
