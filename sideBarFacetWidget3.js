@@ -28,13 +28,11 @@
 				$('div.facetCat').removeClass('facetCatUp');
 				if ( $(this).parent().siblings('.facetCatList').is(':visible') ){					
 					$('div.facetCatList').hide(); // collapse all other facets                     
-					$(this).parent().siblings('.facetCatList').hide(); // hide itself
-					//$(this).removeClass('facetCatUp');
+					$(this).parent().siblings('.facetCatList').hide(); // hide itself					
 				}
 				else {
 					$('div.facetCatList').hide(); // collapse all other facets 
-					$(this).parent().siblings('.facetCatList').show(); // hide itself
-					
+					$(this).parent().siblings('.facetCatList').show(); // hide itself					
 					$(this).addClass('facetCatUp');
 				}				
 						
