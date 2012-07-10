@@ -8,8 +8,6 @@ button#acSearch {
 	border: none;
 }
 button#acSearch img {
-	height: 15px;	
-	margin-right: 5px;
 }
 ul.ui-autocomplete {
 	font-size: 12px;
