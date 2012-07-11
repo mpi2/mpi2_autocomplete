@@ -156,7 +156,7 @@
 
         _showSearchMsg: function(){
 			//return 'Search genes, MP terms, SOP by MGI/MP ID, gene symbol, synonym or name';
-			return 'Search genes, SOP by MGI/MP ID, gene symbol, synonym or name';
+			return 'Search genes, SOP by MGI ID, gene symbol, synonym or name';
 		},     
         
         _makeSolrURLParams: function(solrQStr){   
