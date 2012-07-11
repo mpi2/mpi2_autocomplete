@@ -17,8 +17,7 @@ button#acSearch img {
 	height: 20px;
 	vertical-align: middle;
 }
-ul.ui-autocomplete {
-    position: relative;
+ul.ui-autocomplete {    
 	font-size: 12px;
 	height: auto;
 	max-height: 300px;
@@ -26,6 +25,7 @@ ul.ui-autocomplete {
 	min-width: 250px;
 	overflow: auto;
 	padding: 10px 15px;
+	margin-bottom: 0;
 }
 ul.ui-autocomplete li {
 	border-bottom: 1px dashed #D1D1D1;
