@@ -3,6 +3,7 @@ input#userInput {
 	font-size: 10px;
 	color: gray;
 	margin-left: 100px; /* the input box on banner*/
+    
 }
 table input#userInput {
 	margin-left: 0; /* the front page inputbox */
@@ -17,6 +18,7 @@ button#acSearch img {
 	vertical-align: middle;
 }
 ul.ui-autocomplete {
+    position: relative;
 	font-size: 12px;
 	height: auto;
 	max-height: 300px;
