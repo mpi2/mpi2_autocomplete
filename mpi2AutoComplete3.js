@@ -41,20 +41,7 @@
 	 		},	
 			focus: function(){				
 				//nothing to do for now					
-			},
-			beforeOpenEnter: function(event, data){
-				var self = $(this).data().mpi2AutoComplete;
-				self.options.beforeOpenEnterVal = 1;
-				//alert('before open: ' + data.term);
-				self.sourceCallback(data, arguments);				
-			},
-			open: function(){
-				var self = $(this).data().mpi2AutoComplete; // this widget
-				if ( self.options.beforeOpenEnterVal == 1){
-					self.close();
-					self.options.beforeOpenEnterVal = 0;
-				}
-			}		
+			}			
         },
         
 		_inputValMappingForCallBack: function(input){
@@ -104,100 +91,10 @@
 			self._trigger("loadGenePage", null, {queryString: solrQStr, type: self._setSearchMode(), queryParams: solrParams, explaination: input });	
 		},
 
-		_addBeforeOpenEnterEvent: function(){
-			var self = this;
-			var suppressKeyPress;
-			this.element.bind( "keydown.autocomplete", function( event ) {
-				if ( self.options.disabled || self.element.propAttr( "readOnly" ) ) {
-					return;
-				}
-
-				suppressKeyPress = false;
-				var keyCode = $.ui.keyCode;
-				switch( event.keyCode ) {
-				case keyCode.PAGE_UP:
-					self._move( "previousPage", event );
-					break;
-				case keyCode.PAGE_DOWN:
-					self._move( "nextPage", event );
-					break;
-				case keyCode.UP:
-					self._keyEvent( "previous", event );
-					break;
-				case keyCode.DOWN:
-					self._keyEvent( "next", event );
-					break;
-				case keyCode.ENTER:				
-				case keyCode.NUMPAD_ENTER:
-					// when menu is open and has focus
-					if ( self.menu.active ) {
-						// #6055 - Opera still allows the keypress to occur
-						// which causes forms to submit
-						suppressKeyPress = true;
-						event.preventDefault();						
-					}
-					// hit ENTER before menu is open
-					else {						
-						self._trigger('beforeOpenEnter', event, {term: self.element.val()});					
-					}
-					//passthrough - ENTER and TAB both select the current element
-				case keyCode.TAB:
-					if ( !self.menu.active ) {
-						return;
-					}
-					self.menu.select( event );
-					break;
-				case keyCode.ESCAPE:
-					self.element.val( self.term );
-					self.close( event );
-					break;
-				default:
-					// keypress is triggered before the input value is changed
-					clearTimeout( self.searching );
-					self.searching = setTimeout(function() {
-						// only search if the value has changed
-						if ( self.term != self.element.val() ) {
-							self.selectedItem = null;
-							self.search( null, event );
-						}
-					}, self.options.delay );
-					break;
-				}
-			})
-			.bind( "keypress.autocomplete", function( event ) {
-				if ( suppressKeyPress ) {
-					suppressKeyPress = false;
-					event.preventDefault();
-				}
-			})
-			.bind( "focus.autocomplete", function() {
-				if ( self.options.disabled ) {
-					return;
-				}
-
-				self.selectedItem = null;
-				self.previous = self.element.val();
-			})
-			.bind( "blur.autocomplete", function( event ) {
-				if ( self.options.disabled ) {
-					return;
-				}
-
-				clearTimeout( self.searching );
-				// clicks on the menu (or a button to trigger a search) will cause a blur event
-				self.closing = setTimeout(function() {
-					self.close( event );
-					self._change( event );
-				}, 150 );
-			});			
-		},
-
         _create : function () {
             var self = this;  
             self.element.val(self._showSearchMsg());  
-
-            self._addBeforeOpenEnterEvent();
-			
+            
             self.element.bind('keyup', function(e) {
             	            	
                 if (e.keyCode == 13) {
