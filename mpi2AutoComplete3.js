@@ -46,7 +46,8 @@
 				var self = $(this).data().mpi2AutoComplete;
 				self.options.beforeOpenEnterVal = 1;
 				//alert('before open: ' + data.term);
-				self.sourceCallback(data, arguments);				
+				self.sourceCallback(data, arguments);	
+				self._inputValMappingForCallBack(data.term); 			
 			},
 			open: function(){
 				var self = $(this).data().mpi2AutoComplete; // this widget
@@ -126,7 +127,7 @@
             var self = this;  
             self.element.val(self._showSearchMsg());  
 
-            //self._addBeforeOpenEnterEvent();
+            self._addBeforeOpenEnterEvent();
 
             self.element.bind('keyup', function(e) {
             	            	
