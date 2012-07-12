@@ -79,7 +79,7 @@
 	    		'dataType': 'jsonp',
 	    		'jsonp': 'json.wrf',
 	    		'success': function(json) {	 	    			
-	    			//console.log(json);					
+	    			console.log(json);					
 					$('div#geneFacet span.facetCount').text(self.options.data.geneFound);   
 	    			self._displayGeneSubTypeFacet(json);	    				
 	    		}		
@@ -100,10 +100,11 @@
 
 	    			trs += "<tr><td class='geneSubtype'>" + type + "</td><td rel='" + type + "' class='geneSubtypeCount'>" + count + "</td></tr>";
 	    			i += 2;
-	    		}	    			    		
+	    		}	  
+	    		
 	    		var table = "<table id='gFacet'>" + trs + "</table>";				
 	    		$('div#geneFacet div.facetCatList').html(table);
-
+	    		
 				self._applyGeneGridResultFilterByMarkerSubType($('table#gFacet td.geneSubtypeCount'));	    		
     		}
 	    },
