@@ -79,6 +79,7 @@ span.facetCount {
 	padding: 3px 15px 3px 0;
 	float: right;
 	font-weight: bold;
+        font-size: 11px !important;
 }
 table#gFacet, table#pipeline {
 	width: 100%;
