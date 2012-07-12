@@ -25,7 +25,8 @@
 			mouseSelected: 0,	
             minLength: 1,
             delay: 300,  
-            doneSourceCall: 0,          
+            doneSourceCall: 0,  
+            emptyWarning: 'Sorry, please enter your keyword in the input box for search - thank you',        
 	    	//search_pathname: '/search',
 	    	//solrBaseURL_ebi: 'http://wwwdev.ebi.ac.uk/mi/solr/',
             //solrBaseURL_bytemark: 'http://ikmc.vm.bytemark.co.uk:8983/solr/', 
@@ -104,8 +105,14 @@
 				case keyCode.NUMPAD_ENTER:
 					// when user hits ENTER before menu is open
 					if ( !self.menu.active ) {
+						var term = self.element.val();
+						if ( term == '' ){
+		            		alert(self.options.emptyWarning);
+		            		return false;
+		            	}		
+						
 						self.options.beforeOpenEnterVal = 1;
-						self.term = self.element.val();											
+						self.term = term;											
 					}				
 				}
 			});
@@ -137,9 +144,10 @@
                 }
             });
             
+            
             $('button#acSearch').click(function(){				
             	if ( self.term == undefined ){
-            		alert('Sorry, please enter your keyword in the input box for search - thank you');
+            		alert(self.options.emptyWarning);
             	}
             	else {					
             		var solrParams = self._makeSolrURLParams(self.term);															
