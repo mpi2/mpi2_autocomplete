@@ -26,7 +26,7 @@ ul.ui-autocomplete {
 	overflow: auto;
 	padding: 10px 15px;
 	margin-bottom: 0;
-        z-index: 9999;
+    z-index: 9999;
 }
 ul.ui-autocomplete li {
 	border-bottom: 1px dashed #D1D1D1;
@@ -94,10 +94,7 @@ table#gFacet td, table#pipeline td {
 table#gFacet td:nth-child(2), table#pipeline td:nth-child(2){
 	text-align: right !important;
 }
-table#gFacet td.geneSubtypeCount {
-	cursor: pointer;	
-}
-table#pipeline td[class^=procedure]{
+table#gFacet td.geneSubtypeCount, table#pipeline td[class^=procedure], table#pipeline td a.paramCount {
 	cursor: pointer;	
 }
 table#pipeline td[class^=procedure] td:nth-child(1) {
