@@ -127,7 +127,7 @@
             var self = this;  
             self.element.val(self._showSearchMsg());  
 
-            self._addBeforeOpenEnterEvent();
+            //self._addBeforeOpenEnterEvent();
 
             self.element.bind('keyup', function(e) {
             	            	
