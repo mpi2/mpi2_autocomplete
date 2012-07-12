@@ -41,7 +41,20 @@
 	 		},	
 			focus: function(){				
 				//nothing to do for now					
-			}			
+			},
+			beforeOpenEnter: function(event, data){
+				var self = $(this).data().mpi2AutoComplete;
+				self.options.beforeOpenEnterVal = 1;
+				//alert('before open: ' + data.term);
+				self.sourceCallback(data, arguments);				
+			},
+			open: function(){
+				var self = $(this).data().mpi2AutoComplete; // this widget
+				if ( self.options.beforeOpenEnterVal == 1){
+					self.close();
+					self.options.beforeOpenEnterVal = 0;
+				}
+			}		
         },
         
 		_inputValMappingForCallBack: function(input){
@@ -91,10 +104,30 @@
 			self._trigger("loadGenePage", null, {queryString: solrQStr, type: self._setSearchMode(), queryParams: solrParams, explaination: input });	
 		},
 
+		_addBeforeOpenEnterEvent: function(){
+			var self = this;
+			var suppressKeyPress;
+			this.element.bind( "keydown.autocomplete", function( event ) {
+				
+				suppressKeyPress = false;
+				var keyCode = $.ui.keyCode;
+				switch( event.keyCode ) {				
+				case keyCode.ENTER:		
+				case keyCode.NUMPAD_ENTER:
+					// when user hits ENTER before menu is open
+					if ( !self.menu.active ) {
+						self._trigger('beforeOpenEnter', event, {term: self.element.val()});					
+					}				
+				}
+			});
+		},
+				
         _create : function () {
             var self = this;  
             self.element.val(self._showSearchMsg());  
-            
+
+            self._addBeforeOpenEnterEvent();
+
             self.element.bind('keyup', function(e) {
             	            	
                 if (e.keyCode == 13) {
