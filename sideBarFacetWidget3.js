@@ -12,11 +12,11 @@
 			solrBaseURL_bytemark: 'http://ikmc.vm.bytemark.co.uk:8983/solr/',
 			facetId2SearchType: {
 								 geneFacet : {type: 'gene', params: {}},
-								 pipelineFacet: {type: 'parameter', params: {'fq': 'pipeline_stable_id=IMPC_001', 
+								 pipelineFacet: {type: 'parameter', params: {'fq': 'pipeline_stable_id:IMPC_001', 
     																		 'qf': 'auto_suggest',
     																		 'defType': 'edismax',
     																		 'wt': 'json',
-    			                                                             'rows': 50
+    			                                                             'rows': 500000
     																		 }}
 								}
 	    },
@@ -42,9 +42,9 @@
 				var solrSrchParams = {q: self.options.data.queryString};						
 				if (facetId == 'pipelineFacet'){							
 					self.options.facetId2SearchType[facetId].params.q = solrSrchParams.q;
-                    solrSrchParams = self.options.facetId2SearchType[facetId].params;	
+                    solrSrchParams = self.options.facetId2SearchType[facetId].params;                                    
 				}
-				$('#mpi2-search').trigger('search', [{type: self.options.facetId2SearchType[facetId].type, solrParams: solrSrchParams }]); 								
+				$(self.options.geneGridElem).trigger('search', [{type: self.options.facetId2SearchType[facetId].type, solrParams: solrSrchParams }]); 								
 			});			    		    		    	
     	},
     	
@@ -70,6 +70,7 @@
 				'rows': 0,
 				'facet': 'on',								
 				'facet.mincount': 1,
+				'facet.limit': -1,
 				'facet.field': 'marker_type_str',               		
 				'q': self.options.data.queryString
 			};
@@ -137,7 +138,7 @@
 	    		'fq': 'pipeline_stable_id=IMPC_001',				
 				'qf': 'auto_suggest',
 				'defType': 'edismax',
-				'rows': 10000,
+				'rows': 500000,
 				'facet': 'on',								
 				'facet.mincount': 1,
 				'facet.limit': -1,
@@ -183,12 +184,9 @@
 	        			var procedureCount = procedures_params[i].length;
 	        			var pClass = 'procedure'+counter;
 	        			var tr = $('<tr></tr>');
-	        			var td1 = $('<td></td>').attr({'class': pClass, 'rel': procedureName2IdKey[i].stable_id});
-	        			var td2 = $('<td></td>');
-	        			var a = $('<a></a>').attr({
-	        					href: 'http://www.mousephenotype.org/impress/impress/listParameters/' + procedureName2IdKey[i].stable_key,
-	        					target: '_blank'
-	        					}).text(procedureCount);	        			
+	        			var td1 = $('<td></td>').attr({'class': pClass});
+	        			var td2 = $('<td></td>');	        			        			
+	        			var a = $('<a></a>').attr({'class':'paramCount', 'rel': procedureName2IdKey[i].stable_id}).text(procedureCount);
 	        			table.append(tr.append(td1.text(i), td2.append(a)));
 	        			
 	        			for ( var j=0; j<procedures_params[i].length; j++ ){
@@ -198,7 +196,7 @@
 	        				//console.log('Param: '+ oParamCount.param_name + ':'+ oParamCount.count);
 	        				var a = $('<a></a>').attr({
 	        					href: 'http://www.mousephenotype.org/impress/impress/listParameters/'	        						
-	        						+ procedureName2IdKey[i].stable_key,	        						
+	        						+ procedureName2IdKey[i].stable_key,	        					
 	        					target: '_blank'
 	        				}).text(oParamCount.param_name);	
 	        				
@@ -223,6 +221,13 @@
 	        				$(this).parent().siblings("tr." + thisClass + "_param").hide();
 	        			}
 	        		);
+	        		$('table#pipeline td a.paramCount').click(function(){	        			
+	        			var proc_stable_id = $(this).attr('rel');   
+	                    var solrSrchParams = self.options.facetId2SearchType.pipelineFacet.params;	                   
+	                    solrSrchParams.q = self.options.data.queryString;
+	                    solrSrchParams.fq = 'procedure_stable_id:' + proc_stable_id;	                  
+	                    $(self.options.geneGridElem).trigger('search', [{type: 'parameter', solrParams: solrSrchParams }]);
+	        		});
 	    		}		
 	    	});	    	
 	    },
