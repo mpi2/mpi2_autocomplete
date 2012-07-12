@@ -16,19 +16,19 @@
 			grouppingId : 'mgi_accession_id',
 			searchFields: ["marker_symbol", "mgi_accession_id_key", "marker_name", "synonym", "marker_synonym", "allele_synonym"],
 			queryParams_gene: {'start':0,
-				  			'rows':50, 
-				  			'wt':'json', 
-				  			'group':'on',					
-				  			'group.field':'mgi_accession_id'
+				  			   'rows':50, 
+				  			   'wt':'json', 
+				  			   'group':'on',					
+				  			   'group.field':'mgi_accession_id'
 			},	
 			srcLabel: {},			
-			mouseSelected: 0,
-			rowShown: 50,
+			mouseSelected: 0,	
             minLength: 1,
-            delay: 300,            
-	    	search_pathname: '/search-widget-prototype-2',
-	    	solrBaseURL_ebi: 'http://wwwdev.ebi.ac.uk/mi/solr/',
-            solrBaseURL_bytemark: 'http://ikmc.vm.bytemark.co.uk:8983/solr/', 
+            delay: 300,  
+            doneSourceCall: 0,          
+	    	//search_pathname: '/search',
+	    	//solrBaseURL_ebi: 'http://wwwdev.ebi.ac.uk/mi/solr/',
+            //solrBaseURL_bytemark: 'http://ikmc.vm.bytemark.co.uk:8983/solr/', 
             acList: [], 			  		       
 			select: function(event, ui) {				
 				//console.log(ui.item.value);
@@ -36,26 +36,12 @@
 				thisWidget.options.mouseSelected = 1;
 				thisWidget._inputValMappingForCallBack(ui.item.value);
 			},
-			close: function(event, ui){  // result dropdown list closed
+			close: function(event, ui){  // close dropdown list
 	 			//nothing to do for now
 	 		},	
-			focus: function(){				
+			focus: function(){ // when mouseover a term in dropdown list				
 				//nothing to do for now					
-			},
-			beforeOpenEnter: function(event, data){
-				var self = $(this).data().mpi2AutoComplete;
-				self.options.beforeOpenEnterVal = 1;
-				//alert('before open: ' + data.term);
-				self.sourceCallback(data, arguments);	
-				self._inputValMappingForCallBack(data.term); 			
-			},
-			open: function(){
-				var self = $(this).data().mpi2AutoComplete; // this widget
-				if ( self.options.beforeOpenEnterVal == 1){
-					self.close();
-					self.options.beforeOpenEnterVal = 0;
-				}
-			}		
+			}			
         },
         
 		_inputValMappingForCallBack: function(input){
@@ -66,6 +52,7 @@
 			var solrParams= null;
 			
 			if ( input.indexOf(':') == -1 ){
+				console.log('qry string: '+ solrQStr);
 				self._trigger("loadSideBar", null, { queryString: solrQStr });
 			}
 			else if ( MPI2.AutoComplete.mapping[termVal] ){
@@ -92,7 +79,7 @@
 				}				
 				
 				//console.log('MOUSE2: '+ solrQStr + ' -- ' + ui.item.value + ' termVal: ' + termVal);									
-				self._trigger("loadSideBar", null, { queryString: solrQStr });								
+				self._trigger("loadSideBar", null, { queryString: solrQStr, geneFound: 0});								
 			}						
 		
 
@@ -117,7 +104,8 @@
 				case keyCode.NUMPAD_ENTER:
 					// when user hits ENTER before menu is open
 					if ( !self.menu.active ) {
-						self._trigger('beforeOpenEnter', event, {term: self.element.val()});					
+						self.options.beforeOpenEnterVal = 1;
+						self.term = self.element.val();											
 					}				
 				}
 			});
@@ -127,30 +115,24 @@
             var self = this;  
             self.element.val(self._showSearchMsg());  
 
-            //self._addBeforeOpenEnterEvent();
+            self._addBeforeOpenEnterEvent();
 
             self.element.bind('keyup', function(e) {
-            	            	
-                if (e.keyCode == 13) {
-                    self.close();
+            	         	
+                if (e.keyCode == 13) {                	
+                    self.close();                    
                     var solrParams = self._makeSolrURLParams(self.term);
-					
+                    
                     // need to distinguish between enter on the input box and enter on the drop down list
                     // ie, users use keyboard, instead of mouse, to navigate the list and hit enter to choose a term
                     if (self.options.mouseSelected == 0 ){                    	
                     	// use the value in the input box for query 
-						//console.log( '2: genefound: '+ self.options.geneFound + ' vs ' + 'sopfound: '+ self.options.sopFound);
-						
-						var pathname = window.location.pathname;						
-						if ( pathname != self.options.search_pathname ){											
-							self._trigger("redirectedSearch", null, { queryString: self.term, type: self._setSearchMode(), geneFound: self.options.geneFound });
-						}										
-					
-                    	self._trigger("loadGenePage", null, { queryString: self.term, type: self._setSearchMode(), queryParams: solrParams });
-                    	self._trigger("loadSideBar", null, { 
-							geneFound: self.options.geneFound, 
-							queryString: self.term																					   
-						});  						      	
+                    					
+                    	if (self.options.beforeOpenEnterVal == 1){
+                    		// this method is automatically called when dropdown list is open
+                    		// so we need to call it now
+                    		self.sourceCallback(self); // ajax!!                    		
+                    	}  
                     }					
                 }
             });
@@ -176,8 +158,9 @@
             });   
 
             // remove facet count for gene when input box is empty/changed
+            
             self.element.keyup(function(){            	
-            	if ( self.element.val() == '' ){
+            	if ( self.element.val() == '' ){            		
             		for( var i=0; i<facetDivs.length; i++ ){
             			$('div#' + facetDivs[i] + ' span.facetCount').text(''); 					 
 						$('div#' + facetDivs[i] + ' div.facetCatList').html('');
@@ -242,6 +225,7 @@
 			//console.log(json);
 			var self = this;
 			var matchesFound = json.response.numFound;
+			//console.log('sop found: ' + matchesFound);
 			self.options.sopFound = matchesFound;
 		
 			$('div#pipelineFacet span.facetCount').text(matchesFound);
@@ -271,7 +255,7 @@
            	var g = json.grouped[self.options.grouppingId]; 
            	var maxRow = json.responseHeader.params.rows;
            	var matchesFound = g.matches;
-			//console.log('found: '+ matchesFound);
+			//console.log('gene found: '+ matchesFound);
            	self.options.geneFound = matchesFound;   
 
            	$('div#geneFacet span.facetCount').text(matchesFound);
@@ -352,8 +336,12 @@
 		},	
 
         sourceCallback: function (request, response) {
+        
         	var self = this;
-        	
+        	if ( self.options.doneSourceCall ){
+        		self._doCallBacks();
+        	}
+        	        	
         	self.options.mouseSelected = 0; // important to distinguish between mouse select and keyborad select
                        
  	    	var q = request.term.replace(/^\s+|\s+$/g, ""); // trim away leading/trailing spaces 	    	
@@ -404,12 +392,39 @@
         	    	//console.log(sopSolrResponse);  
         	    	self._parseGeneGroupedJson(geneSolrResponse, q);        	    	
         	    	self._parseSopJson(sopSolrResponse, q);
-        	    	response(self.options.acList);
+        	    	
+        	    	self.options.doneSourceCall = 1;
+        	    	
+        	    	//console.log('doneSouceCall: '+ self.options.doneSourceCall);
+        	    	if ( response ){
+        	    		// response is defined only after dropdown list is open
+        	    		response(self.options.acList);  
+        	    	}
+        	    	else {
+        	    		// for beforeOpenEnter event
+        	    		//console.log( 'beforeOpenEnter: genefound: '+ self.options.geneFound + ' vs ' + 'sopfound: '+ self.options.sopFound);
+        	    		self._doCallBacks();        	    		
+        	    	} 
         	    },
         	    error: function (jqXHR, textStatus, errorThrown) {
         	        response(['AJAX error']);
         	    }
     		});    			
-    	}        	
+    	},
+    	_doCallBacks: function(){
+    		//console.log('do callbacks');
+    		var self = this;
+    		self.options.doneSourceCall = 0; // refresh
+    		if ( window.location.pathname != self.options.search_pathname ){											
+    			self._trigger("redirectedSearch", null, { queryString: self.term, type: self._setSearchMode(), geneFound: self.options.geneFound });
+    		}					
+    		
+    		self._trigger("loadGenePage", null, { queryString: self.term, type: self._setSearchMode() });
+    		self._trigger("loadSideBar", null, { 
+    			geneFound: self.options.geneFound, 
+    			queryString: self.term																					   
+    		}); 
+    	}
+    	
     });    
 }(jQuery));
