@@ -96,10 +96,9 @@
 	    		for ( var i=0; i<facets.length; ){		    			
 	    			//console.log( facets[i] + ' ' + facets[i+1]);
 					var type = facets[i];
-					var count = facets[i+1];
-					
+					var count = facets[i+1];			
 
-	    			trs += "<tr><td class='geneSubtype'>" + type + "</td><td rel='" + type + "' class='geneSubtypeCount'>" + count + "</td></tr>";
+	    			trs += "<tr><td class='geneSubtype'>" + type + "</td><td rel='" + type + "' class='geneSubtypeCount'><a>" + count + "</a></td></tr>";
 	    			i += 2;
 	    		}	  
 	    		
@@ -221,7 +220,9 @@
 	        				$(this).parent().siblings("tr." + thisClass + "_param").hide();
 	        			}
 	        		);
-	        		$('table#pipeline td a.paramCount').click(function(){	        			
+	        		$('table#pipeline td a.paramCount').click(function(){	
+	        			$('table#pipeline td[class^=procedure]').removeClass('highlight');
+	        			$(this).parent().siblings('td[class^=procedure]').addClass('highlight');
 	        			var proc_stable_id = $(this).attr('rel');   
 	                    var solrSrchParams = self.options.facetId2SearchType.pipelineFacet.params;	                   
 	                    solrSrchParams.q = self.options.data.queryString;
