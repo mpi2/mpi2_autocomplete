@@ -23,8 +23,11 @@
 
     	_create: function(){
     		// execute only once 	
-    		var self = this;  	    	
+    		var self = this;  
+    			
+    		
 			$('div.facetCat').click(function(){
+				
 				$('div.facetCat').removeClass('facetCatUp');
 				if ( $(this).parent().siblings('.facetCatList').is(':visible') ){					
 					$('div.facetCatList').hide(); // collapse all other facets                     
@@ -38,26 +41,45 @@
 						
 				var facetId = $(this).parent().parent().attr('id');
 
-				// also triggers SOP/gene grid depending on what facet is clicked							
-				var solrSrchParams = {q: self.options.data.queryString};						
-				if (facetId == 'pipelineFacet'){							
-					self.options.facetId2SearchType[facetId].params.q = solrSrchParams.q;
+				var solrSrchParams = {};
+				// also triggers SOP/gene grid depending on what facet is clicked									
+				if (facetId == 'pipelineFacet'){					
                     solrSrchParams = self.options.facetId2SearchType[facetId].params;                                    
 				}
+				else if (facetId == 'geneFacet'){
+					solrSrchParams.fq = self.options.marker_type_filter_params;
+                }
+				solrSrchParams.q = self.options.data.queryString;    
+				
 				$(self.options.geneGridElem).trigger('search', [{type: self.options.facetId2SearchType[facetId].type, solrParams: solrSrchParams }]); 								
-			});			    		    		    	
+			});	
+			$('span.facetCount').click(function(){						
+				
+				var facetId = $(this).parent().parent().attr('id');	
+				var solrSrchParams = {}
+				
+				// remove highlight from selected 
+				if ( facetId == 'geneFacet' ){
+					$('table#gFacet td').removeClass('highlight');
+				}
+				else if (facetId == 'pipelineFacet' ){
+					$('table#pipeline td[class^=procedure]').removeClass('highlight');					
+					self.options.facetId2SearchType[facetId].params.fq = 'pipeline_stable_id:IMPC_001';
+					solrSrchParams = self.options.facetId2SearchType[facetId].params;
+				}
+				
+				solrSrchParams.q = self.options.data.queryString;
+				
+				$(self.options.geneGridElem).trigger('search', [{type: self.options.facetId2SearchType[facetId].type, solrParams: solrSrchParams}]);
+			});			
     	},
     	
 	    // want to use _init instead of _create to allow the widget being called each time
 	    _init : function () {
 			var self = this;
-
-	    	// gene subtype facet
-	    	self._doGeneSubTypeFacet();	
 	    	
-	    	// fire off solr query
+	    	self._doGeneSubTypeFacet();	    	
 	    	//self._doMPFacet();
-
 			self._doPipelineFacet();	    	
 	    },
 
@@ -119,6 +141,7 @@
 				var marker_subType = $(this).attr('rel');
 				var q = self.options.data.queryString;              
                 var subTypeFilter = "marker_type_str:(\"" + marker_subType + "\")";
+				self.options.marker_type_filter_params = subTypeFilter;
 				
 				// refresh geneGrid with selected marker_subtype
 				var callerElem = $(self.options.geneGridElem);				
@@ -210,7 +233,7 @@
 	        		}	    			
 	        		$('div#pipelineFacet .facetCatList').html(table);
 
-					var regex = /procedure\d+/;
+	        		var regex = /procedure\d+/;
 	        		$('table#pipeline td[class^=procedure]').toggle(
 	        			function(){ 
 	        				var match = regex.exec( $(this).attr('class') );
@@ -231,7 +254,7 @@
 	                    solrSrchParams.q = self.options.data.queryString;
 	                    solrSrchParams.fq = 'procedure_stable_id:' + proc_stable_id;	                  
 	                    $(self.options.geneGridElem).trigger('search', [{type: 'parameter', solrParams: solrSrchParams }]);
-	        		});	        		
+	        		});
 	    		}		
 	    	});	    	
 	    },
