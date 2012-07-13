@@ -1,3 +1,31 @@
+/*-------- autosuggest -------*/
+/*
+<input class="ui-autocomplete-input"/>
+<ul class="ui-autocomplete ui-menu ui-widget ui-widget-content ui-corner-all">
+  <li class="ui-menu-item">
+    <a class="ui-corner-all">item 1</a>
+  </li> 
+</ul> 
+*/
+html {
+	font-family: Arial, serif, "sans-serif";
+    font-size: 12px;    
+    margin: 0 80px;
+}
+body{
+	font-size: 12px arial,sans-serif;
+	margin: 20px 0;
+}
+a {
+	text-decoration: none !important;	
+	color: #104E8B !important;
+}
+/* 2 columns: 1 fixed (L), 1 liquid (R) */
+div#wrapper{float:left;width:100%;}
+div#content{margin-left:270px}
+div#leftSideBar{float:left;width:230px;margin-left:-100%; border: 1px solid gray; padding: 10px;}
+/* end of 2 columns style */
+
 input#userInput {
     width: 450px !important;
 	font-size: 10px;
@@ -46,8 +74,7 @@ div#content .section {
 div#leftSideBar {
 	float: left;
 	margin: 0 30px 0 0;  /*50px 0 0 30px;	*/
-    padding-left: 10px;
-	width: 270px;
+	width: 240px;
 	border: 1px solid gray;
 	-moz-border-radius: 3px;
 	border-radius: 3px;
@@ -59,7 +86,7 @@ div#leftSideBar a {
 div.facetCatList {
 	display: none;
 	padding: 5px 15px 0 20px;        
-	margin: 0 5px;
+	margin: 0;
 }
 div.facetCat {	
 	cursor: pointer;
@@ -80,17 +107,16 @@ span.facetCount {
 	padding: 3px 15px 3px 0;
 	float: right;
 	font-weight: bold;
-        font-size: 11px !important;
+    font-size: 11px !important;
 }
 table#gFacet, table#pipeline {
 	width: 100%;
 	border-collapse: collapse;
-	margin: 0 0 15px 5px;
+	margin: 0;
 }
 table#gFacet td, table#pipeline td {
 	border-bottom: 1px solid #CDC8B1;
     font-size: 10px !important;
-    padding: 0;
 }
 table#gFacet td:nth-child(2), table#pipeline td:nth-child(2){
 	text-align: right !important;
@@ -98,7 +124,7 @@ table#gFacet td:nth-child(2), table#pipeline td:nth-child(2){
 table#gFacet td.geneSubtypeCount, table#pipeline td[class^=procedure], table#pipeline td a.paramCount {
 	cursor: pointer;	
 }
-table#pipeline td[class^=procedure] td:nth-child(1) {
+table#pipeline td[class^=procedure]:nth-child(1) {
 	padding-left: 5px;
 }
 table#pipeline tr[class$=_param] {
@@ -108,7 +134,7 @@ table#pipeline tr[class$=_param] {
 	cursor: text !important;
 }
 table#pipeline tr[class$=param] td:nth-child(1) {
-	padding-left: 10px;
+	padding-left: 0px;
 }
 table#pipeline caption {
 	background-color: #CDCDC1;
@@ -121,3 +147,4 @@ table#pipeline caption {
 .highlight {
    color: #D17023;
 }
+
