@@ -55,7 +55,7 @@
 			});	
 			$('span.facetCount').click(function(){						
 				
-				var facetId = $(this).parent().parent().attr('id');	
+				var facetId = $(this).parent().parent().parent().attr('id');	
 				var solrSrchParams = {}
 				
 				// remove highlight from selected 
