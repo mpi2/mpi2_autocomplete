@@ -134,7 +134,7 @@ table#pipeline tr[class$=_param] {
 	cursor: text !important;
 }
 table#pipeline tr[class$=param] td:nth-child(1) {
-	padding-left: 0px;
+	padding-left: 15px;
 }
 table#pipeline caption {
 	background-color: #CDCDC1;
