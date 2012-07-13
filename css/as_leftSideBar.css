@@ -1,31 +1,3 @@
-/*-------- autosuggest -------*/
-/*
-<input class="ui-autocomplete-input"/>
-<ul class="ui-autocomplete ui-menu ui-widget ui-widget-content ui-corner-all">
-  <li class="ui-menu-item">
-    <a class="ui-corner-all">item 1</a>
-  </li> 
-</ul> 
-*/
-html {
-	font-family: Arial, serif, "sans-serif";
-    font-size: 12px;    
-    margin: 0 80px;
-}
-body{
-	font-size: 12px arial,sans-serif;
-	margin: 20px 0;
-}
-a {
-	text-decoration: none !important;	
-	color: #104E8B !important;
-}
-/* 2 columns: 1 fixed (L), 1 liquid (R) */
-div#wrapper{float:left;width:100%;}
-div#content{margin-left:270px}
-div#leftSideBar{float:left;width:230px;margin-left:-100%; border: 1px solid gray; padding: 10px;}
-/* end of 2 columns style */
-
 input#userInput {
     width: 450px !important;
 	font-size: 10px;
@@ -117,6 +89,7 @@ table#gFacet, table#pipeline {
 table#gFacet td, table#pipeline td {
 	border-bottom: 1px solid #CDC8B1;
     font-size: 10px !important;
+	text-align: left;
 }
 table#gFacet td:nth-child(2), table#pipeline td:nth-child(2){
 	text-align: right !important;
