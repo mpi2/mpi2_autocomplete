@@ -210,13 +210,16 @@
 	        		}	    			
 	        		$('div#pipelineFacet .facetCatList').html(table);
 
+					var regex = /procedure\d+/;
 	        		$('table#pipeline td[class^=procedure]').toggle(
-	        			function(){	        					
-	        				var thisClass = $(this).attr('class');	        					
+	        			function(){ 
+	        				var match = regex.exec( $(this).attr('class') );
+	        				var thisClass = match[0] ? match[0] : $(this).attr('class');	        				
 	        				$(this).parent().siblings("tr." + thisClass + '_param').show();
 	        			},
 	        			function(){
-	        				var thisClass = $(this).attr('class');
+	        				var match = regex.exec( $(this).attr('class') );
+	        				var thisClass = match[0] ? match[0] : $(this).attr('class');	        				
 	        				$(this).parent().siblings("tr." + thisClass + "_param").hide();
 	        			}
 	        		);
@@ -228,7 +231,7 @@
 	                    solrSrchParams.q = self.options.data.queryString;
 	                    solrSrchParams.fq = 'procedure_stable_id:' + proc_stable_id;	                  
 	                    $(self.options.geneGridElem).trigger('search', [{type: 'parameter', solrParams: solrSrchParams }]);
-	        		});
+	        		});	        		
 	    		}		
 	    	});	    	
 	    },
