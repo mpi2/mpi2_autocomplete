@@ -45,11 +45,11 @@ div#content .section {
 /* left panel */
 div#leftSideBar {
 	float: left;
-	margin: 0 30px 0 0;  /*50px 0 0 30px;	*/
+	margin: 0 30px 0 10px;  /*50px 0 0 30px;	*/
 	width: 250px;
 	border: 1px solid gray;
-	-moz-border-radius: 3px;
-	border-radius: 3px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
 }
 div#leftSideBar a {
 	text-decoration: none !important;	
