@@ -50,7 +50,7 @@ div#leftSideBar {
 	border: 1px solid gray;
 	-moz-border-radius: 4px;
 	border-radius: 4px;
-	padding-left: 10px;
+	padding: 0 0 20px 10px;
 }
 div#leftSideBar a {
 	text-decoration: none !important;	
