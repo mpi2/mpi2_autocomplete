@@ -81,6 +81,7 @@ span.facetCount {
 	float: right;
 	font-weight: bold;
     font-size: 11px !important;
+	cursor: pointer;
 }
 table#gFacet, table#pipeline {
 	width: 100%;
