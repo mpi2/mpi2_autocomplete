@@ -80,7 +80,7 @@
 				self._trigger("loadSideBar", null, { queryString: solrQStr });								
 			}						
 		
-			console.log('1: genefound: '+ self.options.geneFound + ' vs ' + 'sopfound: '+ self.options.sopFound);
+			//console.log('1: genefound: '+ self.options.geneFound + ' vs ' + 'sopfound: '+ self.options.sopFound);
 			self._trigger("loadGenePage", null, {queryString: solrQStr, type: self._setSearchMode(), queryParams: solrParams});	
 		},
 
@@ -98,7 +98,7 @@
                     // ie, users use keyboard, instead of mouse, to navigate the list and hit enter to choose a term
                     if (self.options.mouseSelected == 0 ){                    	
                     	// use the value in the input box for query 
-						console.log( '2: genefound: '+ self.options.geneFound + ' vs ' + 'sopfound: '+ self.options.sopFound);
+						//console.log( '2: genefound: '+ self.options.geneFound + ' vs ' + 'sopfound: '+ self.options.sopFound);
                     	self._trigger("loadGenePage", null, { queryString: self.term, type: self._setSearchMode(), queryParams: solrParams });
                     	self._trigger("loadSideBar", null, { 
 							geneFound: self.options.geneFound, 
@@ -292,16 +292,14 @@
 		_setSearchMode: function(){
 			var self = this;
 
-			console.log('sop: ' + self.options.sopFound + ' --- ' + 'gene: '+ self.options.geneFound); 
+			//console.log('sop: ' + self.options.sopFound + ' --- ' + 'gene: '+ self.options.geneFound); 
 
 			// work out search mode to trigger geneGrid or sopGrid
 			if ( self.options.geneFound != 0 ){
-				console.log(self.options.geneFound);
 				return 'gene';
 			}
-			else if ( self.options.geneFound == 0 && self.options.sopFound != 0 ){
-				console.log(self.options.geneFound + ' vs ' + self.options.sopFound);
-					return 'parameter';						
+			else if ( self.options.geneFound == 0 && self.options.sopFound != 0 ){				
+				return 'parameter';						
 			}			
 		},	
 
@@ -316,7 +314,7 @@
 			
 			//console.log(self.options.solrURL +'?'+ self._makeSolrURLParams(q));
         	$.ajax({
-            	    url: self.options.solrBaseURL_bytemark + 'main/search',
+            	    url: self.options.solrBaseURL_bytemark + 'gene/search',
             	    data: self.options.queryParams_gene,
             	    dataType: 'jsonp',
             	    jsonp: 'json.wrf',
