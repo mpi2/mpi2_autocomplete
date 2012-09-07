@@ -327,7 +327,7 @@
 			
 			//console.log(self.options.solrURL +'?'+ self._makeSolrURLParams(q));
         	$.ajax({
-            	    url: self.options.solrBaseURL_bytemark + 'main/search',
+            	    url: self.options.solrBaseURL_bytemark + 'gene/search',
             	    data: self.options.queryParams_gene,
             	    dataType: 'jsonp',
             	    jsonp: 'json.wrf',
