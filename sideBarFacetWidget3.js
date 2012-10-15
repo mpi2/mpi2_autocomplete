@@ -86,7 +86,7 @@
 		_doGeneSubTypeFacet: function(){
 	    	var self = this;
 	    		    			
-			var solrURL = self.options.solrBaseURL_bytemark + 'main/search';
+			var solrURL = self.options.solrBaseURL_bytemark + 'gene/search';
 	    	var queryParams = {
 				'start': 0,
 				'rows': 0,
