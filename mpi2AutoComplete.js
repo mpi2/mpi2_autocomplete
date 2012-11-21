@@ -214,11 +214,12 @@
                	self.sourceCallback(self);      
         	}              
             
-            $('button#acSearch').click(function(){            	
+            $('button#acSearch').click(function(){    
+                console.log('search');        	
             	if ( self.term == undefined ){            	
             		self.term = "*";
             	}            	
-				self._inputValMappingForCallBack(self.term, true); 
+		self._inputValMappingForCallBack(self.term, true); 
             });
 
             var facetDivs = self.options.facets;			
