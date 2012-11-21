@@ -210,9 +210,9 @@
             // test if coming from redirected page, if yes, data is already defined.
             // Ie, no default loading of all data in facet 
             if ( typeof data == 'undefined'){              	
-        		self.options.doDataTable = true;        		
+        	self.options.doDataTable = true;        		
                	self.sourceCallback(self);      
-        	}              
+            }              
             
             $('button#acSearch').click(function(){    
                 console.log('search');        	
