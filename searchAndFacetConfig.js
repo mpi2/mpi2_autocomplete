@@ -1,4 +1,4 @@
-$(document).ready(function(){ 
+window.jQuery(document).ready(function(){ 
 	
 	MPI2.searchAndFacetConfig = {};
 	var config = MPI2.searchAndFacetConfig;
