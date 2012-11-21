@@ -8,7 +8,7 @@
 	
 	// inverse simple JSON: eg, {a: 'one', b: 'two}
 	// cannot do complicated nested associated array
-	$.fn.inverseSimpleJSON = function(json){
+	window.jQuery.fn.inverseSimpleJSON = function(json){
 		var newJson = {};
 		for ( var i in json ){
 			newJson[json[i]] = i;
@@ -16,7 +16,7 @@
 		return newJson;
 	}
 	
-	$.fn.composeSelectUI = function(aFormats, selName){
+	window.jQuery.fn.composeSelectUI = function(aFormats, selName){
     	var oSelect = $('<select></select>').attr({'name': selName});    	
     	
     	for( var i=0; i<aFormats.length; i++){
@@ -25,7 +25,7 @@
     	return oSelect;
     }
     
-    $.fn.loadFileExporterUI = function(conf){
+    window.jQuery.fn.loadFileExporterUI = function(conf){
     	var oFormatSelector = conf.formatSelector;
     	var label = conf.label;
     	var iconDiv = $('<div></div>').attr({'id': 'fileIcons'}).html(label);
@@ -36,7 +36,7 @@
     	return iconDiv;
     }
     
-    $.fn.stringifyJsonAsUrlParams = function(json){
+    window.jQuery.fn.stringifyJsonAsUrlParams = function(json){
     	var aStr = [];
     	for( var i in json ){
     		aStr.push(i + '=' + json[i]);
@@ -44,7 +44,7 @@
     	return aStr.join("&");
     }
     
-    $.fn.fetchEmptyTable = function(theadStr, colNum, id){
+    window.jQuery.fn.fetchEmptyTable = function(theadStr, colNum, id){
     	
     	var table = $('<table></table>').attr({'id':id});
     	var thead = theadStr;
@@ -56,7 +56,7 @@
     	table.append(thead, tbody);
     	return table;
     },	   	 
-    $.fn.invokeDataTable = function(oInfos){   	   	
+    window.jQuery.fn.invokeDataTable = function(oInfos){   	   	
     	
     	$('table#' + oInfos.mode).dataTable({
     		"bSort" : false,
@@ -76,7 +76,7 @@
     		      $('a.interest').click(function(){
     		    	  var mgiId = $(this).attr('id');
     		    	  var label = $(this).text();
-    		    	  $.ajax({
+    		    	  window.jQuery.ajax({
                           url: '/toggleflagfromjs/' + mgiId,
                           success: function (response) {
                               if(response === 'null') {
@@ -102,7 +102,7 @@
     	});    	
     }
     
-	$.fn.initDataTable = function(jqObj, customConfig){
+	window.jQuery.fn.initDataTable = function(jqObj, customConfig){
 	
 		// extend dataTable with naturalSort function
 		/*jQuery.fn.dataTableExt.oSort['natural-asc']  = function(a,b) {
@@ -129,10 +129,10 @@
 	    			// aoColumns should match all column in table	   		     
 				};
 				
-		var oTbl = jqObj.dataTable($.extend({}, params, customConfig)).fnSearchHighlighting();
+		var oTbl = jqObj.dataTable(window.jQuery.extend({}, params, customConfig)).fnSearchHighlighting();
 		return oTbl;
 	}		
-    $.fn.dataTableshowAllShowLess = function(oDataTbl, aDataTblCols, display){
+    window.jQuery.fn.dataTableshowAllShowLess = function(oDataTbl, aDataTblCols, display){
     	    	
     	var rowFound = oDataTbl.fnSettings().aoData.length;
     	$('div#foundEntries').html("Total entries found: " + rowFound).addClass('span6');    	
@@ -156,11 +156,11 @@
 		if ( rowFound > 10 ){
 			
 			$('div#tableShowAllLess').html("<span>" + display + "</span>").addClass('span6')
-			$.fn.reloadDataTable(oDataTbl, aDataTblCols, display);
+			window.jQuery.fn.reloadDataTable(oDataTbl, aDataTblCols, display);
 		}
     }
     
-    $.fn.reloadDataTable = function(oDataTbl, aDataTblCols, display){
+    window.jQuery.fn.reloadDataTable = function(oDataTbl, aDataTblCols, display){
 		$('div#tableShowAllLess').click(function(){    			
 			
 			oDataTbl.fnSettings()._iDisplayLength = display == 'Show all entries' ? -1 : 10;			
@@ -194,7 +194,7 @@
 	}
 	
 	// toggle showing first 10 / all rows in a table
-	$.fn.toggleTableRows = function(oTable){
+	window.jQuery.fn.toggleTableRows = function(oTable){
 		var rowNum = $(oTable).find('tbody tr').length;
  		
  		var rowToggler;
@@ -217,7 +217,7 @@
 	}
 	
 	// get unique element from array
-	$.fn.getUnique = function(list){
+	window.jQuery.fn.getUnique = function(list){
 		var u = {}, a = [];
 		for(var i = 0, l = list.length; i < l; ++i){
 			if(list[i] in u){
@@ -230,7 +230,7 @@
 	}	
 		
 	// tooltip
-	$.fn.komp2_tooltip = function(options){
+	window.jQuery.fn.komp2_tooltip = function(options){
 		var defaults = {
 			title        : '',	
 			color        : 'black',
@@ -240,7 +240,7 @@
 		    khtmlBr      : '4px', // -khtml-border-radius
 		    borderRadius : '4px'  // border-radius		    	
 		}	
-		var o = $.extend(defaults, options);
+		var o = window.jQuery.extend(defaults, options);
 	
 		return this.each(function(){
 			var oC = $(this);
@@ -253,7 +253,7 @@
 			}
 			else if ( o.url != '' ){
 				// do ajax call
-				$.ajax({   					
+				window.jQuery.ajax({   					
  					url: o.url,  					
  					success:function(data){ 
  						sTitle = data;
@@ -285,7 +285,7 @@
 			);
 		});
 	}			
-	$.fn.komp2_updatePosition = function(event){
+	window.jQuery.fn.komp2_updatePosition = function(event){
 		return this.each(function(){
 			$('div#tooltip').css({
 				left : event.pageX + 10,
@@ -295,7 +295,7 @@
 	}
 	// end of tooltip
 
-	$.fn.upperCaseFirstLetter = function(str){
+	window.jQuery.fn.upperCaseFirstLetter = function(str){
 	    return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 	}	
 	
@@ -303,7 +303,7 @@
 	
 
 //HIGHLIGHT FCT
-$.fn.dataTableExt.oApi.fnSearchHighlighting = function(oSettings) {
+window.jQuery.fn.dataTableExt.oApi.fnSearchHighlighting = function(oSettings) {
     // Initialize regex cache
     oSettings.oPreviousSearch.oSearchCaches = {};
       
@@ -362,7 +362,7 @@ $.fn.dataTableExt.oApi.fnSearchHighlighting = function(oSettings) {
 
 
 /* API method to get paging information */
-$.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings ){
+window.jQuery.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings ){
 	return {
 		"iStart":         oSettings._iDisplayStart,
 		"iEnd":           oSettings.fnDisplayEnd(),
@@ -375,7 +375,7 @@ $.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings ){
 }
 
 /* Bootstrap style pagination control */
-$.extend( $.fn.dataTableExt.oPagination, {
+window.jQuery.extend( window.jQuery.fn.dataTableExt.oPagination, {
 	"bootstrap": {
 		"fnInit": function( oSettings, nPaging, fnDraw ) {
 			var oLang = oSettings.oLanguage.oPaginate;
@@ -451,12 +451,12 @@ $.extend( $.fn.dataTableExt.oPagination, {
 	}
 } );
 
-$.extend( $.fn.dataTableExt.oStdClasses, {
+window.jQuery.extend( window.jQuery.fn.dataTableExt.oStdClasses, {
     "sWrapper": "dataTables_wrapper form-inline"
 } );
 
 // Sort image columns based on the content of the title tag
-$.extend( $.fn.dataTableExt.oSort, {
+window.jQuery.extend( window.jQuery.fn.dataTableExt.oSort, {
     "alt-string-pre": function ( a ) {
         return a.match(/alt="(.*?)"/)[1].toLowerCase();
     },
