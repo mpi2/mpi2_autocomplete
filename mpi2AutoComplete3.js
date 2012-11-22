@@ -125,7 +125,7 @@
 				solrQStr = solrField + ':' + '"' + termVal + '"';
 				//solrParams = self._makeSolrURLParams(solrQStr);							
 				
-				console.log('MOUSE2 : '+ solrQStr);	
+				//console.log('MOUSE2 : '+ solrQStr);	
 			}	
 			
 			var pathname = window.location.pathname;
