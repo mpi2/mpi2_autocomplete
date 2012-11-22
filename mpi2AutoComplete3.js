@@ -197,7 +197,7 @@
             				//console.log('hitEnterBeforeDropDownListOpens');	
             				// sourceCallback() is automatically called when dropdown list is open
             				// so we need to call it now to simulate dropdown list open
-            				self.options.doDataTable = true;
+            				self.options.doDataTable = true;                                       
             				self.sourceCallback(self); // ajax!!                    		
             			}  
             		}					
@@ -609,11 +609,11 @@
     		/*params.explaination = self.term;
     		params.geneFound = self.options.geneFound;
     		*/   
-    		//console.log("check self.term: "+ self.term);
+    		console.log("check self.term: "+ self.term);
     		
     		// loadSideBar reacts to all non-enter keyup events. Ie, typing in input box triggers changes in facet 
     		// but will not load dataTable
-			self._trigger("loadSideBar", null, {				
+		/*	self._trigger("loadSideBar", null, {				
     			//geneFound: self.options.geneFound, 
     			q: self.term																					   
     		});    
@@ -622,6 +622,7 @@
 				//console.log('do datatable');
 	    		self._trigger("loadDataTable", null, params);
 			}	    	
+                */
     	},
     	
     	destroy: function () {
