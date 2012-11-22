@@ -594,15 +594,15 @@
     		if ( self.term === undefined || self.term == '' ){
     			self.term = '*:*';
     		}
-                console.log('do redirect);
+                console.log('do redirect');
     		
     		// only Enter event will fire and not other keyup/down events
-    		/*if ( window.location.pathname != self.options.search_pathname && self.options.hitEnterBeforeDropDownListOpensVal == 1 ){    			
+    		if ( window.location.pathname != self.options.search_pathname && self.options.hitEnterBeforeDropDownListOpensVal == 1 ){    			
     			self._trigger("redirectedSearch", null, { q: self.term, 
     								  type: self.options.searchMode, 
     		  	                                          geneFound: self.options.geneFound    				                                    
     				                                      });
-    		}*/
+    		}
     		  		
     		var params = self.options.facetTypeParams[self.options.searchMode];    		    		
     		params.q = self.term;	
