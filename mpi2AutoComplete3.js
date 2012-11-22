@@ -130,6 +130,9 @@
 			
 			var pathname = window.location.pathname;
 			
+                        console.log('pathname: '+ pathname);
+                        console.log('opt path: '+ self.options.search_pathname);
+
 			if ( pathname != self.options.search_pathname ){	
 				
 				self._trigger("redirectedSearch", null, { q: solrQStr, type: self.options.searchMode, explaination: input, 
