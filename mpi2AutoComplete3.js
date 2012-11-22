@@ -594,6 +594,7 @@
     		if ( self.term === undefined || self.term == '' ){
     			self.term = '*:*';
     		}
+                console.log('do redirect);
     		
     		// only Enter event will fire and not other keyup/down events
     		if ( window.location.pathname != self.options.search_pathname && self.options.hitEnterBeforeDropDownListOpensVal == 1 ){    			
