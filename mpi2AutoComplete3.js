@@ -128,13 +128,9 @@
 				//console.log('MOUSE2 : '+ solrQStr);	
 			}	
 			
-			var pathname = window.location.pathname;
-			
-                        console.log('pathname: '+ pathname);
-                        console.log('opt path: '+ self.options.search_pathname);
+			var pathname = window.location.pathname;			
 
-			if ( pathname != self.options.search_pathname ){	
-				
+			if ( pathname != self.options.search_pathname ){					
 				self._trigger("redirectedSearch", null, { q: solrQStr, type: self.options.searchMode, explaination: input, 
 														  geneFound: geneFound													 
 														  });
@@ -170,7 +166,7 @@
 		},
 				
         _create : function () {        	    	
-        	
+            console.log('val: '+  self.element.val());
             var self = this;  
             self.element.val(self._showSearchMsg());                    
             self._addHitEnterBeforeDropDownListOpensEvent(); 
