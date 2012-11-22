@@ -177,7 +177,7 @@
             	console.log('val: '+  self.element.val());
             	// when input text becomes empty string (ie, due to deletion)
             	if ( self.element.val() == '' ){
-            		$('img.facetInfo').hide();
+            		//$('img.facetInfo').hide();
             		
             		for( var i=0; i<facetDivs.length; i++ ){
             			$('div#' + facetDivs[i] + ' span.facetCount').text(''); 					 
@@ -192,7 +192,7 @@
             		// ie, users use keyboard, instead of mouse, to navigate the list and hit enter to choose a term
             		if (self.options.mouseSelected == 0 ){                    	
             			// use the value in the input box for query 
-                    	//console.log('hit enter');			
+                    	console.log('hit enter');			
             			if (self.options.hitEnterBeforeDropDownListOpensVal == 1){
             				//console.log('hitEnterBeforeDropDownListOpens');	
             				// sourceCallback() is automatically called when dropdown list is open
