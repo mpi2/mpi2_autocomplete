@@ -166,14 +166,15 @@
 		},
 				
         _create : function () {        	    	
-            console.log('val: '+  self.element.val());
+            
             var self = this;  
+
             self.element.val(self._showSearchMsg());                    
             self._addHitEnterBeforeDropDownListOpensEvent(); 
             	
             self.element.bind('keyup', function(e) {
-            	//console.log('key up..');	
-            	
+            	console.log('key up..');	
+            	console.log('val: '+  self.element.val());
             	// when input text becomes empty string (ie, due to deletion)
             	if ( self.element.val() == '' ){
             		$('img.facetInfo').hide();
