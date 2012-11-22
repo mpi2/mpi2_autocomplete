@@ -595,25 +595,27 @@
     		if ( self.term === undefined || self.term == '' ){
     			self.term = '*:*';
     		}
-    		
+    		console.log("check self.term: "+ self.term);
+                console.log("type: "+ self.options.searchMode);
+                console.log("geneFound: "+ self.options.geneFound);
     		// only Enter event will fire and not other keyup/down events
-    		if ( window.location.pathname != self.options.search_pathname && self.options.hitEnterBeforeDropDownListOpensVal == 1 ){    			
+    		/*if ( window.location.pathname != self.options.search_pathname && self.options.hitEnterBeforeDropDownListOpensVal == 1 ){    			
     			self._trigger("redirectedSearch", null, { q: self.term, 
-    													  type: self.options.searchMode, 
-    				                                      geneFound: self.options.geneFound    				                                    
+    								  type: self.options.searchMode, 
+    		  	                                          geneFound: self.options.geneFound    				                                    
     				                                      });
-    		}
+    		}*/
     		  		
     		var params = self.options.facetTypeParams[self.options.searchMode];    		    		
     		params.q = self.term;	
     		/*params.explaination = self.term;
     		params.geneFound = self.options.geneFound;
     		*/   
-    		console.log("check self.term: "+ self.term);
+    		
     		
     		// loadSideBar reacts to all non-enter keyup events. Ie, typing in input box triggers changes in facet 
     		// but will not load dataTable
-		/*	self._trigger("loadSideBar", null, {				
+			self._trigger("loadSideBar", null, {				
     			//geneFound: self.options.geneFound, 
     			q: self.term																					   
     		});    
@@ -622,7 +624,7 @@
 				//console.log('do datatable');
 	    		self._trigger("loadDataTable", null, params);
 			}	    	
-                */
+                
     	},
     	
     	destroy: function () {
