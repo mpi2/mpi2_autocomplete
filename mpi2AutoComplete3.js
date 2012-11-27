@@ -295,7 +295,7 @@
 					var fld = aFields[f];
 					var val = docs[d][fld];
 					//console.log('field: ' + fld + ' for ' + val);
-					if ( (fld == 'mp_term_synonym' || fld == 'ma_term_synonym' || 'annotationTermName') && val ){
+					if ( (fld == 'mp_term_synonym' || fld == 'ma_term_synonym' || fld == 'annotationTermName') && val ){
 						var aVals = docs[d][fld];
 						
 						for ( var v=0; v<aVals.length; v++ ){						
@@ -305,7 +305,10 @@
 							}	
 						}						
 					}								
-					else if ( val ){
+					else if ( val ){        
+                                                if ( typeof val == 'object' ){
+                                                        val = val.toString();
+                                                }
 						if ( val.toLowerCase().indexOf(sQuery) != -1 || sQuery.indexOf('*') != -1 ){				
 							list.push(self.options.srcLabel[fld] + ' : ' + val);
 						}
@@ -594,8 +597,7 @@
     		if ( self.term === undefined || self.term == '' ){
     			self.term = '*:*';
     		}
-                console.log('do redirect');
-    		
+                    		
     		// only Enter event will fire and not other keyup/down events
     		if ( window.location.pathname != self.options.search_pathname && self.options.hitEnterBeforeDropDownListOpensVal == 1 ){    			
     			self._trigger("redirectedSearch", null, { q: self.term, 
