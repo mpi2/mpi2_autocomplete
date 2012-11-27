@@ -125,13 +125,12 @@
 				solrQStr = solrField + ':' + '"' + termVal + '"';
 				//solrParams = self._makeSolrURLParams(solrQStr);							
 				
-				console.log('MOUSE2 : '+ solrQStr);	
+				//console.log('MOUSE2 : '+ solrQStr);	
 			}	
 			
-			var pathname = window.location.pathname;
-			
-			if ( pathname != self.options.search_pathname ){	
-				
+			var pathname = window.location.pathname;			
+
+			if ( pathname != self.options.search_pathname ){					
 				self._trigger("redirectedSearch", null, { q: solrQStr, type: self.options.searchMode, explaination: input, 
 														  geneFound: geneFound													 
 														  });
@@ -167,17 +166,17 @@
 		},
 				
         _create : function () {        	    	
-        	
+            
             var self = this;  
+
             self.element.val(self._showSearchMsg());                    
             self._addHitEnterBeforeDropDownListOpensEvent(); 
             	
             self.element.bind('keyup', function(e) {
-            	//console.log('key up..');	
             	
             	// when input text becomes empty string (ie, due to deletion)
             	if ( self.element.val() == '' ){
-            		$('img.facetInfo').hide();
+            		//$('img.facetInfo').hide();
             		
             		for( var i=0; i<facetDivs.length; i++ ){
             			$('div#' + facetDivs[i] + ' span.facetCount').text(''); 					 
@@ -192,12 +191,12 @@
             		// ie, users use keyboard, instead of mouse, to navigate the list and hit enter to choose a term
             		if (self.options.mouseSelected == 0 ){                    	
             			// use the value in the input box for query 
-                    	//console.log('hit enter');			
+                    	        //console.log('hit enter');			
             			if (self.options.hitEnterBeforeDropDownListOpensVal == 1){
             				//console.log('hitEnterBeforeDropDownListOpens');	
             				// sourceCallback() is automatically called when dropdown list is open
             				// so we need to call it now to simulate dropdown list open
-            				self.options.doDataTable = true;
+            				self.options.doDataTable = true;                                       
             				self.sourceCallback(self); // ajax!!                    		
             			}  
             		}					
@@ -215,7 +214,7 @@
             }              
             
             $('button#acSearch').click(function(){    
-                console.log('search');        	
+                //console.log(' click search');        	
             	if ( self.term == undefined ){            	
             		self.term = "*";
             	}            	
@@ -296,7 +295,7 @@
 					var fld = aFields[f];
 					var val = docs[d][fld];
 					//console.log('field: ' + fld + ' for ' + val);
-					if ( (fld == 'mp_term_synonym' || fld == 'ma_term_synonym' || 'annotationTermName') && val ){
+					if ( (fld == 'mp_term_synonym' || fld == 'ma_term_synonym' || fld == 'annotationTermName') && val ){
 						var aVals = docs[d][fld];
 						
 						for ( var v=0; v<aVals.length; v++ ){						
@@ -306,7 +305,10 @@
 							}	
 						}						
 					}								
-					else if ( val ){
+					else if ( val ){        
+                                                if ( typeof val == 'object' ){
+                                                        val = val.toString();
+                                                }
 						if ( val.toLowerCase().indexOf(sQuery) != -1 || sQuery.indexOf('*') != -1 ){				
 							list.push(self.options.srcLabel[fld] + ' : ' + val);
 						}
@@ -595,12 +597,12 @@
     		if ( self.term === undefined || self.term == '' ){
     			self.term = '*:*';
     		}
-    		
+                    		
     		// only Enter event will fire and not other keyup/down events
     		if ( window.location.pathname != self.options.search_pathname && self.options.hitEnterBeforeDropDownListOpensVal == 1 ){    			
     			self._trigger("redirectedSearch", null, { q: self.term, 
-    													  type: self.options.searchMode, 
-    				                                      geneFound: self.options.geneFound    				                                    
+    								  type: self.options.searchMode, 
+    		  	                                          geneFound: self.options.geneFound    				                                    
     				                                      });
     		}
     		  		
@@ -609,19 +611,20 @@
     		/*params.explaination = self.term;
     		params.geneFound = self.options.geneFound;
     		*/   
-    		//console.log("check self.term: "+ self.term);
+    		
     		
     		// loadSideBar reacts to all non-enter keyup events. Ie, typing in input box triggers changes in facet 
     		// but will not load dataTable
 			self._trigger("loadSideBar", null, {				
     			//geneFound: self.options.geneFound, 
-    			q: self.term																					   
+    			q:  self.term																					   
     		});    
 			// loadDataTable reacts to 'enter', 'select' and 'search button'
 			if ( self.options.doDataTable ){	
 				//console.log('do datatable');
 	    		self._trigger("loadDataTable", null, params);
 			}	    	
+                
     	},
     	
     	destroy: function () {
