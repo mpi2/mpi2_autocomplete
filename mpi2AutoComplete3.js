@@ -7,7 +7,7 @@
     MPI2.AutoComplete = {};    
 	MPI2.AutoComplete.mapping = {};
 	
-    $.widget('MPI2.mpi2AutoComplete', $.ui.autocomplete, {	
+    $.widget('MPI2.mpi2AutoComplete3', $.ui.autocomplete, {	
 
     	options: {
     		source: function () {
