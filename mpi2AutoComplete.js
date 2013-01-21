@@ -1,3 +1,21 @@
+/**
+ * Copyright © 2011-2013 EMBL - European Bioinformatics Institute
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License.  
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * autocompleteWidget: controls the user input and do all the faceting accounting.
+ * 
+ */
 (function ($) {
     'use strict';
 
@@ -7,12 +25,13 @@
     MPI2.AutoComplete = {};    
 	MPI2.AutoComplete.mapping = {};
 	
-    $.widget('MPI2.mpi2AutoComplete1', $.ui.autocomplete, {	
+    $.widget('MPI2.mpi2AutoComplete', $.ui.autocomplete, {	
 
     	options: {
     		source: function () {
 				this.sourceCallback.apply(this, arguments);				
-			},			
+			},
+			loadWaiting: "<img src='img/loading_small.gif' />",
 			grouppingId : 'mgi_accession_id',
 			searchFields: ["marker_symbol", "mgi_accession_id_key", "marker_name", "synonym", "marker_synonym", "allele_synonym"],
 			commonQryParams: {					
@@ -46,30 +65,28 @@
 					procedure_name    : 'Procedure Name',
 					parameter_name    : 'Parameter Name',
 					annotationTermName: 'Image Annotation',
-					expName           : 'Image Experiment'
+					expName           : 'Image Experiment',
+					symbol            : 'Image symbol'					
 			},
 			facetTypeParams : {	
-					gene      : {type: 'gene'},
-					phenotype : {type: "phenotype", fq: "ontology_subset:*", fl: "mp_id,mp_term,mp_definition,top_level_mp_term"},
-					parameter : {type: "parameter", fq: "pipeline_stable_id:IMPC_001"},
-					image     : {type: "image", fq: "annotationTermId:M*"}					
-			},		 						
+					gene     : {type: 'gene', core: 'gene', fq: 'undefined'},
+					mp       : {type: "phenotype", core: 'mp', fq: "ontology_subset:*", fl: "mp_id,mp_term,mp_definition,top_level_mp_term"},
+					pipeline : {type: "parameter", core: 'pipeline', fq: "pipeline_stable_id:IMPC_001"},
+					images   : {type: "image", core: 'images', fq: "annotationTermId:M* OR expName:* OR symbol:* OR higherLevelMaTermName:* OR higherLevelMpTermName:*"}					
+			},	
+			fq: null, // default
 			//solrBaseURL_bytemark:'http://ikmc.vm.bytemark.co.uk:8983/solr/', // working
-			solrBaseURL_bytemark:'https://dev.mousephenotype.org/bytemark/solr/',
+			solrBaseURL_bytemark: drupalBaseUrl + '/bytemark/solr/',
 			//solrBaseURL_bytemark:'https://beta.mousephenotype.org/mi/solr/', // not working
-			solrBaseURL_ebi: 'https://dev.mousephenotype.org/mi/solr/', // working
+			solrBaseURL_ebi: drupalBaseUrl + '/mi/solr/', // working
 			mouseSelected: 0,	
             minLength: 1,
             delay: 300,  
             doneSourceCall: 0,           
-			facets: ['geneFacet', 'phenotypeFacet', 'tissueFacet', 'pipelineFacet', 'imageFacet'],	
-                 
-	    	//search_pathname: '/search',
-	    	//solrBaseURL_ebi: 'http://wwwdev.ebi.ac.uk/mi/solr/',
-            //solrBaseURL_bytemark: 'http://ikmc.vm.bytemark.co.uk:8983/solr/', 
+			facets: ['geneFacet', 'phenotypeFacet', 'tissueFacet', 'pipelineFacet', 'imageFacet'],            
             acList: [], 			  		       
 			select: function(event, ui) {				
-				//console.log(ui.item.value);
+				//console.log(ui.item.value);   
 				var thisWidget = $(this).data().mpi2AutoComplete; // this widget
 				thisWidget.options.mouseSelected = 1;
 				
@@ -85,9 +102,9 @@
         
 		_inputValMappingForCallBack: function(input, srchBtn){
 			
-			var self = this;
-			var termVal = input.replace(/^(.+)\s(:)\s(.+)/, '$3');
-			//console.log("input: "+ termVal);
+			var self = this;			
+			$('div#facetBrowser').html(MPI2.searchAndFacetConfig.spinner);			
+			var termVal = input.replace(/^(.+)\s(:)\s(.+)/, '$3');			
 			var displayField = input.replace(/^(.+)\s(:)\s(.+)/, '$1');
 			var solrField = input.replace(/^(.+)\s(:)\s(.+)/, '$1').replace(/ /g, '_').toLowerCase();	
 			
@@ -98,14 +115,14 @@
 			
 			var geneFound;
 			
-			if ( srchBtn ){
+			if ( srchBtn ){			
 				solrQStr = termVal;				
 			}
 			else if ( MPI2.AutoComplete.mapping[termVal] ){	
 				// MGI id	
 				geneFound = 1;				
 				
-				var geneId = MPI2.AutoComplete.mapping[termVal];					
+				var geneId = MPI2.AutoComplete.mapping[termVal];				
 				solrQStr = self.options.grouppingId + ':"' + geneId.replace(/:/g,"\\:") + '"';				
 				//solrParams = self._makeSolrURLParams(solrQStr);				
 				//console.log('MOUSE1: '+  ' -- ' + ' termVal: ' + termVal);	
@@ -121,26 +138,30 @@
 				else if ( solrField == 'image_experiment'){
 					solrField = 'expName';
 				}
+				else if ( solrField == 'image_symbol'){
+					solrField = 'symbol';
+				}
 								
-				solrQStr = solrField + ':' + '"' + termVal + '"';
-				//solrParams = self._makeSolrURLParams(solrQStr);							
-				
-				//console.log('MOUSE2 : '+ solrQStr);	
+				solrQStr = solrField + ':' + '"' + termVal + '"';							
 			}	
+						
+			// hash state stuff			
+			window.location.hash = 'q=' + solrQStr + "&core=" + self.options.searchMode 
+			                     + '&fq=' + self.options.facetTypeParams[self.options.searchMode].fq;	
+			
+			$('div#userKeyword').html('Search keyword: ' + input);
 			
 			var pathname = window.location.pathname;			
-
-			if ( pathname != self.options.search_pathname ){					
-				self._trigger("redirectedSearch", null, { q: solrQStr, type: self.options.searchMode, explaination: input, 
-														  geneFound: geneFound													 
-														  });
+			if ( pathname != self.options.search_pathname ){			
+				self._trigger("redirectedSearch", null, { q: solrQStr, core: self.options.searchMode, 
+					fq: self.options.facetTypeParams[self.options.searchMode].fq });
 			}						
-
-			self._trigger("loadSideBar", null, { q: solrQStr });	
-			self._trigger("loadDataTable", null, { q: solrQStr, type: self.options.searchMode, 
-					explaination: input, geneFound: geneFound });			
+			
+			//console.log('Gene: '+ self.options.geneFound + ' - mp: '+ self.options.mpFound + ' - pipeline: '+ self.options.pipelineFound + ' - img: '+ self.options.imagesFound);			
+			
+			self._trigger("loadSideBar", null, { q: solrQStr, core: self.options.searchMode, fq: self.options.fq });
 		},
-
+		
 		_addHitEnterBeforeDropDownListOpensEvent: function(){
 			var self = this;			
 			var suppressKeyPress;
@@ -150,34 +171,33 @@
 				var keyCode = $.ui.keyCode;
 				//alert('keycode: ' + keyCode);
 				switch( event.keyCode ) {				
-				case keyCode.ENTER:		
+				case keyCode.ENTER:
 				case keyCode.NUMPAD_ENTER:
-					// when user hits ENTER before menu is open
+					// when user hits ENTER before menu is open					
 					if ( !self.menu.active ) {
 						var term = self.element.val();
 						if ( term == '' ){		            	
 							self.term = '*';
-		            	}							
+		            	}						
 						self.options.hitEnterBeforeDropDownListOpensVal = 1;
-						self.term = term;											
+						self.term = term;						
 					}					
 				}
 			});
 		},
 				
         _create : function () {        	    	
-            
+        	
             var self = this;  
-
             self.element.val(self._showSearchMsg());                    
             self._addHitEnterBeforeDropDownListOpensEvent(); 
             	
             self.element.bind('keyup', function(e) {
+            	//console.log('key up..');	
             	
             	// when input text becomes empty string (ie, due to deletion)
             	if ( self.element.val() == '' ){
-            		//$('img.facetInfo').hide();
-            		
+            		            		
             		for( var i=0; i<facetDivs.length; i++ ){
             			$('div#' + facetDivs[i] + ' span.facetCount').text(''); 					 
 						$('div#' + facetDivs[i] + ' div.facetCatList').html('');
@@ -186,39 +206,46 @@
             		
             	if (e.keyCode == 13) {            	
             		self.close();                    
-            		                    
+            		             
+            		$('div#facetBrowser').html(MPI2.searchAndFacetConfig.spinner);
+            		
             		// need to distinguish between enter on the input box and enter on the drop down list
             		// ie, users use keyboard, instead of mouse, to navigate the list and hit enter to choose a term
             		if (self.options.mouseSelected == 0 ){                    	
             			// use the value in the input box for query 
-                    	        //console.log('hit enter');			
+                    			
             			if (self.options.hitEnterBeforeDropDownListOpensVal == 1){
             				//console.log('hitEnterBeforeDropDownListOpens');	
             				// sourceCallback() is automatically called when dropdown list is open
-            				// so we need to call it now to simulate dropdown list open
-            				self.options.doDataTable = true;                                       
+            				// so we need to call it now to simulate dropdown list open          				
+            				//self.options.doDataTable = true;            				
             				self.sourceCallback(self); // ajax!!                    		
             			}  
-            		}					
+            		}
+            		else {            		
+            			$('div#facetBrowser').html(MPI2.searchAndFacetConfig.endOfSearch);
+            		}
             	}  
             	else {            
-            		self.options.doDataTable = false;
+            		//self.options.doDataTable = false;
             	}
             }); 
            
-            // test if coming from redirected page, if yes, data is already defined.
-            // Ie, no default loading of all data in facet 
-            if ( typeof data == 'undefined'){              	
-        	self.options.doDataTable = true;        		
+            // if search is not coming from redirected page, data is not defined
+            // and we want to loading data in sidebar           
+            if ( typeof data == 'undefined'){            
+        		//self.options.doDataTable = true;            	
+        		//$('div#facetBrowser').html(MPI2.searchAndFacetConfig.endOfSearch);
                	self.sourceCallback(self);      
-            }              
-            
-            $('button#acSearch').click(function(){    
-                //console.log(' click search');        	
-            	if ( self.term == undefined ){            	
+        	} 
+                        
+            $('button#acSearch').click(function(){ 
+            	//console.log('check input: ' + self.element.val());
+            	if ( self.term == undefined || self.element.val() == self._showSearchMsg() ){            	
             		self.term = "*";
-            	}            	
-		self._inputValMappingForCallBack(self.term, true); 
+            	}      
+            	self.element.val(self._showSearchMsg());
+				self._inputValMappingForCallBack(self.term, true); 
             });
 
             var facetDivs = self.options.facets;			
@@ -226,14 +253,13 @@
             // refresh facet counts and facet tables
             self.element.click(function(){
             	self.term = undefined; 		
-            	$('img.facetInfo').hide();
-            	
+            	            	
 				for( var i=0; i<facetDivs.length; i++ ){
 					$('div#' + facetDivs[i] + ' span.facetCount').text('');
 					$('div#' + facetDivs[i] + ' div.facetCatList').html('');	
 				}            	
-            });   
-            
+            });      
+           
             $.ui.autocomplete.prototype._create.apply(this);			
         },   
 
@@ -282,7 +308,6 @@
 			var matchesFound = json.response.numFound;
 			//console.log('FOUND: ' + sDataType + ' found: ' + matchesFound);			
 			
-			//console.log(json);
 			self.options[sDataType + 'Found'] = matchesFound;
 		
 			$('div#' + sDivId + ' span.facetCount').text(matchesFound);
@@ -295,7 +320,8 @@
 					var fld = aFields[f];
 					var val = docs[d][fld];
 					//console.log('field: ' + fld + ' for ' + val);
-					if ( (fld == 'mp_term_synonym' || fld == 'ma_term_synonym' || fld == 'annotationTermName') && val ){
+					if ( (fld == 'mp_term_synonym' || fld == 'ma_term_synonym' 
+						  || fld == 'annotationTermName' || fld == 'symbol' ) && val ){
 						var aVals = docs[d][fld];
 						
 						for ( var v=0; v<aVals.length; v++ ){						
@@ -305,10 +331,11 @@
 							}	
 						}						
 					}								
-					else if ( val ){        
-                                                if ( typeof val == 'object' ){
-                                                        val = val.toString();
-                                                }
+					else if ( val ){
+						//console.log(typeof val + ' -- '+  val.toString());
+						if ( typeof val == 'object' ){
+							val = val.toString();
+						} 
 						if ( val.toLowerCase().indexOf(sQuery) != -1 || sQuery.indexOf('*') != -1 ){				
 							list.push(self.options.srcLabel[fld] + ' : ' + val);
 						}
@@ -321,9 +348,8 @@
 		
 		_parseGeneGroupedJson: function (json, query) {
 			var self = this;              
-			//console.log('query: '+ query);
-						
-			//console.log(json);
+			//console.log('query: '+ query);				
+			
            	var g = json.grouped[self.options.grouppingId]; 
            	var maxRow = json.responseHeader.params.rows;
            	var matchesFound = g.matches;
@@ -396,20 +422,25 @@
         
 		_setSearchMode: function(oCounts){
 			var self = this;			
-		
-			// work out search mode to trigger geneGrid or sopGrid
+			//console.log('check counts: ' );
+			//console.log(oCounts);
+			
+			// priority order of facet to be opened based on search result
 			if ( oCounts.geneFound != 0 ){
 				return 'gene';
 			}			
-			else if ( oCounts.mpFound != 0){	
-				return 'phenotype';			
+			else if ( oCounts.mpFound != 0){				
+				return 'mp';			
 			}    		
-    		else if ( oCounts.sopFound != 0 ){	
-    			return 'parameter';						
+    		else if ( oCounts.sopFound != 0 ){    			
+    			return 'pipeline';						
 			}	
-    		else if ( oCounts.imgFound != 0 ){
-    			return 'image';						
+    		else if ( oCounts.imgFound != 0 ){    			
+    			return 'images';						
 			}
+    		else {
+    			return 'gene'; // default
+    		}
 		},	
 
         sourceCallback: function (request, response) {
@@ -434,21 +465,21 @@
         		q = '*:*'; // when user types *              
         	}	        		
         				
- 	    	self.options.queryParams_gene.q = q; 	    	
+ 	    	self.options.queryParams_gene.q = q; 	    	 	
 			
-			//console.log($.extend({}, self.options.queryParams_gene, self.options.commonQryParams));
  	    	// facet types are done sequencially; starting from gene
         	$.ajax({            	    
         			url: self.options.solrBaseURL_bytemark + 'gene/search',
             	    data: self.options.queryParams_gene,
             	    dataType: 'jsonp',
             	    jsonp: 'json.wrf',
-            	    timeout: 10000,
+            	    timeout: 5000,
             	    success: function (geneSolrResponse) { 
 						self._doPipelineAutoSuggest(geneSolrResponse, q, response); 
             	    },
             	    error: function (jqXHR, textStatus, errorThrown) {
-            	        response(['AJAX error']);
+            	        //response('AJAX error');            	        
+            	        $('div#facetBrowser').html('Error fetching data ...');
             	    }            	
         	});
     	},
@@ -466,10 +497,14 @@
         	    data: queryParams,
         	    dataType: 'jsonp',
         	    jsonp: 'json.wrf',
-        	    timeout: 10000,
+        	    timeout: 5000,
         	    success: function (sopSolrResponse) {
         	    	self._doTissueAutoSuggest(geneSolrResponse, sopSolrResponse, q, response); 
-        	    }
+        	    },
+    			error: function (jqXHR, textStatus, errorThrown) {
+    				//response('AJAX error');            	        
+    				$('div#facetBrowser').html('Error fetching data ...');
+    			} 
     		});
     	},	
     	
@@ -491,7 +526,11 @@
         	    timeout: 10000,
         	    success: function (maSolrResponse) {
         	    	self._doImageAutosuggest(geneSolrResponse, sopSolrResponse, maSolrResponse, q, response); 
-        	    }
+        	    },
+    			error: function (jqXHR, textStatus, errorThrown) {
+    				//response('AJAX error');            	        
+    				$('div#facetBrowser').html('Error fetching data ...');
+    			} 
     		});
     	},
     	
@@ -502,8 +541,8 @@
     			'defType': 'edismax',
     			'wt': 'json',
     			'rows': 4,    			
-    			'fq' : "annotationTermId:M*", 
-    			'fl' : 'annotationTermId,annotationTermName,expName,symbol,',
+    			//'fq' : "annotationTermId:M* OR expName=* OR symbol:*", 
+    			'fl' : 'higherLevelMaTermName,higherLevelMpTermName,annotationTermId,annotationTermName,expName,symbol',
     			'q': q    			
     		};
     		
@@ -512,11 +551,10 @@
 	    		queryParams.qf = 'auto_suggest';	    		
 	    	}  
 	    	else if ( queryParams.q.indexOf('*') == -1 ){	    	
-	    		queryParams.qf = 'text';	    		
-	    	}	    	
-	    	    		    		
-    		//console.log(queryParams);
-    		$.ajax({
+	    		queryParams.qf = 'text_search';	    		
+	    	} 
+    		
+    		$.ajax({        	    
         	    url: self.options.solrBaseURL_ebi + 'images/select',
         	    data: queryParams,
         	    dataType: 'jsonp',
@@ -524,7 +562,11 @@
         	    timeout: 10000,
         	    success: function (imgSolrResponse) {        	    	
         	    	self._doMPAutoSuggest(geneSolrResponse, sopSolrResponse, maSolrResponse, imgSolrResponse, q, response); 
-        	    }
+        	    },
+    			error: function (jqXHR, textStatus, errorThrown) {
+    				//response('AJAX error');            	        
+    				$('div#facetBrowser').html('Error fetching data ...');
+    			} 
     		});
     	},
     	
@@ -552,10 +594,15 @@
         	    	q = q.replace(/\*$/g, ""); // need to remove trailing * 
         	    	
         	    	// all JSONs from each solr query are parsed in one go here
+        	    	$('div#geneFacet span.facetCount').html(self.options.loadWaiting);
+        	    	$('div#mpFacet span.facetCount').html(self.options.loadWaiting);
+        	    	$('div#pipelineFacet span.facetCount').html(self.options.loadWaiting);
+        	    	$('div#imagesFacet span.facetCount').html(self.options.loadWaiting);
+        	    	
         	    	self._parseGeneGroupedJson(geneSolrResponse, q);  
         	    	self._parseJson(sopSolrResponse, q, 'sop', 'pipelineFacet', ['parameter_name', 'procedure_name']);
-        	    	self._parseJson(mpSolrResponse, q, 'mp', 'phenotypeFacet', ['mp_id', 'mp_term', 'mp_term_synonym']);
-        	    	self._parseJson(imgSolrResponse, q, 'img', 'imageFacet', ['annotationTermName', 'expName']);        	    	
+        	    	self._parseJson(mpSolrResponse, q, 'mp', 'mpFacet', ['mp_id', 'mp_term', 'mp_term_synonym']);
+        	    	self._parseJson(imgSolrResponse, q, 'img', 'imagesFacet', ['annotationTermName', 'expName', 'symbol']);        	    	
         	    	// hide for now
         	    	//self._parseJson(maSolrResponse, q, 'ma', 'tissueFacet', ['ma_id', 'ma_term', 'ma_term_synonym']);
         	    	
@@ -574,58 +621,99 @@
         	    	self.options.doneSourceCall = 1;
         	    	
         	    	//console.log('doneSouceCall: '+ self.options.doneSourceCall);
-        	    	if ( response ){
+        	    	if ( response ){        	    		
         	    		// response is defined only after dropdown list is open
         	    		// all other key events do not trigger opening dropdown list
         	    		//response(self.options.acList);        	    		
         	    		response(self.options.acList.slice(0,4)); // return only first 4 terms in the list for now
-        	    	} 
-        	    	self._doCallBacks();        	    		
-        	    	
+        	    	}
+        	    	       	    	
+        	    	self._doCallBacks();         	    	
         	    },
         	    error: function (jqXHR, textStatus, errorThrown) {
-        	        response(['AJAX error']);
-        	    }
+    				//response('AJAX error');            	        
+    				$('div#facetBrowser').html('Error fetching data ...');
+    			}        	    
     		});    			
     	},    	
     	    	
     	_doCallBacks: function(){
-    		
+    		    		
     		var self = this;
     		self.options.doneSourceCall = 0; // refresh
     		
     		if ( self.term === undefined || self.term == '' ){
     			self.term = '*:*';
     		}
-                    		
-    		// only Enter event will fire and not other keyup/down events
-    		if ( window.location.pathname != self.options.search_pathname && self.options.hitEnterBeforeDropDownListOpensVal == 1 ){    			
-    			self._trigger("redirectedSearch", null, { q: self.term, 
-    								  type: self.options.searchMode, 
-    		  	                                          geneFound: self.options.geneFound    				                                    
-    				                                      });
+    		
+    		$('div#facetBrowser').html(MPI2.searchAndFacetConfig.endOfSearch); 
+    		if ( self.options.hitEnterBeforeDropDownListOpensVal== 1){  
+    			//console.log('fq check: ' + MPI2.searchAndFacetConfig.facetParams[self.options.searchMode+'Facet'].fq);
+    			window.location.hash = 'q=' + self.term + '&core=' + self.options.searchMode 
+    			+ '&fq=' + MPI2.searchAndFacetConfig.facetParams[self.options.searchMode+'Facet'].fq;    			  
     		}
-    		  		
+    			
+    		// only Enter event will fire and not other keyup/down events
+    		if ( window.location.pathname != self.options.search_pathname && self.options.hitEnterBeforeDropDownListOpensVal == 1 ){ 
+    			//console.log('redirect chk hash: ' + window.location.hash);
+    			self._trigger("redirectedSearch", null, { q: self.term, core: self.options.searchMode, 
+    				fq: MPI2.searchAndFacetConfig.facetParams[self.options.searchMode+'Facet'].fq });
+    			
+    		}
+    			
     		var params = self.options.facetTypeParams[self.options.searchMode];    		    		
-    		params.q = self.term;	
-    		/*params.explaination = self.term;
-    		params.geneFound = self.options.geneFound;
-    		*/   
+    		params.q = self.term;    		   		
+    		   		    
+    		//console.log('check url: '+ window.location.href);
     		
+    		if ( window.location.hash != '' ){
+    			// search page with hash state in url
+    			//console.log('hash: '+ window.location.hash);
+    			
+    			var coreName;
+    			var hashParams = {};
+    			if ( window.location.hash == '#' ){
+    				// take care of IE
+    				coreName = 'gene';
+    				hashParams.q = self.term;
+    			}
+    			else {
+    				//console.log(window.location.hash.substring(1));
+    				hashParams = $.fn.parseHashString(window.location.hash.substring(1));    			
+    				coreName = hashParams.coreName;    			
+    			}
+    			params = MPI2.searchAndFacetConfig.facetParams[coreName+'Facet'].params;
     		
-    		// loadSideBar reacts to all non-enter keyup events. Ie, typing in input box triggers changes in facet 
-    		// but will not load dataTable
+    			self.term = hashParams.q;
+    			params.q = self.term;
+    			params.core = coreName;
+    			
+    			$('div#userKeyword').html('Search keyword: ' + self.term);	
+    			    			
+    			self.options.fq = hashParams.fq;		    			
+    			self.options.searchMode = coreName;    	
+    			self.options.doDataTable = false;
+    			//console.log('TEST: '+ hashParams.fq);
+    		}
+    		else if ( location.href.indexOf("/search?") != -1 ){
+    			//console.log('*******redirected: ' + location.href);
+    			var urlParams = $.fn.parseUrlString(location.href);
+    			
+    			self.term = urlParams.q;
+    			self.options.searchMode = urlParams.core;
+    			//$('div#userKeyword').html('2 Search keyword: ' + urlParams.q);   		
+    			   			
+    			// replace url with hash and reload to convert redirected GET page into hash state
+    			document.location.href = 'search' + '#q=' + urlParams.q + '&core=' + urlParams.core + '&fq=' + urlParams.fq;    			
+    		}
+    	        		
+    		// when loadSideBar is done, dataTable will be loaded based on search result    		
 			self._trigger("loadSideBar", null, {				
-    			//geneFound: self.options.geneFound, 
-    			q:  self.term																					   
-    		});    
-			// loadDataTable reacts to 'enter', 'select' and 'search button'
-			if ( self.options.doDataTable ){	
-				//console.log('do datatable');
-	    		self._trigger("loadDataTable", null, params);
-			}	    	
-                
-    	},
+    			//geneFound: self.options.geneFound,				
+    			q: self.term, core: self.options.searchMode, fq: self.options.fq 																					   
+    		});		
+    		
+    	},	
     	
     	destroy: function () {
     	    this.element.removeClass('ui-autocomplete-input');
