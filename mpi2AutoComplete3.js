@@ -76,9 +76,9 @@
 			},	
 			fq: null, // default
 			//solrBaseURL_bytemark:'http://ikmc.vm.bytemark.co.uk:8983/solr/', // working
-			solrBaseURL_bytemark: drupalBaseUrl + '/bytemark/solr/',
+			solrBaseURL_bytemark: 'http://dev.mousephenotype.org/bytemark/solr/',
 			//solrBaseURL_bytemark:'https://beta.mousephenotype.org/mi/solr/', // not working
-			solrBaseURL_ebi: drupalBaseUrl + '/mi/solr/', // working
+			solrBaseURL_ebi: 'http://dev.mousephenotype.org/mi/impc/dev/solr/', // working
 			mouseSelected: 0,	
             minLength: 1,
             delay: 300,  
