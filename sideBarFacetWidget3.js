@@ -883,9 +883,9 @@
 	    	}
 	    	
 	    	// reload sidebar for hash state
-	    	console.log('## fq: ' + self.options.data.fq);
+	    	//console.log('## fq: ' + self.options.data.fq);
 	    	if ( self.options.data.core == 'images' && self.options.data.fq.match(/annotationTermId.+/)){
-	    		console.log('UNfiltered images fq: ' + self.options.data.fq);
+	    		//console.log('UNfiltered images fq: ' + self.options.data.fq);
     			var solrSrchParams = $.extend({}, MPI2.searchAndFacetConfig.facetParams[facetDivId].params, self.options.commonParams);						
     			solrSrchParams.q = self.options.data.q;
 			
@@ -898,7 +898,7 @@
     			self._invokeFacetDataTable(solrSrchParams, facetDivId, MPI2.searchAndFacetConfig.facetParams[facetDivId].gridName, true); 
     		}
 	    	else if ( self.options.data.core == 'images' && self.options.data.fq.match(/expName.+|higherLevel.+|subtype.+/) ){	    
-	    		console.log('filtered images fq: ' + self.options.data.fq);
+	    		//console.log('filtered images fq: ' + self.options.data.fq);
 	    		var obj = $('div#imagesFacet div.facetCatList').find("table#imgFacet a[class='" + self.options.data.fq + "']");	    		
 	    		self._fetchFilteredDataTable(obj, 'imagesFacet');
 	    	}       		
