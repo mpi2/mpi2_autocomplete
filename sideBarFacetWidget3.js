@@ -24,12 +24,12 @@
 	    options: {	    	
     		mpAnnotSources: ['empress', 'mgi'],	
 			//solrBaseURL_bytemark:'http://ikmc.vm.bytemark.co.uk:8983/solr/',
-    		solrBaseURL_bytemark: drupalBaseUrl + '/bytemark/solr/',
+    		solrBaseURL_bytemark: 'http://dev.mousephenotype.org/bytemark/solr/',
     		//solrBaseURL_bytemark:'https://beta.mousephenotype.org/bytemark/solr/',
 			//solrBaseURL_bytemark:'http://beta.mousephenotype.org/mi/solr/',
-			//solrBaseURL_ebi: 'https://beta.mousephenotype.org/mi/solr/',
-    		solrBaseURL_ebi: 'http://172.22.70.77:8983/solr/',
-			//solrBaseURL_ebi: drupalBaseUrl + '/mi/solr/',
+		solrBaseURL_ebi: 'https://dev.mousephenotype.org/mi/impc/dev/solr/',
+    		
+		//solrBaseURL_ebi: drupalBaseUrl + '/mi/solr/',
 			commonParams: {
 							'qf': 'auto_suggest',
 				 			'defType': 'edismax',
