@@ -1,3 +1,22 @@
+/**
+ * Copyright © 2011-2013 EMBL - European Bioinformatics Institute
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License.  
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * sideBarFacetWidget: based on the results retrieved by the autocompleteWidget
+ * and displays the facet results on the left bar.
+ * 
+ */
 (function ($) {
 	'use strict';
     $.widget('MPI2.mpi2LeftSideBar', {
@@ -5,60 +24,23 @@
 	    options: {	    	
     		mpAnnotSources: ['empress', 'mgi'],	
 			//solrBaseURL_bytemark:'http://ikmc.vm.bytemark.co.uk:8983/solr/',
-    		solrBaseURL_bytemark:'https://dev.mousephenotype.org/bytemark/solr/',
+    		solrBaseURL_bytemark: drupalBaseUrl + '/bytemark/solr/',
     		//solrBaseURL_bytemark:'https://beta.mousephenotype.org/bytemark/solr/',
 			//solrBaseURL_bytemark:'http://beta.mousephenotype.org/mi/solr/',
 			//solrBaseURL_ebi: 'https://beta.mousephenotype.org/mi/solr/',
-			solrBaseURL_ebi: 'https://dev.mousephenotype.org/mi/solr/',
+    		solrBaseURL_ebi: 'http://172.22.70.77:8983/solr/',
+			//solrBaseURL_ebi: drupalBaseUrl + '/mi/solr/',
 			commonParams: {
 							'qf': 'auto_suggest',
 				 			'defType': 'edismax',
 				 			'wt': 'json'
 				 			//'start' : 0				 			
-				 			},
-			facetId2SearchType: {
-								geneFacet: {type: 'gene', 
-											params: {'sort': "marker_symbol asc"},
-											tableHeader: "<thead><th>Gene</th><th>Latest Status</th><th>Register for Updates</th></thead>",											
-											tableCols: 3,
-											solrCoreName: 'gene',
-											gridName: 'geneGrid'				 			
-								},
-								pipelineFacet: {type: 'protocol', 
-												params:{'fq': 'pipeline_stable_id:IMPC_001'},
-												tableHeader: '<thead><th>Parameter</th><th>Procedure</th><th>Pipeline</th></thead>',
-												tableCols: 3,
-												solrCoreName: 'pipeline',
-												gridName: 'pipelineGrid'	
-   								},
-   								phenotypeFacet: {type: 'phenotype', 
-   												 params: {'fq': "ontology_subset:*",
-   														  'fl': 'mp_id,mp_term,mp_definition,top_level_mp_term'},
-   												 tableHeader: '<thead><th>Phenotype</th><th>Definition</thead>',
-   												 tableCols: 2,
-   												 solrCoreName: 'mp',
-   												 gridName: 'mpGrid',
-   												 topLevelName: '',
-   												 ontology: 'mp'
-   								},
-   								imageFacet:	{type: 'image', 
-   											 params: {'fl' : 'annotationTermId,annotationTermName,expName,symbol,smallThumbnailFilePath,largeThumbnailFilePath',
-   												     'fq' : "annotationTermId:M* OR symbol:*"},
-   											 tableHeader: '<thead><th>Annotation</th><th>Example Image</th></thead>',   											
-   											 tableCols: 2,   											
-   	      									 solrCoreName: 'images',
-   	      									 gridName: 'imagesGrid',
-   	      									 topLevelName: '',
-   	      									 imgViewSwitcherDisplay: 'Annotation View',
-   	      									 forceReloadImageDataTable: false,
-   	      									 showImgView: true
-   								}   											 
-			}
+				 			}			
 	    },    
-		
+			    
     	_create: function(){
     		// execute only once 	
-    		var self = this;    		    		
+    		var self = this;    		 		
     		    		
 			$('div.facetCat').click(function(){
 				
@@ -72,10 +54,12 @@
 					$(this).parent().siblings('.facetCatList').show(); // show itself					
 					$(this).addClass('facetCatUp');
 					var facetDivId = $(this).parent().parent().attr('id');	
-					var gridName = self.options.facetId2SearchType[facetDivId].gridName;
-					var type = self.options.facetId2SearchType[facetDivId].type;
+					var gridName = MPI2.searchAndFacetConfig.facetParams[facetDivId].gridName;
+					var solrCoreName = MPI2.searchAndFacetConfig.facetParams[facetDivId].solrCoreName;
+					//var type = MPI2.searchAndFacetConfig.facetParams[facetDivId].type;
 					var solrSrchParams = {};
-										
+					var hashParams = {};
+					
 					// also triggers SOP/gene/MP grid depending on what facet is clicked
 					if (facetDivId == 'geneFacet'){
 						if (self.options.marker_type_filter_params){
@@ -83,17 +67,24 @@
 						}
 	                }					
 					else {						
-						solrSrchParams = $.extend({}, self.options.facetId2SearchType[facetDivId].params, self.options.commonParams);						
+						solrSrchParams = $.extend({}, MPI2.searchAndFacetConfig.facetParams[facetDivId].params, self.options.commonParams);						
 					}
-									
+					
 					solrSrchParams.q = self.options.data.q; 
 					
-					// sanger grid code
-					//$(self.options.geneGridElem).trigger('search', [{type: type, solrParams: solrSrchParams }]);
-					// end of sanger grid code
+					// for images, qf is either auto_suggest or text_search depending on query string
+					if (facetDivId == 'imagesFacet' && solrSrchParams.q.indexOf('*') == -1 ){
+						solrSrchParams.qf = 'text_search';
+					}	
+					
+					hashParams.q = self.options.data.q;
+					hashParams.core = solrCoreName;
+					hashParams.fq = MPI2.searchAndFacetConfig.facetParams[facetDivId].fq;
+					// hash state stuff										
+					window.location.hash = $.fn.stringifyJsonAsUrlParams(hashParams);// + "&core=" + solrCoreName;
 					
 					// dataTable code					
-					//console.log('name: ' + self.options.facetId2SearchType[facetDivId].topLevelName);
+					//console.log('name: ' + MPI2.searchAndFacetConfig.facetParams[facetDivId].topLevelName);
 					if ( $('table#'+ gridName).size() != 1 ){
 						self._invokeFacetDataTable(solrSrchParams, facetDivId, gridName);
 					}	
@@ -101,73 +92,86 @@
 			});	
 						
 			// click on facetCount to fetch results in grid
-			$('span.facetCount').click(function(){						
-				
+			$('span.facetCount').click(function(){								
+		    	 
 				var facetDivId = $(this).parent().parent().attr('id');
-				var gridName = self.options.facetId2SearchType[facetDivId].gridName;			
+				var gridName = MPI2.searchAndFacetConfig.facetParams[facetDivId].gridName;
+				var solrCoreName = MPI2.searchAndFacetConfig.facetParams[facetDivId].solrCoreName;
 				var solrSrchParams = {}
-								
+				var hashParams = {};
+				
 				// remove highlight from selected 
 				if ( facetDivId == 'geneFacet' ){
 					$('table#gFacet td').removeClass('highlight');					
 				}
 				else if (facetDivId == 'pipelineFacet' ){
 					$('table#pipeline td[class^=procedure]').removeClass('highlight');					
-					solrSrchParams = $.extend({}, self.options.facetId2SearchType[facetDivId].params, self.options.commonParams);
-					self.options.facetId2SearchType[facetDivId].params.fq = "pipeline_stable_id:IMPC_001";					
+					solrSrchParams = $.extend({}, MPI2.searchAndFacetConfig.facetParams[facetDivId].params, self.options.commonParams);					
+					MPI2.searchAndFacetConfig.facetParams[facetDivId].params.fq = "pipeline_stable_id:IMPC_001";					
 				}	
-				else if (facetDivId == 'phenotypeFacet' ){				
+				else if (facetDivId == 'mpFacet' ){				
 					$('table#mpFacet td').removeClass('highlight');
-					solrSrchParams = $.extend({}, self.options.facetId2SearchType[facetDivId].params, self.options.commonParams);
-					self.options.facetId2SearchType[facetDivId].params.fq = "ontology_subset:*";					
+					solrSrchParams = $.extend({}, MPI2.searchAndFacetConfig.facetParams[facetDivId].params, self.options.commonParams);
+					MPI2.searchAndFacetConfig.facetParams[facetDivId].params.fq = "ontology_subset:*";					
 				}
-				else if (facetDivId == 'imageFacet' ){					
-    	    		// TO DO: invoke image grid			
+				else if (facetDivId == 'imagesFacet' ){    	    			
 					$('table#imgFacet td').removeClass('highlight');
-					solrSrchParams = $.extend({}, self.options.facetId2SearchType[facetDivId].params, self.options.commonParams);					
+					solrSrchParams = $.extend({}, MPI2.searchAndFacetConfig.facetParams[facetDivId].params, self.options.commonParams);					
 				}
-								
-				solrSrchParams.q = self.options.data.q;
-				var type = self.options.facetId2SearchType[facetDivId].type;
 				
-				// sanger grid code
-				//$(self.options.geneGridElem).trigger('search', [{type: type, solrParams: solrSrchParams}]);
-				// end of sanger grid code
+				solrSrchParams.q = self.options.data.q;
+								
+				// for images, qf is either auto_suggest or text_search depending on query string
+				if (facetDivId == 'imagesFacet' && solrSrchParams.q.indexOf('*') == -1 ){					
+					solrSrchParams.qf = 'text_search';
+				}					
+								
+				hashParams.q = self.options.data.q;
+				hashParams.core = solrCoreName;
+				hashParams.fq = MPI2.searchAndFacetConfig.facetParams[facetDivId].fq;
+				
+				// hash state stuff				   
+				window.location.hash = $.fn.stringifyJsonAsUrlParams(hashParams);// + "&core=" + solrCoreName;
 				
 				// dataTable code							
 				self._invokeFacetDataTable(solrSrchParams, facetDivId, gridName); 
 								
 			});	
     	},
-    	  
+    	    	
     	_applyFacetTopLevelFilter: function(facetDivId){
-    		var self = this;
+    		var self = this;  
     		var sTopLevelTerm = null;
     		var oSelectedTopLevel = $('div#'+ facetDivId + ' .facetTable td.highlight'); 
     		var obj = oSelectedTopLevel.siblings().find('a');    				    			
     		self._fetchFilteredDataTable(obj, facetDivId);     		
     	},
     	
-    	 _invokeFacetDataTable: function(oSolrSrchParams, facetDivId,  gridName){
+    	 _invokeFacetDataTable: function(oSolrSrchParams, facetDivId, gridName, hashState){
+    		
  	    	var self = this;
- 	    	var oVal = self.options.facetId2SearchType[facetDivId];
- 	    	var sTopLevelTerm = oVal.topLevelName; 	    	   	
+ 	    	var oVal = MPI2.searchAndFacetConfig.facetParams[facetDivId];
+ 	    	if ( hashState ){
+ 	    		oVal.forceReloadImageDataTable = true;
+ 	    	}
  	    	
- 	    	//console.log('load ' + facetDivId + ' -> ' + sTopLevelTerm); 	   
- 	    	
+ 	    	var sTopLevelTerm = oVal.topLevelName;
+ 	    	//console.log('load ' + facetDivId + ' -> ' + typeof sTopLevelTerm); 	   
+ 	    	//console.log(sTopLevelTerm == undefined);
 	 	    if ( $('div#'+ facetDivId + ' .facetTable td.highlight').size() == 1 && sTopLevelTerm != '' && !oVal.forceReloadImageDataTable){
 	 	    	// check if top level name in facet has been selected before for the current facet
-	 	 	   	// if yes, filter top level set with the selected	 	    	
+	 	 	   	// if yes, filter top level set with the selected	 
+	 	    	//console.log('applyFacetTopLevelFilter');
 	 	    	self._applyFacetTopLevelFilter(facetDivId); 	    		
 	 	    }
 	 	    else if ( $('table#' + gridName).size() == 1 
-	 	    		&&  $('div#'+ facetDivId + ' .facetTable td.highlight').size() == 0  
-	 	    		&& sTopLevelTerm == '' 
+	 	    		&&  $('div#'+ facetDivId + ' .facetTable td.highlight').size() == 0	 	    		
+	 	    		&& sTopLevelTerm == undefined
 	 	    		&& !oVal.forceReloadImageDataTable ){	
 	 	    	//console.log('here');
 	 	    	return;
 	 	    }	 	    
-	 	    else {	 	    	
+	 	    else {	 	    	    	
 	 	    	// no filtering
 	 	    	oVal.topLevelName = ''; // back to default
 	 	    	
@@ -185,29 +189,38 @@
 		 	   	}
 		 	   	var tbody = $('<tbody><tr>' + tds + '</tr></tbody>');
 		 	   	dTable.append(thead, tbody);
-		 	    	
+		 	  
 		 	   	var title = $.fn.upperCaseFirstLetter(oVal.type);	    	
 		 	   	var gridTitle = $('<div></div>').attr({'class':'gridTitle'}).html(title);
 		 	   	
 		 	   	$('div#mpi2-search').html('');	
 		 	   	
-		 	   	if (facetDivId == 'imageFacet'){	
-		 	   		// toggles two types of views for images: annotation view, image view
+		 	   	if (facetDivId == 'imagesFacet'){		 	   		
+		 	   	 
+					// toggles two types of views for images: annotation view, image view
+		 	   		var viewLabel, viewMode;
+		 	   		if ( oVal.imgViewSwitcherDisplay == 'Annotation View' ){
+		 	   			viewLabel = 'Image View: lists annotations to an image';
+		 	   			viewMode = 'imageView';
+		 	   		} 
+		 	   		else {		 	   			
+		 	   			viewLabel = 'Annotation View: groups images by annotation';
+		 	   			viewMode = 'annotView';		 	   		
+		 	   		}
 		 	   		
-		 	   		var viewLabel = oVal.imgViewSwitcherDisplay == 'Annotation View' ? 'Image View: lists annotations to an image' 
-		 	   				: 'Annotation View: groups images by annotation';
 		 	   		if (oVal.showImgView){
 		 	   			dTable.find('th:nth-child(2)').text("Image");		 	   			
 		 	   		}
 		 	   		
-		 	   		gridTitle.append($('<div></div>').attr({'id':'imgView'}).html("<span id='imgViewSubTitle'>" 
+		 	   		gridTitle.append($('<div></div>').attr({'id':'imgView','rel':viewMode}).html("<span id='imgViewSubTitle'>"		 	   		
 		 	   				+ viewLabel 
 		 	   				+ "</span><span id='imgViewSwitcher'>Show " 
 		 	   				+ oVal.imgViewSwitcherDisplay + "</span>"));
 		 	   		
 		 	   		$('div#mpi2-search').append(gridTitle, dTable);
 		 	   		
-		 	   		oInfos.showImgView = oVal.showImgView;		 	   		
+		 	   		oInfos.showImgView = oVal.showImgView;	
+		 	   	
 		 	   		$.fn.invokeDataTable(oInfos);
 		 	   		
 		 	   		$('span#imgViewSwitcher').click(function(){		 	   			
@@ -221,11 +234,16 @@
 		 	   			}		 	   			
 		 	   			
 		 	   			oVal.forceReloadImageDataTable = true;
+		 	   					 	   			
+		 	   			if ( !oVal.showImgView ){
+		 	   				delete(oSolrSrchParams['fq']); // remove default as specific fq will be added later depending on data type		 	   			
+		 	   			}
 		 	   			
 		 	   			self._invokeFacetDataTable(oSolrSrchParams, facetDivId, gridName);
 		 	   		})
 		 	   	}
-		 	   	else {		 	   			 	  
+		 	   	else {
+		 	   			 	   			 	  
 		 	   		$('div#mpi2-search').append(gridTitle, dTable);  
 		 	   		$.fn.invokeDataTable(oInfos);
 		 	   	}
@@ -233,16 +251,42 @@
  	    },
  	        	
 	    // want to use _init instead of _create to allow the widget being called each time
-	    _init : function () {
+	    _init: function () {
 			var self = this;
 			
 	    	self._doGeneSubTypeFacet();	    	
-	    	self._doMPFacet();	    	
+	    	self._doMPFacet();
+	    	//self._doMAFacet();
 			self._doPipelineFacet();
 			self._doImageFacet();
-			//self._doMAFacet();
+			
+			self._openFacet();   
 	    },
-
+	    
+	    _openFacet: function(){
+	    	var self = this;
+	    	
+	    	$('div.facetCatList').hide();
+	    	
+	    	var core = self.options.data.core;
+	    	//console.log('facet to open: ' + core);
+	    	var subCat = self.options.data.subCat;
+	    	
+	    	// priority order of facet to be opened based on search result
+	    	if (core == 'gene'){	    		
+	    		$('div#geneFacet div.facetCatList').show();	  		
+	    	}	
+	    	else if (core == 'mp'){
+	    		$('div#mpFacet div.facetCatList').show();		
+	    	}
+	    	else if (core == 'pipeline'){
+	    		$('div#pipelineFacet div.facetCatList').show();		
+	    	}
+	    	else if (core == 'images'){
+	    		$('div#imagesFacet div.facetCatList').show();		
+	    	}	    	
+	    },	   
+	    
 		_doGeneSubTypeFacet: function(){
 	    	var self = this;
 	    	
@@ -252,7 +296,8 @@
 				'facet': 'on',								
 				'facet.mincount': 1,
 				'facet.limit': -1,
-				'facet.field': 'marker_type_str',               		
+				'facet.field': 'marker_type_str',  
+				'facet.sort': 'count',
 				'q': self.options.data.q}, self.options.commonParams);	
 	    	
 	    	$.ajax({ 				 					
@@ -275,49 +320,57 @@
 	    	$('div#geneFacet span.facetCount').attr({title: 'total number of unique genes'}).text(numFound);
 	    	
 	    	if (numFound > 0){
-	    		var trs = '';
+	    		var unclassified_gene_subType;
+	    		var trs = "<tr class='facetSubCat'><td colspan=2>Subtype</td></tr>";
 	    		var facets = json.facet_counts['facet_fields']['marker_type_str'];
 	    		for ( var i=0; i<facets.length; i+=2 ){		    			
 	    			//console.log( facets[i] + ' ' + facets[i+1]);
 					var type = facets[i];
 					var count = facets[i+1];			
-										
-	    			trs += "<tr><td class='geneSubtype'>" + type + "</td><td rel='" + type + "' class='geneSubtypeCount'><a rel='" + type + "'>" + count + "</a></td></tr>";	    			
-	    		} 	
+					if ( type == 'unclassified gene' ){					
+						unclassified_gene_subType = "<tr><td class='geneSubtype'>" + type + "</td><td rel='" + type + "' class='geneSubtypeCount'><a rel='" + type + "'>" + count + "</a></td></tr>";
+					}
+					else {
+						trs += "<tr><td class='geneSubtype'>" + type + "</td><td rel='" + type + "' class='geneSubtypeCount'><a rel='" + type + "'>" + count + "</a></td></tr>";
+					}
+	    		} 
+	    		if ( unclassified_gene_subType ){
+	    			trs += unclassified_gene_subType
+	    		}
 	    		
 	    		var table = "<table id='gFacet' class='facetTable'>" + trs + "</table>";				
 	    		$('div#geneFacet div.facetCatList').html(table);
 	    		
 				self._applyGeneGridResultFilterByMarkerSubType($('table#gFacet td.geneSubtypeCount a'));	    		
-    		}	    	
+    		}
+	    	
+	    	// reload sidebar for hash state
+	    	//console.log('hash str: ' + window.location.hash);
+	    	//console.log(self.options.data.fq);
+	    	//console.log(typeof self.options.data.fq);
+	    	if ( self.options.data.core == 'gene' && self.options.data.fq != undefined  ){
+	    		var subType = self.options.data.fq.replace('marker_type_str:', '').replace(/"/g,'');
+	    		//console.log('gene filtered: '+ subType);
+	    		var obj = $('div#geneFacet div.facetCatList').find("table#gFacet td[rel='" + subType + "']").find('a');	    		
+	    		self._fetchFilteredDataTable(obj, 'geneFacet');
+	    	}
+	    	else if ( self.options.data.core == 'gene' && self.options.data.fq == undefined ){
+	    		//console.log('gene UNfiltered');
+	    		var solrSrchParams = $.extend({}, MPI2.searchAndFacetConfig.facetParams['geneFacet'].params, self.options.commonParams);
+	    		//var hashParams = $.fn.parseHashString(window.location.hash.substring(1));
+	    		//solrSrchParams.q = hashParams.q;
+    			solrSrchParams.q = self.options.data.q;	
+    			
+	    		self._invokeFacetDataTable(solrSrchParams, 'geneFacet', MPI2.searchAndFacetConfig.facetParams['geneFacet'].gridName); 
+	    	}
 	    },
 
 		_applyGeneGridResultFilterByMarkerSubType: function(obj){
 			var self = this;
 
 			obj.click(function(){
-				// invoke dataTable
-				self._fetchFilteredDataTable($(this), 'geneFacet');
-				
-				/*
-				// for sanger grid
-				$('table#gFacet td').removeClass('highlight');
-				$(this).parent().siblings('td.geneSubtype').addClass('highlight');
-				
-				var marker_subType = obj.attr('rel');
-				var q = self.options.data.q;              
-                var subTypeFilter = "marker_type_str:(\"" + marker_subType + "\")";
-				self.options.marker_type_filter_params = subTypeFilter;
-				
-				// refresh geneGrid with selected marker_subtype
-				var callerElem = $(self.options.geneGridElem);				
-				callerElem.trigger('search', [{type: 'gene', 
-											   solrParams: {q: self.options.data.q, fq: subTypeFilter}
-											  }
-											 ]); 	
-				*/
-				
-				
+				// invoke dataTable				
+				self._fetchFilteredDataTable($(this), 'geneFacet');			
 			});
 		},
 		
@@ -408,7 +461,8 @@
 				'facet': 'on',								
 				'facet.mincount': 1,
 				'facet.limit': -1,
-				'facet.field': 'proc_param_name',
+				'facet.field': 'procedure_name', //proc_param_name',
+				'facet.sort': 'index',
 				'fl': 'parameter_name,parameter_stable_key,parameter_stable_id,procedure_name,procedure_stable_key,procedure_stable_id',						
 				'q': self.options.data.q}, self.options.commonParams);	    		    	
 	    	
@@ -432,22 +486,47 @@
 	    			var procedureName2IdKey = mappings[0]; // stable_id
 	    			var parameterName2IdKey = mappings[1]; // stabley_key
 	    			
-	    			var facets = json.facet_counts['facet_fields']['proc_param_name'];    	
-	    	    	
+	    			//var facets = json.facet_counts['facet_fields']['proc_param_name'];	    			
+	    			var facets = json.facet_counts['facet_fields']['procedure_name'];
+	    			
+	    			var table = $("<table id='pipeline' class='facetTable'></table>");
+	        		var trCat = $('<tr></tr>').attr({'class':'facetSubCat'});
+	        		table.append(trCat.append( $('<td></td>').attr({'colspan':2}).text('IMPC')));
+	    			
+	    			for ( var f=0; f<facets.length; f+=2 ){       			
+	        			
+	        			var procedure_name = facets[f];
+	        			var paramCount = facets[f+1];
+	        				        			
+	        			var pClass = 'procedure'+f;
+	        			var tr = $('<tr></tr>');
+	        			var td1 = $('<td></td>').attr({'class': pClass});	        			
+	        			var td2 = $('<td></td>');	        			        			
+	        			var a = $('<a></a>').attr({'class':'paramCount', 'rel': procedureName2IdKey[procedure_name].stable_id}).text(paramCount);
+	        			table.append(tr.append(td1.text(procedure_name), td2.append(a)));
+	        		}	     
+	    			
+	    			/*
 	        		for ( var f=0; f<facets.length; f+=2 ){	        			
 	        			var names = facets[f].split('___');
 	        			var procedure_name = names[0];
+	        			
+	        			console.log(procedureName2IdKey[procedure_name])
 	        			var parameter_name = names[1];
+	        			console.log(parameterName2IdKey[parameter_name])
 	        			var count = facets[f+1];
-	        				        				        			
+	        				        				        				        			
 	        			if ( !procedures_params[procedure_name] ){	        				
 	        				procedures_params[procedure_name] = [];
 	        			}	
 	        			procedures_params[procedure_name].push({param_name : parameter_name,
 	        													param_count: count});	        		
-	        		}	        		       		
+	        		}	      		       		
 	        			        		
-	        		var table = $("<table id='pipeline' class='facetTable'><caption>IMPC</caption></table>");
+	        		//var table = $("<table id='pipeline' class='facetTable'><caption>IMPC</caption></table>");
+	        		var table = $("<table id='pipeline' class='facetTable'></table>");
+	        		var trCat = $('<tr></tr>').attr({'class':'facetSubCat'});
+	        		table.append(trCat.append( $('<td></td>').attr({'colspan':2}).text('IMPC')));
 	        		
 	        		var counter=0;
 	        		for ( var i in procedures_params){
@@ -461,7 +540,7 @@
 	        			table.append(tr.append(td1.text(i), td2.append(a)));
 	        			
 	        			// skip subterms for now
-	        			/*for ( var j=0; j<procedures_params[i].length; j++ ){
+	        			for ( var j=0; j<procedures_params[i].length; j++ ){
 	        				var pmClass = pClass+'_param';
 	        				var tr = $('<tr></tr>').attr('class', pmClass);
 	        				var oParamCount = procedures_params[i][j];
@@ -474,8 +553,8 @@
 	        				
 	        				var td = $('<td></td>').attr({colspan: 2, rel: parameterName2IdKey[oParamCount.param_name].stable_key});
 	        				table.append(tr.append(td.append(a)));	        				
-	        			}*/	        			
-	        		}   		
+	        			}	        			
+	        		}  */		
 	        		
 	        		if (json.response.numFound == 0 ){
 	        			table = null;
@@ -499,20 +578,23 @@
 	        		*/
 	        		
 	        		$('table#pipeline td a.paramCount').click(function(){	
-	        			self._fetchFilteredDataTable($(this), 'pipelineFacet');
-	        			
-	        			/*$('table#pipeline td[class^=procedure]').removeClass('highlight');
-	        			$(this).parent().siblings('td[class^=procedure]').addClass('highlight');
-	        			var proc_stable_id = $(this).attr('rel');   
-	                    var solrSrchParams = $.extend({}, self.options.facetId2SearchType.pipelineFacet.params, self.options.commonParams);	                   
-	                    solrSrchParams.q = self.options.data.q;
-	                    solrSrchParams.fq = 'procedure_stable_id:' + proc_stable_id;	
-	                    
-	                    // sanger grid code
-	                    $(self.options.geneGridElem).trigger('search', [{type: 'parameter', solrParams: solrSrchParams }]);
-	                    */	 
-	        		});	        		
-	    		}		
+	        			self._fetchFilteredDataTable($(this), 'pipelineFacet');	        			
+	        		});
+	        		
+	        		// reload sidebar for hash state	        		
+	        		if ( self.options.data.core == 'pipeline' && self.options.data.fq.match(/pipeline_stable_id.+/) ){
+	        			//console.log('1 pipeline UNfiltered');
+	        			var solrSrchParams = $.extend({}, MPI2.searchAndFacetConfig.facetParams['pipelineFacet'].params, self.options.commonParams);						
+	        			solrSrchParams.q = self.options.data.q;	
+	    	    		self._invokeFacetDataTable(solrSrchParams, 'pipelineFacet', MPI2.searchAndFacetConfig.facetParams['pipelineFacet'].gridName);         			
+	    	    	}
+	        		else if ( self.options.data.core == 'pipeline' && self.options.data.fq.match(/procedure_stable_id.+/) ){
+	        			//console.log('1 pipeline FILTERED');
+	        			var proc_sid = self.options.data.fq.replace('procedure_stable_id:', '');
+	    	    		var obj = $('div#pipelineFacet div.facetCatList').find("table#pipeline a[rel='" + proc_sid + "']"); 
+	        			self._fetchFilteredDataTable(obj, 'pipelineFacet');	
+	        		}
+	    		}	    		
 	    	});	    	
 	    },   
 	    	    
@@ -529,9 +611,8 @@
 	    		var procKey  = node.procedure_stable_key;
 	    		
 	    		var paramName = node.parameter_name;
-	    		var paramSId   = node.parameter_stable_id;
-	    		var paramKey  = node.parameter_stable_key;
-	    		
+	    		var paramSId  = node.parameter_stable_id;
+	    		var paramKey  = node.parameter_stable_key;	    		
 	    			    		
 	    		if ( !procedureName2IdKey[procName] ){
 	    			procedureName2IdKey[procName] = {};
@@ -568,7 +649,7 @@
 	    		'success': function(json) {
 	    			
 	    			// update this if facet is loaded by redirected page, which does not use autocomplete
-	    			$('div#phenotypeFacet span.facetCount').attr({title: 'total number of unique phenotype terms'}).text(json.response.numFound);
+	    			$('div#mpFacet span.facetCount').attr({title: 'total number of unique phenotype terms'}).text(json.response.numFound);
 	    			
 	    			var table = $("<table id='mpFacet' class='facetTable'></table>");	    			
 	    			
@@ -588,7 +669,7 @@
 	        			
 	    	    	}    	
 	    	    	
-	    			self._displayOntologyFacet(json, 'phenotypeFacet', table);			
+	    			self._displayOntologyFacet(json, 'mpFacet', table);			
 	    		}		
 	    	});		    	
 	    },
@@ -596,7 +677,7 @@
 	    _displayOntologyFacet: function(json, facetDivId, table){	    	
 	    	
 	    	var self = this;
-	    	var ontology = self.options.facetId2SearchType[facetDivId].ontology;
+	    	var ontology = MPI2.searchAndFacetConfig.facetParams[facetDivId].ontology;
 	    	var solrBaseUrl = self.options.solrBaseURL_ebi + ontology + '/select';	    	
 	    	
 	    	if (json.response.numFound == 0 ){	    		
@@ -604,27 +685,23 @@
     		}	    			
     		$('div#'+facetDivId+ ' .facetCatList').html(table);
     		
-    		$('table#'+ ontology + 'Facet td a').click(function(){    			
-    			
-    			self._fetchFilteredDataTable($(this), facetDivId);
-    			
-    			/*       			
-    			var topLevelOntoTerm = $(this).attr('rel');   			
-    			
-    			// invoke phenotype grid
-    			var type = self.options.facetId2SearchType[facetDivId].type;
-    			var oSolrSrchParams = $.extend({}, self.options.facetId2SearchType[facetDivId].params, self.options.commonParams);
-    			
-    			// sanger grid code
-    			if ( ontology == 'mp' ){
-    				oSolrSrchParams.fq = "ontology_subset:* AND top_level_mp_term:\"" + topLevelOntoTerm + "\"";
-    			}    			 			
-    			oSolrSrchParams.q = self.options.data.q;
-    			*/
-    			// sanger grid code
-    			//$(self.options.geneGridElem).trigger('search', [{type: type, solrParams: oSolrSrchParams}]);  
-    			// end of sanger grid code
-    		});
+    		$('table#'+ ontology + 'Facet td a').click(function(){      			
+    			self._fetchFilteredDataTable($(this), facetDivId);    			
+    		});    		    		
+    		
+    		// reload sidebar for hash state   		
+	    	if ( self.options.data.core == 'mp' && self.options.data.fq != 'ontology_subset:*' ){
+	    		//console.log('MP filtered');
+	    		var sTermName = self.options.data.fq.replace('ontology_subset:* AND top_level_mp_term:', '').replace(/"/g, '');	    		
+	    		var obj = $('div#' + facetDivId + ' div.facetCatList').find("table#" + facetDivId + " a[rel='" + sTermName + "']");	    		
+	    		self._fetchFilteredDataTable(obj, facetDivId);
+	    	}
+	    	else if ( self.options.data.core == 'mp' && self.options.data.fq == 'ontology_subset:*' ){
+	    		//console.log('MP UNfiltered');
+	    		var solrSrchParams = $.extend({}, MPI2.searchAndFacetConfig.facetParams['mpFacet'].params, self.options.commonParams);						
+    			solrSrchParams.q = self.options.data.q;	
+	    		self._invokeFacetDataTable(solrSrchParams, 'mpFacet', MPI2.searchAndFacetConfig.facetParams['mpFacet'].gridName);	    		
+	    	}
     		
     		// skip display subterms for now
     		// fetch and expand children of top level MP term
@@ -645,7 +722,7 @@
     					var topLevelOntoTerm = $(this).siblings('td').find('a').attr('rel');    				
     					var thisTable = $('table#'+ ontology+ 'Facet');
     			
-    					var solrSrchParams = $.extend({}, self.options.facetId2SearchType.phenotypeFacet.params, self.options.commonParams);	                   
+    					var solrSrchParams = $.extend({}, MPI2.searchAndFacetConfig.facetParams.mpFacet.params, self.options.commonParams);	                   
     					solrSrchParams.q = self.options.data.q;
     					
     					solrSrchParams.fl = ontology+ '_id,'+ ontology + '_term,'+'ontology_subset';    					
@@ -696,40 +773,34 @@
 				'facet.mincount': 1,
 				'facet.limit': -1,				
 				'facet.sort': 'index',
-				'fl': 'annotationTermId,annotationTermName,expName',
-				'fq': "annotationTermId:M* OR symbol_gene:*",
+				'fl': 'annotationTermId,annotationTermName,expName,symbol',
+				//'fq': "annotationTermId:M* OR symbol_gene:*",  // images that have annotations only
 				'q.option': 'AND',				
 				'q': self.options.data.q 				
 				}, self.options.commonParams);
 	    	
 	    	// if users do not search with wildcard, we need to search by exact match
-	    	if (queryParams.q.indexOf(" ") != -1 ){
+	    	if ( queryParams.q.indexOf('*') != -1 ){	    	
 	    		queryParams.qf = 'auto_suggest';	    		
-	    	}  
-	    	else if ( queryParams.q.indexOf('*') == -1 ){	    	
-	    		queryParams.qf = 'text';	    		
-	    	}	    		
+	    	}
+	    	else if (queryParams.q.indexOf(" ") != -1 ){
+	    		queryParams.qf = 'text_search';	    		
+	    	} 
 	    	
 	    	var paramStr = $.fn.stringifyJsonAsUrlParams(queryParams) 
 	    		+ "&facet.field=expName"
 	    		+ "&facet.field=higherLevelMaTermName"
 	    		+ "&facet.field=higherLevelMpTermName"
 	    		+ "&facet.field=subtype"
-	    		    	
+	    	
 	    	$.ajax({	
 	    		'url': solrURL,
 	    		'data': paramStr,   //queryParams,						
 	    		'dataType': 'jsonp',
 	    		'jsonp': 'json.wrf',	    		
 	    		'success': function(json) {	 
-	    			//console.log(json);	    			
-	    			var imgBaseUrl = baseUrl + "/images?";
-    	    		var params = "q=" + self.options.data.q;    	    		
-    	    		params += "&fq=annotationTermId:M*&q.option=AND&qf=" + queryParams.qf + "&defType=edismax&wt=json";
-    	    		
-    	    		//var sumLink = $('<a></a>').attr({'href':imgBaseUrl + params, 'target':'_blank'}).text(json.response.numFound);    	    		
-	    			//$('div#imageFacet span.facetCount').attr({title: 'total number of unique images'}).html(sumLink);
-    	    		$('div#imageFacet span.facetCount').attr({title: 'total number of unique images'}).html(json.response.numFound);
+	    			    	    		
+    	    		$('div#imagesFacet span.facetCount').attr({title: 'total number of unique images'}).html(json.response.numFound);
 	    		
 	    			var table = $("<table id='imgFacet' class='facetTable'></table>");
 	    			
@@ -757,12 +828,13 @@
 	    					var imgBaseUrl = baseUrl + "/images?";
 	    					
 		    	    		var params = "q=" + self.options.data.q;
-		    	    		params += "&fq=annotationTermId:M*&q.option=AND&qf=" + queryParams.qf + "&defType=edismax&wt=json&fq=" + facetName + ":";		    	    		
+		    	    		//params += "&fq=annotationTermId:M*&q.option=AND&qf=" + queryParams.qf + "&defType=edismax&wt=json&fq=" + facetName + ":";	
+		    	    		// here we take all images - ie, not filtering on having annotations or not
+		    	    		params += "&q.option=AND&qf=" + queryParams.qf + "&defType=edismax&wt=json&fq=" + facetName + ":";	
 		    	    		params += '"' + fieldName + '"';
-		    	    		//var facetParams = "&rows=0&facet=on&facet.field=annotationTermName&facet.field=symbol&facet.mincount=1&facet.sort=index&facet.limit=-1";
-		    	    		//var facetParams = "&rows=0&facet=on&facet.field=symbol&facet.mincount=1&facet.sort=index&facet.limit=-1";
-		    	    		//var facetParams = "&facet=on&facet.field=annotationTermName&facet.field=symbol&facet.mincount=1&facet.sort=index&facet.limit=-1";
-		    	    				    	    		
+		    	    				    	    			  
+		    	    		var fqClass = facetName + ":" + '"' + fieldName + '"';
+		    	    		
 		    	    		var imgUrl = imgBaseUrl + params;	
 		    	    				    	    		
 		    	    		var infos = "{params:\"" + encodeURI(params) 
@@ -774,14 +846,12 @@
 		    	    		          + "\", solrCoreName:\"" + 'images' 
 		    	    	    		  +	"\", mode:\"" + 'imageGrid'
 		    	    		          + "\"}";		    	    		
-		    	    				    	    		
-		    	    		//var a = $('<a></a>').attr({'rel':fieldName, 'href':imgUrl, 'target':'_blank'}).text(facetCount);
-		    	    		//var a = $('<a></a>').attr({'rel':fieldName}).text(facetCount);		    	    		
-		    	    		var a = $('<a></a>').attr({'rel':infos}).text(facetCount);
+		    	    		   		
+		    	    		var a = $('<a></a>').attr({'rel':infos, 'class':fqClass}).text(facetCount);
 		    	    		var td2 = $('<td></td>').attr({'class': 'imgExperimentCount'}).append(a);
 		    	    		
 		    	    		if ( i == 0 ){
-	    						var catTr = $('<tr></tr>').attr({'class':'imgCat'});
+	    						var catTr = $('<tr></tr>').attr({'class':'facetSubCat'});
 	    						var catLabel = displayLabel[facetName];
 	    						var catTd = $('<td></td>').attr({'colspan':2}).text(catLabel);
 	    						catTr.append(catTd);
@@ -790,7 +860,7 @@
 		    	    		table.append(tr.append(td1, td2));		    	    		
 	    				}
 	    			}	    				    	    	
-	    			self._displayImageFacet(json, 'images', 'imageFacet', table);			
+	    			self._displayImageFacet(json, 'images', 'imagesFacet', table);			
 	    		}		
 	    	});	    	
 	    }, 
@@ -805,12 +875,36 @@
     		}
 	    	else {
 	    		$('div#'+facetDivId+ ' .facetCatList').html(table);
-	    		table.find('td a').click(function(){ 
+	    		table.find('td a').click(function(){	    			
 	    			// invoke filtered toplevel in dataTable
-	    			self.options.facetId2SearchType[facetDivId].showImgView = true; // default
+	    			MPI2.searchAndFacetConfig.facetParams[facetDivId].showImgView = true; // default
 	    			self._fetchFilteredDataTable($(this), facetDivId);
 	    		});	
 	    	}
+	    	
+	    	// reload sidebar for hash state
+	    	console.log('## fq: ' + self.options.data.fq);
+	    	if ( self.options.data.core == 'images' && self.options.data.fq.match(/annotationTermId.+/)){
+	    		console.log('UNfiltered images fq: ' + self.options.data.fq);
+    			var solrSrchParams = $.extend({}, MPI2.searchAndFacetConfig.facetParams[facetDivId].params, self.options.commonParams);						
+    			solrSrchParams.q = self.options.data.q;
+			
+    			// for images, qf is either auto_suggest or text_search depending on query string
+    			if ( solrSrchParams.q.indexOf('*') == -1 ){					
+    				solrSrchParams.qf = 'text_search';
+    			}					
+						
+    			// load dataTable    			
+    			self._invokeFacetDataTable(solrSrchParams, facetDivId, MPI2.searchAndFacetConfig.facetParams[facetDivId].gridName, true); 
+    		}
+	    	else if ( self.options.data.core == 'images' && self.options.data.fq.match(/expName.+|higherLevel.+|subtype.+/) ){	    
+	    		console.log('filtered images fq: ' + self.options.data.fq);
+	    		var obj = $('div#imagesFacet div.facetCatList').find("table#imgFacet a[class='" + self.options.data.fq + "']");	    		
+	    		self._fetchFilteredDataTable(obj, 'imagesFacet');
+	    	}       		
+	    	
+	    	// when last facet is done
+	    	$('div#facetBrowser').html(MPI2.searchAndFacetConfig.endOfSearch);
 	    },	
 	    
 	    _fetchFilteredDataTable: function(obj, facetDivId){
@@ -818,12 +912,15 @@
 	    	var topLevelName;			
 			var oSolrSrchParams = {}
 			var displayedTopLevelName;
-			var type = self.options.facetId2SearchType[facetDivId].type;	
+			var type = MPI2.searchAndFacetConfig.facetParams[facetDivId].type;	
 			var imgParamStr, imgFacetParams;
-			var oVal = self.options.facetId2SearchType[facetDivId];
+			var oVal = MPI2.searchAndFacetConfig.facetParams[facetDivId];
 			var dTable = $.fn.fetchEmptyTable(oVal.tableHeader, 
-                     oVal.tableCols, oVal.gridName); 			  	
+                     oVal.tableCols, oVal.gridName); // skeleton to fill data from server			  	
 
+			//console.log('oval: ');
+			//console.log(oVal);
+			
 			var title = $.fn.upperCaseFirstLetter(oVal.type);	    	
 			var gridTitle = $('<div></div>').attr({'class':'gridTitle'}).html(title);
 			
@@ -863,9 +960,11 @@
 	              			
 	            displayedTopLevelName = $('<div></div>').attr({'class':'gridSubTitle'}).html('Procedure: ' + topLevelName); 	
 	    	}
-	    	else if (facetDivId == 'imageFacet'){
+	    	else if (facetDivId == 'imagesFacet'){
 	    		
 	    		var oInfos = eval("(" + obj.attr('rel') + ")");
+	    		oSolrSrchParams.fq = obj.attr('class'); 
+	    		
 	    		topLevelName = oInfos.imgSubName;
 	    			    		
 	    		$('table#imgFacet td.imgExperiment').removeClass('highlight');
@@ -873,22 +972,24 @@
 											
 				imgParamStr = oInfos.params;								
 				
-				var imgCountInfo = "<a href='" + oInfos.fullLink + "' target='_blank'> (view all " + oInfos.imgCount + " images)</a>";
+				var imgCountInfo = "<a href='" + oInfos.fullLink + "'> (view all " + oInfos.imgCount + " images)</a>";
 				displayedTopLevelName = $('<div></div>').attr({'class':'gridSubTitle'}).html(oInfos.imgType + ' : ' + topLevelName + imgCountInfo);	
 	    	
 				// toggles two types of views for images: annotation view, image view	 	   		
-	 	   		var viewLabel, imgViewSwitcherDisplay;
+	 	   		var viewLabel, imgViewSwitcherDisplay, viewMode;
 	 	   		if ( oVal.showImgView ){
 	 	   			dTable.find('th:nth-child(2)').text("Image");	
 	 	   			viewLabel = 'Image View: lists annotations to an image';
 	 	   			imgViewSwitcherDisplay = 'Show Annotation View'; 
+	 	   			viewMode = 'imageView';
 	 	   		}
 	 	   		else {
 	 	   			viewLabel = 'Annotation View: groups images by annotation';
 	 	   			imgViewSwitcherDisplay = 'Show Image View'; 
+	 	   			viewMode = 'annotView';
 	 	   		}
 	 	   		
-	 	   		gridTitle.append($('<div></div>').attr({'id':'imgView'}).html("<span id='imgViewSubTitle'>" 
+	 	   		gridTitle.append($('<div></div>').attr({'id':'imgView', 'rel':viewMode}).html("<span id='imgViewSubTitle'>" 
 	 	   				+ viewLabel 
 	 	   				+ "</span><span id='imgViewSwitcher'>" 
 	 	   				+ imgViewSwitcherDisplay + "</span>"));
@@ -904,35 +1005,45 @@
 	    	}
 	    		    	
 	    	oVal.topLevelName = topLevelName;
-			oSolrSrchParams.q = self.options.data.q;
-			
+			oSolrSrchParams.q = self.options.data.q;			
+				
 			var oInfos = {};
 			oInfos.solrCoreName = oVal.solrCoreName;
  			oInfos.mode = oVal.gridName;
  			oInfos.dataTablePath = baseUrl + '/dataTable';
- 			if (facetDivId == 'imageFacet'){
- 				oInfos.params = imgParamStr;
- 				console.log(imgParamStr);
- 				
+ 			if (facetDivId == 'imagesFacet'){
+ 				oInfos.params = imgParamStr; 				
  				oInfos.showImgView = oVal.showImgView; 				
  			}
  			else {
  				oInfos.params = $.fn.stringifyJsonAsUrlParams(oSolrSrchParams);
- 				$('div#mpi2-search').html('');
- 				$('div#mpi2-search').append(gridTitle, displayedTopLevelName, dTable);	
- 			} 
+ 				$('div#mpi2-search').html(''); 				
+ 				$('div#mpi2-search').append(gridTitle, displayedTopLevelName, dTable); 				
+ 			}			
  			
- 	    	$.fn.invokeDataTable(oInfos);			
+ 			// hash state stuff	
+ 			var hashParams = {};
+ 			hashParams.q    = oSolrSrchParams.q;
+ 			hashParams.core = oVal.solrCoreName;
+ 			hashParams.fq   = oSolrSrchParams.fq;
+ 			//var hashParamStr = $.fn.stringifyJsonAsUrlParams(oSolrSrchParams) + "&core=" + oVal.solrCoreName;
+			var hashParamStr = $.fn.stringifyJsonAsUrlParams(hashParams);			
+						
+			window.location.hash = hashParamStr;
+						
+			$.fn.invokeDataTable(oInfos);			
 	    },
 	    
-	    _invokeDataTable: function(oInfos){
+	    /*_invokeDataTable: function(oInfos){
 	    	//console.log(JSON.stringify(oInfos, null, 2));
 	    	
 	    	$('table#' + oInfos.mode).dataTable({
+	    		"bJQueryUI": true,
 	    		"bSort" : false,
 	    		"bProcessing": true,
 	    		"bServerSide": true,	    		
-	    		"sDom": "<'row-fluid'r>t<'row-fluid'<'span6'i><'span6'p>>",
+	    		"sDom": "<'row-fluid'lr>t<'row-fluid'<'span6'i><'span6'p>>",
+	    		//"sDom": 'T<"clear">lfrtip',
 				"sPaginationType": "bootstrap",
 	    		"fnServerParams": function ( aoData ) {
 	    			aoData.push(	    			 
@@ -940,11 +1051,25 @@
 	    				 //"value": oInfos.params// + oInfos.facetParams
 	    				 "value": JSON.stringify(oInfos, null, 2)// + oInfos.facetParams
 	    				}	    
-	    			)	    			
-	    		},	
+	    			)			
+	    		},
+	    		//"sDom": '<"H"Tfr>t<"F"ip>',
+	    		"oTableTools": {
+	    			"aButtons": [
+	    				"copy", "csv", "xls", "pdf",
+	    				{
+	    					"sExtends":    "collection",
+	    					"sButtonText": "Save",
+	    					"aButtons":    [ "csv", "xls", "pdf" ]
+	    				}
+	    			]
+	    		},
+	    		 "oTableTools": {
+	    	            "sSwfPath": "/swf/copy_csv_xls_pdf.swf"
+	    	    },
 	    		"sAjaxSource": baseUrl + '/dataTable'
 	    	});	    	
-	    },	       
+	    },	*/       
 	    	    	    
 	    _display_subTerms_in_tabs: function(json, topLevelOntoTerm, thisTable, ontology){
 	    	var self = this;
@@ -964,7 +1089,7 @@
 	    			 tabLtrTerms[tabLtr] = [];	    			
 	    		}	    			    		
 	    		
-	    		var a = $('<a></a>').attr({'href':baseUrl+'/mp?mpid='+termId, 'target':'_blank'}).text(ontoTerm);
+	    		var a = $('<a></a>').attr({'href':baseUrl+'/phenotypes/'+termId}).text(ontoTerm);
 	    		tabLtrTerms[tabLtr].push(a); 
 	    	}
 	    	
@@ -1021,7 +1146,7 @@
 	    		//console.log(termId + ' -- '+ ontoTerm);
 	    		var previousTr = $('tr[rel="' + topLevelOntoTerm + '"]'); 
 	    		var tr = $('<tr></tr>').attr({'class': previousTr.attr('id')+'_sub'});	    		
-	    		var a = $('<a></a>').attr({'href':baseUrl+'/mp?mpid='+termId, 'target':'_blank'}).text(ontoTerm);
+	    		var a = $('<a></a>').attr({'href':baseUrl+'/phenotypes/'+termId}).text(ontoTerm);
 	    		tr.append($('<td></td>').attr({'colspan':2}).append(a));
 	    		
 	    		previousTr.after(tr);
@@ -1039,3 +1164,7 @@
 	
 }(jQuery));	
 	
+
+
+
+
