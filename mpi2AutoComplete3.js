@@ -704,7 +704,7 @@
     			//$('div#userKeyword').html('2 Search keyword: ' + urlParams.q);   		
     			   			
     			// replace url with hash and reload to convert redirected GET page into hash state
-    			document.location.href = 'search' + '#q=' + urlParams.q + '&core=' + urlParams.core + '&fq=' + urlParams.fq;    			
+    			document.location.href = 'search' + '#q=' + urlParams.q + '&core=' + urlParams.core + '&fq=' + decoreURI(urlParams.fq);    			
     		}
     	        		
     		// when loadSideBar is done, dataTable will be loaded based on search result    		
