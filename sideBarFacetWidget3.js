@@ -21,7 +21,7 @@
         'use strict';
         var domain = 'https://' + document.location.hostname;
 
-    window.jQuery.('MPI2.mpi2LeftSideBar', {
+    window.jQuery.widget('MPI2.mpi2LeftSideBar', {
         
         options: {	    	
     		mpAnnotSources: ['empress', 'mgi'],	
