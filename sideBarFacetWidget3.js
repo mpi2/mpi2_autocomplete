@@ -18,27 +18,26 @@
  * 
  */
 (function ($) {
-	'use strict';
+        'use strict';
+        var domain = 'https://' + document.location.hostname;
+
     $.widget('MPI2.mpi2LeftSideBar', {
         
-	    options: {	    	
+        options: {	    	
     		mpAnnotSources: ['empress', 'mgi'],	
-			//solrBaseURL_bytemark:'http://ikmc.vm.bytemark.co.uk:8983/solr/',
-    		solrBaseURL_bytemark: 'http://dev.mousephenotype.org/bytemark/solr/',
-    		//solrBaseURL_bytemark:'https://beta.mousephenotype.org/bytemark/solr/',
-			//solrBaseURL_bytemark:'http://beta.mousephenotype.org/mi/solr/',
-		solrBaseURL_ebi: 'https://dev.mousephenotype.org/mi/impc/dev/solr/',
-    		
-		//solrBaseURL_ebi: drupalBaseUrl + '/mi/solr/',
-			commonParams: {
-							'qf': 'auto_suggest',
-				 			'defType': 'edismax',
-				 			'wt': 'json'
-				 			//'start' : 0				 			
-				 			}			
+		
+    		solrBaseURL_bytemark: domain + '/bytemark/solr/',    		
+		solrBaseURL_ebi: domain + '/mi/impc/dev/solr/',
+    				
+		commonParams: {
+				'qf': 'auto_suggest',
+				'defType': 'edismax',
+				'wt': 'json'
+				//'start' : 0				 			
+				}			
 	    },    
 			    
-    	_create: function(){
+        _create: function(){
     		// execute only once 	
     		var self = this;    		 		
     		    		
