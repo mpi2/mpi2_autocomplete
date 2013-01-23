@@ -18,6 +18,7 @@
  */
 (function ($) {
     'use strict';
+        var domain = 'https://' + document.location.hostname;       
 
     if(typeof(window.MPI2) === 'undefined') {
         window.MPI2 = {};
@@ -25,7 +26,7 @@
     MPI2.AutoComplete = {};    
 	MPI2.AutoComplete.mapping = {};
 	
-    $.widget('MPI2.mpi2AutoComplete', $.ui.autocomplete, {	
+    window.jQuery.widget('MPI2.mpi2AutoComplete', $.ui.autocomplete, {	
 
     	options: {
     		source: function () {
@@ -75,10 +76,9 @@
 					images   : {type: "image", core: 'images', fq: "annotationTermId:M* OR expName:* OR symbol:* OR higherLevelMaTermName:* OR higherLevelMpTermName:*"}					
 			},	
 			fq: null, // default
-			//solrBaseURL_bytemark:'http://ikmc.vm.bytemark.co.uk:8983/solr/', // working
-			solrBaseURL_bytemark: 'http://dev.mousephenotype.org/bytemark/solr/',
-			//solrBaseURL_bytemark:'https://beta.mousephenotype.org/mi/solr/', // not working
-			solrBaseURL_ebi: 'http://dev.mousephenotype.org/mi/impc/dev/solr/', // working
+			
+			solrBaseURL_bytemark: domain + '/bytemark/solr/',			
+			solrBaseURL_ebi: domain + '/mi/impc/dev/solr/', 
 			mouseSelected: 0,	
             minLength: 1,
             delay: 300,  
