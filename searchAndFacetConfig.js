@@ -19,7 +19,7 @@
  * Author: Chao-Kung Chen
  * 
  */
-$(document).ready(function(){ 
+window.jQuery(document).ready(function(){ 
 	
 	MPI2.buttCount = 0;
 	
