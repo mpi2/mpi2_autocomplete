@@ -304,7 +304,7 @@
  		    		.data( "item.autocomplete", item )
  		    		.append( "<a>" + vals[0] + sep + t + "</a>" )
  		    		.appendTo( ul ); 			 				
- 			} 			console.log(MPI2.AutoComplete.mapping);	
+ 			} 	
 		},
 		
 		_parseJson: function(json, sQuery, sDataType, sDivId, aFields){			
