@@ -29,7 +29,7 @@ var config = MPI2.searchAndFacetConfig;
 //config.solrBaseURL_bytemark = 'http://dev.mousephenotype.org/bytemark/solr/';
 
 // on drupal side this is not available
-if ( solrUrl == 'undefined' ){
+if ( typeof solrUrl == 'undefined' ){
 	var domain = 'http://' + document.domain;
 	if ( /^beta/.test(domain) ){		
 		solrUrl = 'http://' + domain + '/mi/impc/beta/solr/';
