@@ -38,7 +38,7 @@ if ( typeof solrUrl == 'undefined' ){
 	else if ( /^dev/.test(domain) ){	
 		solrUrl = 'http://' + domain + '/mi/impc/dev/solr/';
 	}		
-	console.log(domain);
+	console.log(solrUrl);
 }
 
 config.solrBaseURL_bytemark = solrUrl + '/';
