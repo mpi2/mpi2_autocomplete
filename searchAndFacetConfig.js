@@ -33,10 +33,10 @@ var config = MPI2.searchAndFacetConfig;
 if ( typeof solrUrl == 'undefined' ){
 	var domain = document.domain;
 	if ( /^beta/.test(domain) ){		
-		solrUrl = 'http://' + domain + '/mi/impc/beta/solr/';
+		solrUrl = 'http://' + domain + '/mi/impc/beta/solr';
 	}
 	else if ( /^dev/.test(domain) ){	
-		solrUrl = 'http://' + domain + '/mi/impc/dev/solr/';
+		solrUrl = 'http://' + domain + '/mi/impc/dev/solr';
 	}		
 	console.log(solrUrl);
 }
