@@ -93,8 +93,10 @@
 			close: function(event, ui){  // close dropdown list
 	 			//nothing to do for now
 	 		},	
-			focus: function(){ // when mouseover a term in dropdown list				
-				//nothing to do for now					
+			focus: function(event, ui){ // when mouseover a term in dropdown list				
+				//nothing to do for now		
+				// change input val when hover on a term on list
+				//$(this).data().mpi2AutoComplete.element.val(ui.item.value);
 			}			
         },
         
@@ -115,7 +117,13 @@
 			var geneFound;
 			
 			if ( srchBtn ){			
-				solrQStr = termVal;				
+				solrQStr = termVal;	
+				if ( termVal == '*' ){
+					//if ( window.location.pathname.indexOf(baseUrl + '/search') == -1 ){
+						// change to search page
+						window.location.href = baseUrl;
+					//}
+				}				
 			}
 			else if ( MPI2.AutoComplete.mapping[termVal] && MPI2.AutoComplete.mapping[termVal].indexOf('MGI:') != -1 ){	
 				// MGI id	
@@ -123,12 +131,12 @@
 				var geneId = MPI2.AutoComplete.mapping[termVal];				
 				solrQStr = self.options.grouppingId + ':"' + geneId.replace(/:/g,"\\:") + '"';	
 				//console.log('MOUSE1: '+  ' -- ' + ' termVal: ' + termVal);
-				
+								
 				// jump straight to gene page
 				window.location.href = baseUrl + '/genes/' + geneId;					
 			}	
 			else if (input.indexOf(':') != -1 ) {
-				console.log('MOUSE2: '+  ' -- ' + ' termVal: ' + termVal);
+				//console.log('MOUSE2: '+  ' -- ' + ' termVal: ' + termVal);
 				// user should have selected from list a term other than gene (Id/name/synonym)					
 				geneFound = 0;
 				// change to field names used in images index
@@ -149,13 +157,23 @@
 				
 				solrQStr = solrField + ':' + '"' + termVal + '"';										
 			}	
+									
+			// hash state stuff
 			
-			// hash state stuff			
+			if ( srchBtn ){							
+				var pathname = window.location.pathname;			
+				if ( pathname != self.options.search_pathname ){				
+					self.options.searchMode = 'gene'; //default				
+					self._trigger("redirectedSearch", null, { q: solrQStr, core: self.options.searchMode, 
+						fq: self.options.facetTypeParams[self.options.searchMode].fq });
+				}				
+			}
+			
 			window.location.hash = 'q=' + solrQStr + "&core=" + self.options.searchMode 
-			                     + '&fq=' + self.options.facetTypeParams[self.options.searchMode].fq;	
-			
+		                     + '&fq=' + self.options.facetTypeParams[self.options.searchMode].fq;			
+					
 			$('div#userKeyword').html('Search keyword: ' + input);
-			
+		
 			var pathname = window.location.pathname;			
 			if ( pathname != self.options.search_pathname ){				
 				//self._trigger("redirectedSearch", null, { q: solrQStr, core: self.options.searchMode, 
@@ -164,6 +182,7 @@
 			
 			//console.log('Gene: '+ self.options.geneFound + ' - mp: '+ self.options.mpFound + ' - pipeline: '+ self.options.pipelineFound + ' - img: '+ self.options.imagesFound);				
 			self._trigger("loadSideBar", null, { q: solrQStr, core: self.options.searchMode, fq: self.options.fq });
+		
 		},
 		
 		_addHitEnterBeforeDropDownListOpensEvent: function(){
@@ -245,9 +264,9 @@
                         
             $('button#acSearch').click(function(){ 
             	//console.log('check input: ' + self.element.val());
-            	if ( self.term == undefined || self.element.val() == self._showSearchMsg() ){            	
+            	if ( self.term === undefined || self.element.val() == self._showSearchMsg() ){            	
             		self.term = "*";
-            	}      
+            	}            	
             	self.element.val(self._showSearchMsg());
 				self._inputValMappingForCallBack(self.term, true); 
             });
