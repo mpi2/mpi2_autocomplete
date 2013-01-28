@@ -74,9 +74,7 @@
 					pipeline : {type: "parameter", core: 'pipeline', fq: "pipeline_stable_id:IMPC_001"},
 					images   : {type: "image", core: 'images', fq: "annotationTermId:M* OR expName:* OR symbol:*"}					
 			},	
-			fq: null, // default
-			solrBaseURL_bytemark: MPI2.searchAndFacetConfig.solrBaseURL_bytemark,			
-			solrBaseURL_ebi: MPI2.searchAndFacetConfig.solrBaseURL_ebi,
+			fq: null, // default			
 			mouseSelected: 0,	
             minLength: 1,           
             delay: 300,  
