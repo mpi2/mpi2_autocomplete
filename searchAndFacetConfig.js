@@ -40,7 +40,7 @@ if ( typeof solrUrl == 'undefined' ){
 	}			
 }
 
-if ( baseUrl == '' ){
+if ( baseUrl === undefined ){
 	baseUrl = '/phenotype-archive';
 }
 console.log(typeof baseUrl);
