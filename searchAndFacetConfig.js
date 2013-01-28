@@ -30,7 +30,7 @@ var config = MPI2.searchAndFacetConfig;
 
 // on drupal side this is not available
 
-if ( typeof solrUrl == 'undefined' ){
+if ( typeof solrUrl === 'undefined' ){
 	var domain = document.domain;
 	if ( /^beta/.test(domain) ){		
 		solrUrl = 'http://' + domain + '/mi/impc/beta/solr';
@@ -60,9 +60,12 @@ path = '/' + path.substring(0, path.indexOf('/'));
 var trailingPath = '/search';
 var trailingPathDataTable = '/dataTable';
 
-config.pathname = typeof baseUrl == 'undefined' ? path + trailingPath : baseUrl + trailingPath;
-config.dataTablePath = typeof baseUrl == 'undefined' ? path + trailingPathDataTable : baseUrl + trailingPathDataTable;
-		
+config.pathname = typeof baseUrl === 'undefined' ? path + trailingPath : baseUrl + trailingPath;
+config.dataTablePath = typeof baseUrl === 'undefined' ? path + trailingPathDataTable : baseUrl + trailingPathDataTable;
+	
+console.log(config.pathname);	
+console.log(config.dataTablePath);
+	
 config.facetParams = {	
 	 geneFacet:      {
 		 type: 'genes',			
