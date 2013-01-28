@@ -39,7 +39,7 @@ if ( typeof solrUrl == 'undefined' ){
 		solrUrl = 'http://' + domain + '/mi/impc/dev/solr';
 	}			
 }
-
+console.log(baseUrl);
 if ( typeof baseUrl == 'undefined' ){
 	baseUrl = '/phenotype-archive';
 }
