@@ -37,8 +37,7 @@ if ( typeof solrUrl == 'undefined' ){
 	}
 	else if ( /^dev/.test(domain) ){	
 		solrUrl = 'http://' + domain + '/mi/impc/dev/solr';
-	}		
-	console.log(solrUrl);
+	}			
 }
 
 if ( typeof baseUrl == 'undefined' ){
