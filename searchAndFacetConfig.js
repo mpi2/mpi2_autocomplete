@@ -43,7 +43,8 @@ if ( typeof solrUrl == 'undefined' ){
 if ( typeof baseUrl == 'undefined' ){
 	baseUrl = '/phenotype-archive';
 }
-
+console.log(typeof baseUrl);
+console.log(baseUrl);
 
 config.solrBaseURL_bytemark = solrUrl + '/';
 config.solrBaseURL_ebi = solrUrl + '/';
