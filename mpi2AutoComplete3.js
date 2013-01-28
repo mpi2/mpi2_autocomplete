@@ -118,11 +118,9 @@
 			
 			if ( srchBtn ){			
 				solrQStr = termVal;	
-				if ( termVal == '*' ){
-					//if ( window.location.pathname.indexOf(baseUrl + '/search') == -1 ){
-						// change to search page
-						window.location.href = baseUrl;
-					//}
+				if ( termVal == '*' ){					
+					// change to search page
+					window.location.href = baseUrl;					
 				}				
 			}
 			else if ( MPI2.AutoComplete.mapping[termVal] && MPI2.AutoComplete.mapping[termVal].indexOf('MGI:') != -1 ){	
@@ -175,10 +173,10 @@
 			$('div#userKeyword').html('Search keyword: ' + input);
 		
 			var pathname = window.location.pathname;			
-			if ( pathname != self.options.search_pathname ){				
+			//if ( pathname != self.options.search_pathname ){				
 				//self._trigger("redirectedSearch", null, { q: solrQStr, core: self.options.searchMode, 
 					//fq: self.options.facetTypeParams[self.options.searchMode].fq });
-			}						
+			//}						
 			
 			//console.log('Gene: '+ self.options.geneFound + ' - mp: '+ self.options.mpFound + ' - pipeline: '+ self.options.pipelineFound + ' - img: '+ self.options.imagesFound);				
 			self._trigger("loadSideBar", null, { q: solrQStr, core: self.options.searchMode, fq: self.options.fq });
@@ -248,15 +246,12 @@
             		else {            		
             			$('div#facetBrowser').html(MPI2.searchAndFacetConfig.endOfSearch);
             		}
-            	}  
-            	else {            
-            		//self.options.doDataTable = false;
-            	}
+            	}            	
             }); 
            
             // if search is not coming from redirected page, data is not defined
             // and we want to loading data in sidebar           
-            if ( typeof data == 'undefined'){            
+            if ( typeof data === undefined ){            
         		//self.options.doDataTable = true;            	
         		//$('div#facetBrowser').html(MPI2.searchAndFacetConfig.endOfSearch);
                	self.sourceCallback(self);      
@@ -266,7 +261,8 @@
             	//console.log('check input: ' + self.element.val());
             	if ( self.term === undefined || self.element.val() == self._showSearchMsg() ){            	
             		self.term = "*";
-            	}            	
+            	}
+            	//console.log('check query: ' + self.term);
             	self.element.val(self._showSearchMsg());
 				self._inputValMappingForCallBack(self.term, true); 
             });
