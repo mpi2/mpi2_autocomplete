@@ -43,8 +43,6 @@ if ( typeof solrUrl === 'undefined' ){
 if ( typeof baseUrl === 'undefined' ){
 	baseUrl = '/phenotype-archive';
 }
-console.log(typeof baseUrl);
-console.log(baseUrl);
 
 config.solrBaseURL_bytemark = solrUrl + '/';
 config.solrBaseURL_ebi = solrUrl + '/';
@@ -62,9 +60,6 @@ var trailingPathDataTable = '/dataTable';
 
 config.pathname = typeof baseUrl === 'undefined' ? path + trailingPath : baseUrl + trailingPath;
 config.dataTablePath = typeof baseUrl === 'undefined' ? path + trailingPathDataTable : baseUrl + trailingPathDataTable;
-	
-console.log(config.pathname);	
-console.log(config.dataTablePath);
 	
 config.facetParams = {	
 	 geneFacet:      {
