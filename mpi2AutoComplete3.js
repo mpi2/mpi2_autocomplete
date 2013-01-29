@@ -74,12 +74,14 @@
 					pipeline : {type: "parameter", core: 'pipeline', fq: "pipeline_stable_id:IMPC_001"},
 					images   : {type: "image", core: 'images', fq: "annotationTermId:M* OR expName:* OR symbol:*"}					
 			},	
-			fq: null, // default			
+			fq: null, // default
+			//solrBaseURL_bytemark: MPI2.searchAndFacetConfig.solrBaseURL_bytemark,			
+			//solrBaseURL_ebi: MPI2.searchAndFacetConfig.solrBaseURL_ebi,
 			mouseSelected: 0,	
             minLength: 1,           
             delay: 300,  
             doneSourceCall: 0,           
-			facets: ['geneFacet', 'phenotypeFacet', 'tissueFacet', 'pipelineFacet', 'imageFacet'],            
+			facets: ['geneFacet', 'phenotypeFacet', 'tissueFacet', 'pipelineFacet', 'imageFacet'],			
             acList: [], 			  		       
 			select: function(event, ui) {				
 				//console.log(ui.item.value);   
@@ -110,9 +112,7 @@
 			var solrQStr = input;
 			var solrParams= null;
 			
-			//console.log('input: '+ input + ' --- field: ' + solrField + ' --- qry str: ' + solrQStr);
-			
-			var geneFound;
+			//console.log('input: '+ input + ' --- field: ' + solrField + ' --- qry str: ' + solrQStr);					
 			
 			if ( srchBtn ){			
 				solrQStr = termVal;	
@@ -121,12 +121,11 @@
 					window.location.href = baseUrl;					
 				}				
 			}
-			else if ( MPI2.AutoComplete.mapping[termVal] && MPI2.AutoComplete.mapping[termVal].indexOf('MGI:') != -1 ){	
-				// MGI id	
-				geneFound = 1;
-				var geneId = MPI2.AutoComplete.mapping[termVal];				
+			else if ( MPI2.AutoComplete.mapping[termVal.toLowerCase()] && MPI2.AutoComplete.mapping[termVal.toLowerCase()].indexOf('MGI:') != -1 ){	
+				// MGI id				
+				var geneId = MPI2.AutoComplete.mapping[termVal.toLowerCase()];				
 				solrQStr = self.options.grouppingId + ':"' + geneId.replace(/:/g,"\\:") + '"';	
-				//console.log('MOUSE1: '+  ' -- ' + ' termVal: ' + termVal);
+				//console.log('MOUSE1: '+  ' -- ' + ' termVal: ' + termVal + ' : '+ geneId );
 								
 				// jump straight to gene page
 				window.location.href = baseUrl + '/genes/' + geneId;					
@@ -134,7 +133,7 @@
 			else if (input.indexOf(':') != -1 ) {
 				//console.log('MOUSE2: '+  ' -- ' + ' termVal: ' + termVal);
 				// user should have selected from list a term other than gene (Id/name/synonym)					
-				geneFound = 0;
+			
 				// change to field names used in images index
 				if ( solrField == 'image_annotation' ){
 					solrField = 'annotationTermName';
@@ -147,7 +146,7 @@
 				}
 				else if ( solrField.indexOf('mp_') != -1 ){					
 					// jump straight to mp page
-					var mpId = MPI2.AutoComplete.mapping[termVal];
+					var mpId = MPI2.AutoComplete.mapping[termVal.toLowerCase()];
 					window.location.href = baseUrl + '/phenotypes/' + mpId;						
 				}
 				
@@ -237,7 +236,7 @@
             				//console.log('hitEnterBeforeDropDownListOpens');	
             				// sourceCallback() is automatically called when dropdown list is open
             				// so we need to call it now to simulate dropdown list open          				
-            				//self.options.doDataTable = true;            				
+            			        				
             				self.sourceCallback(self); // ajax!!                    		
             			}  
             		}
@@ -249,8 +248,7 @@
            
             // if search is not coming from redirected page, data is not defined
             // and we want to loading data in sidebar           
-            if ( typeof data === undefined ){            
-        		//self.options.doDataTable = true;            	
+            if ( typeof data == 'undefined' ){  
         		//$('div#facetBrowser').html(MPI2.searchAndFacetConfig.endOfSearch);
                	self.sourceCallback(self);      
         	} 
@@ -346,7 +344,7 @@
 							var thisVal = aVals[v];
 							
 							if ( fld == 'mp_term_synonym'  ){
-								MPI2.AutoComplete.mapping[thisVal] = docs[d]['mp_id'];
+								MPI2.AutoComplete.mapping[thisVal.toLowerCase()] = docs[d]['mp_id'];
 							}
 							
 							if ( thisVal.toLowerCase().indexOf(sQuery) != -1 || sQuery.indexOf('*') != -1 ){
@@ -360,7 +358,7 @@
 							val = val.toString();
 						} 
 						if ( fld == 'mp_term'  ){
-							MPI2.AutoComplete.mapping[val] = docs[d]['mp_id'];
+							MPI2.AutoComplete.mapping[val.toLowerCase()] = docs[d]['mp_id'];
 						}
 						if ( val.toLowerCase().indexOf(sQuery) != -1 || sQuery.indexOf('*') != -1 ){				
 							list.push(self.options.srcLabel[fld] + ' : ' + val);
@@ -413,7 +411,7 @@
         							if ( thisVal.toLowerCase().indexOf(query) != -1 || query.indexOf('*') != -1 ){    							
         								
         								if (fld == 'marker_name' || fld == 'synonym' || fld == 'marker_synonym' || fld == 'allele_synonym'){
-        									MPI2.AutoComplete.mapping[thisVal] = geneId;        									
+        									MPI2.AutoComplete.mapping[thisVal.toLowerCase()] = geneId;        									
         								} 
         								list.push(srcLabel[fld] + " : " +  thisVal);
         							}							
@@ -422,7 +420,7 @@
         					else {        						
         						if ( val.toLowerCase().indexOf(query) != -1 || query.indexOf('*') != -1 ){        						
 									//console.log(fld + ' : ' + val + ' id: ' + geneId);
-        							MPI2.AutoComplete.mapping[val] = geneId;        										
+        							MPI2.AutoComplete.mapping[val.toLowerCase()] = geneId;        										
         							list.push(srcLabel[fld] + " : " +  val);
         						}	
         					}
@@ -458,10 +456,10 @@
 			else if ( oCounts.mpFound != 0){				
 				return 'mp';			
 			}    		
-    		else if ( oCounts.sopFound != 0 ){    			
+    		else if ( oCounts.pipelineFound != 0 ){    			
     			return 'pipeline';						
 			}	
-    		else if ( oCounts.imgFound != 0 ){    			
+    		else if ( oCounts.imagesFound != 0 ){    			
     			return 'images';						
 			}
     		else {
@@ -492,22 +490,37 @@
         	}	        		
         				
  	    	self.options.queryParams_gene.q = q; 	    	 	
-			
- 	    	// facet types are done sequencially; starting from gene
-        	$.ajax({            	    
-        			url: self.options.solrBaseURL_bytemark + 'gene/search',
-            	    data: self.options.queryParams_gene,
-            	    dataType: 'jsonp',
-            	    jsonp: 'json.wrf',
-            	    timeout: 5000,
-            	    success: function (geneSolrResponse) { 
-						self._doPipelineAutoSuggest(geneSolrResponse, q, response); 
-            	    },
-            	    error: function (jqXHR, textStatus, errorThrown) {
-            	        //response('AJAX error');            	        
-            	        $('div#facetBrowser').html('Error fetching data ...');
-            	    }            	
-        	});
+ 	    	 	    	
+ 	    	if ( location.href.indexOf('/search?') == -1 ) {
+ 	    		// facet types are done sequencially; starting from gene
+	        	$.ajax({            	    
+	        			url: self.options.solrBaseURL_bytemark + 'gene/search',
+	            	    data: self.options.queryParams_gene,
+	            	    dataType: 'jsonp',
+	            	    jsonp: 'json.wrf',
+	            	    timeout: 5000,
+	            	    success: function (geneSolrResponse) { 
+							self._doPipelineAutoSuggest(geneSolrResponse, q, response); 
+	            	    },
+	            	    error: function (jqXHR, textStatus, errorThrown) {
+	            	        //response('AJAX error');            	        
+	            	        $('div#facetBrowser').html('Error fetching data ...');
+	            	    }            	
+	        	});
+ 	    	}
+ 	    	else {
+ 	    		// from redirect, so skip faceting 
+ 	    		self.element.val(self._showSearchMsg());     
+ 	    		$('div#leftSideBar').parent().parent().html('');
+ 	    		
+ 	    		var urlParams = $.fn.parseUrlString(location.href);
+    			
+    			self.term = urlParams.q;
+    			self.options.searchMode = urlParams.core;    					
+    			
+    			// replace url with hash and reload to convert redirected GET page into hash state
+    			document.location.href = 'search' + '#q=' + urlParams.q + '&core=' + urlParams.core + '&fq=' + urlParams.fq; 
+ 	    	}
     	},
 
     	_doPipelineAutoSuggest: function(geneSolrResponse, q, response){
@@ -626,22 +639,22 @@
         	    	$('div#imagesFacet span.facetCount').html(self.options.loadWaiting);
         	    	
         	    	self._parseGeneGroupedJson(geneSolrResponse, q);  
-        	    	self._parseJson(sopSolrResponse, q, 'sop', 'pipelineFacet', ['parameter_name', 'procedure_name']);
+        	    	self._parseJson(sopSolrResponse, q, 'pipeline', 'pipelineFacet', ['parameter_name', 'procedure_name']);
         	    	self._parseJson(mpSolrResponse, q, 'mp', 'mpFacet', ['mp_id', 'mp_term', 'mp_term_synonym']);
-        	    	self._parseJson(imgSolrResponse, q, 'img', 'imagesFacet', ['annotationTermName', 'expName', 'symbol']);        	    	
+        	    	self._parseJson(imgSolrResponse, q, 'images', 'imagesFacet', ['annotationTermName', 'expName', 'symbol']);        	    	
         	    	// hide for now
         	    	//self._parseJson(maSolrResponse, q, 'ma', 'tissueFacet', ['ma_id', 'ma_term', 'ma_term_synonym']);
         	    	
         	    	/*console.log('geneFound: ' + self.options.geneFound + 
         	    			    ' - mpFound: ' + self.options.mpFound + 
         	    			    ' - maFound: ' + self.options.maFound + 
-        	    			    ' - sopFound: ' + self.options.sopFound + 
-        	    			    ' - imgFound: ' + self.options.imgFound
+        	    			    ' - pipelineFound: ' + self.options.pipelineFound + 
+        	    			    ' - imagesFound: ' + self.options.imagesFound
         	    				);*/
         	    	self.options.searchMode = self._setSearchMode({	geneFound: self.options.geneFound, 
         	    													mpFound: self.options.mpFound, 
-        	    													sopFound: self.options.sopFound,
-        	    													imgFound: self.options.imgFound
+        	    													pipelineFound: self.options.pipelineFound,
+        	    													imagesFound: self.options.imagesFound
         	    													});
         	    	
         	    	self.options.doneSourceCall = 1;
@@ -662,7 +675,17 @@
     			}        	    
     		});    			
     	},    	
-    	    	
+    	    
+    	_isSingleton: function(){
+    		var self = this;
+    		var sum = 0;
+    		for (var i=0; i< MPI2.searchAndFacetConfig.cores.length; i++ ){  
+    			//console.log(self.options[MPI2.searchAndFacetConfig.cores[i]+'Found']);
+    			sum += self.options[MPI2.searchAndFacetConfig.cores[i]+'Found'];
+    		}
+    		return sum == 1 ? true : false;
+    	},
+    	
     	_doCallBacks: function(){
     		    		
     		var self = this;
@@ -670,25 +693,41 @@
     		
     		if ( self.term === undefined || self.term == '' ){
     			self.term = '*:*';
-    		}
+    		}    		
+    		    		
+    		var params = self.options.facetTypeParams[self.options.searchMode];    		    		
+    		params.q = self.term;  
     		
-    		$('div#facetBrowser').html(MPI2.searchAndFacetConfig.endOfSearch); 
-    		  		
+    		$('div#facetBrowser').html(MPI2.searchAndFacetConfig.endOfSearch); 	
+    		
     		// only Enter event will fire and not other keyup/down events
     		if ( window.location.pathname != self.options.search_pathname && self.options.hitEnterBeforeDropDownListOpensVal == 1 ){ 
     			//console.log('redirect chk hash: ' + window.location.hash);
-    			self._trigger("redirectedSearch", null, { q: self.term, core: self.options.searchMode, 
-    				fq: MPI2.searchAndFacetConfig.facetParams[self.options.searchMode+'Facet'].fq });
     			
+    			if ( (self.options.searchMode == 'gene' || self.options.searchMode == 'mp') && self._isSingleton() ){ 
+        			var acc = MPI2.AutoComplete.mapping[self.term.toLowerCase()];
+        			window.location.href = baseUrl + '/' + MPI2.searchAndFacetConfig.restfulPrefix[self.options.searchMode] + '/' +  acc;        		
+        		}
+    			else {
+    				self._trigger("redirectedSearch", null, { q: self.term, core: self.options.searchMode, 
+    					fq: MPI2.searchAndFacetConfig.facetParams[self.options.searchMode+'Facet'].fq, });    				
+    			}
     		}
     		else if ( self.options.hitEnterBeforeDropDownListOpensVal== 1){  
-    			//console.log('fq check: ' + MPI2.searchAndFacetConfig.facetParams[self.options.searchMode+'Facet'].fq);
-    			window.location.hash = 'q=' + self.term + '&core=' + self.options.searchMode 
-    			+ '&fq=' + MPI2.searchAndFacetConfig.facetParams[self.options.searchMode+'Facet'].fq;    			  
-    		}  
-    		
-    		var params = self.options.facetTypeParams[self.options.searchMode];    		    		
-    		params.q = self.term;    		   		
+    			
+    			// when users hit enter on inpubox and the result returns only 1 result
+        		// go straight to mp/gene page
+        		//console.log(self.options.searchMode);
+        		if ( (self.options.searchMode == 'gene' || self.options.searchMode == 'mp') && self._isSingleton() ){ 
+        			var acc = MPI2.AutoComplete.mapping[self.term.toLowerCase()];
+        			window.location.href = baseUrl + '/' + MPI2.searchAndFacetConfig.restfulPrefix[self.options.searchMode] + '/' +  acc;        			
+        		}
+        		else {    			
+        			//console.log('fq check: ' + MPI2.searchAndFacetConfig.facetParams[self.options.searchMode+'Facet'].fq);
+        			window.location.hash = 'q=' + self.term + '&core=' + self.options.searchMode 
+        			+ '&fq=' + MPI2.searchAndFacetConfig.facetParams[self.options.searchMode+'Facet'].fq;
+        		}
+    		} 		
     		   		    
     		//console.log('check url: '+ window.location.href);
     		
@@ -720,25 +759,12 @@
     			self.options.searchMode = coreName;    	
     			self.options.doDataTable = false;
     			//console.log('TEST: '+ hashParams.fq);
-    		}
-    		else if ( location.href.indexOf("/search?") != -1 ){
-    			//console.log('*******redirected: ' + location.href);
-    			var urlParams = $.fn.parseUrlString(location.href);
-    			
-    			self.term = urlParams.q;
-    			self.options.searchMode = urlParams.core;
-    			//$('div#userKeyword').html('2 Search keyword: ' + urlParams.q);   		
-    			   			
-    			// replace url with hash and reload to convert redirected GET page into hash state
-    			document.location.href = 'search' + '#q=' + urlParams.q + '&core=' + urlParams.core + '&fq=' + urlParams.fq;    			
-    		}
+    		}    		
     	        		
     		// when loadSideBar is done, dataTable will be loaded based on search result    		
-			self._trigger("loadSideBar", null, {				
-    			//geneFound: self.options.geneFound,				
+			self._trigger("loadSideBar", null, {    						
     			q: self.term, core: self.options.searchMode, fq: self.options.fq 																					   
-    		});		
-    		
+    		});	
     	},	
     	
     	destroy: function () {
