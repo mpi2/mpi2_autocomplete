@@ -25,25 +25,28 @@ MPI2.buttCount = 0;
 	
 MPI2.searchAndFacetConfig = {};
 var config = MPI2.searchAndFacetConfig;
-		
-//config.solrBaseURL_bytemark = 'http://dev.mousephenotype.org/bytemark/solr/';
 
 // on drupal side this is not available
-
-if ( typeof solrUrl === 'undefined' ){
+if ( typeof solrUrl == 'undefined' ){
 	var domain = document.domain;
 	if ( /^beta/.test(domain) ){		
 		solrUrl = 'http://' + domain + '/mi/impc/beta/solr';
 	}
 	else if ( /^dev/.test(domain) ){	
 		solrUrl = 'http://' + domain + '/mi/impc/dev/solr';
-	}			
+	}
 }
-
-if ( typeof baseUrl === 'undefined' ){
+if ( typeof baseUrl == 'undefined' ){
 	baseUrl = '/phenotype-archive';
 }
 
+config.cores = ['gene', 'mp', 'pipeline', 'images'];
+config.restfulPrefix = {
+		'gene' : 'genes',
+		'mp'   : 'phenotypes'
+};
+
+//config.solrBaseURL_bytemark = 'http://dev.mousephenotype.org/bytemark/solr/';
 config.solrBaseURL_bytemark = solrUrl + '/';
 config.solrBaseURL_ebi = solrUrl + '/';
 
@@ -58,9 +61,9 @@ path = '/' + path.substring(0, path.indexOf('/'));
 var trailingPath = '/search';
 var trailingPathDataTable = '/dataTable';
 
-config.pathname = typeof baseUrl === 'undefined' ? path + trailingPath : baseUrl + trailingPath;
-config.dataTablePath = typeof baseUrl === 'undefined' ? path + trailingPathDataTable : baseUrl + trailingPathDataTable;
-	
+config.pathname = typeof baseUrl == 'undefined' ? path + trailingPath : baseUrl + trailingPath;
+config.dataTablePath = typeof baseUrl == 'undefined' ? path + trailingPathDataTable : baseUrl + trailingPathDataTable;
+		
 config.facetParams = {	
 	 geneFacet:      {
 		 type: 'genes',			
