@@ -1,3 +1,4 @@
+// test from dev
 (function ($) {
 	'use strict';
     $.widget('MPI2.mpi2LeftSideBar', {
