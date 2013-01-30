@@ -157,6 +157,7 @@
 			
 			if ( srchBtn ){							
 				var pathname = window.location.pathname;			
+				alert(pathname + ' vs ' + self.options.search_pathname);
 				if ( pathname != self.options.search_pathname ){				
 					self.options.searchMode = 'gene'; //default				
 					self._trigger("redirectedSearch", null, { q: solrQStr, core: self.options.searchMode, 
@@ -254,7 +255,7 @@
         	} 
                         
             $('button#acSearch').click(function(){ 
-            	//console.log('check input: ' + self.element.val());
+            	alert('check input: ' + self.element.val());
             	if ( self.term === undefined || self.element.val() == self._showSearchMsg() ){            	
             		self.term = "*";
             	}
@@ -490,8 +491,9 @@
         	}	        		
         				
  	    	self.options.queryParams_gene.q = q; 	    	 	
- 	    	 	    	
+ 	    	alert('test url: ' + location.href) 	;    	
  	    	if ( location.href.indexOf('/search?') == -1 ) {
+ 	    		alert('case 1');
  	    		// facet types are done sequencially; starting from gene
 	        	$.ajax({            	    
 	        			url: self.options.solrBaseURL_bytemark + 'gene/search',
@@ -509,6 +511,7 @@
 	        	});
  	    	}
  	    	else {
+ 	    		alert('case 2');
  	    		// from redirect, so skip faceting 
  	    		self.element.val(self._showSearchMsg());     
  	    		$('div#leftSideBar').parent().parent().html('');
@@ -699,13 +702,15 @@
     		params.q = self.term;  
     		
     		$('div#facetBrowser').html(MPI2.searchAndFacetConfig.endOfSearch); 	
-    		alert('test homo: '+ self.options.homePage);
+    		alert(window.location.pathname + ' vs ' + self.options.search_pathname + ' enterTEst: ' +  self.options.hitEnterBeforeDropDownListOpensVal);
+    		alert('homepage: ' + self.options.homePage);
     		// only Enter event will fire and not other keyup/down events
-    		if ( window.location.pathname != self.options.search_pathname && self.options.hitEnterBeforeDropDownListOpensVal == 1 ){ 
-    			//console.log('redirect chk hash: ' + window.location.hash);
+    		if ( (window.location.pathname != self.options.search_pathname && self.options.hitEnterBeforeDropDownListOpensVal == 1) ||
+    			 typeof self.options.homePage != 'undefined' ){ 
+    			alert('1: redirect chk hash: ' + window.location.hash);    					
     			
     			if ( (self.options.searchMode == 'gene' || self.options.searchMode == 'mp') && self._isSingleton() ){ 
-        			var acc = MPI2.AutoComplete.mapping[self.term.toLowerCase()];
+        			var acc = MPI2.AutoComplete.mapping[self.term.toLowerCase()];        			
         			window.location.href = baseUrl + '/' + MPI2.searchAndFacetConfig.restfulPrefix[self.options.searchMode] + '/' +  acc;        		
         		}
     			else {
@@ -717,7 +722,7 @@
     			
     			// when users hit enter on inpubox and the result returns only 1 result
         		// go straight to mp/gene page
-        		//console.log(self.options.searchMode);
+        		alert('2: '+ self.options.searchMode);
         		if ( (self.options.searchMode == 'gene' || self.options.searchMode == 'mp') && self._isSingleton() ){ 
         			var acc = MPI2.AutoComplete.mapping[self.term.toLowerCase()];
         			window.location.href = baseUrl + '/' + MPI2.searchAndFacetConfig.restfulPrefix[self.options.searchMode] + '/' +  acc;        			
@@ -743,7 +748,7 @@
     				hashParams.q = self.term;
     			}
     			else {
-    				alert('hash: ' + window.location.hash.substring(1));
+    				//console.log(window.location.hash.substring(1));
     				hashParams = $.fn.parseHashString(window.location.hash.substring(1));    			
     				coreName = hashParams.coreName;    			
     			}
@@ -758,13 +763,16 @@
     			self.options.fq = hashParams.fq;		    			
     			self.options.searchMode = coreName;    	
     			self.options.doDataTable = false;
-    			//console.log('TEST: '+ hashParams.fq);
+    			alert('TEST: '+ hashParams.fq);
     		}    		
     	        		
     		// when loadSideBar is done, dataTable will be loaded based on search result    		
 			self._trigger("loadSideBar", null, {    						
     			q: self.term, core: self.options.searchMode, fq: self.options.fq 																					   
     		});	
+			
+    		
+    		
     	},	
     	
     	destroy: function () {
