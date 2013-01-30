@@ -157,7 +157,7 @@
 			
 			if ( srchBtn ){							
 				var pathname = window.location.pathname;			
-				alert(pathname + ' vs ' + self.options.search_pathname);
+				
 				if ( pathname != self.options.search_pathname ){				
 					self.options.searchMode = 'gene'; //default				
 					self._trigger("redirectedSearch", null, { q: solrQStr, core: self.options.searchMode, 
@@ -255,7 +255,7 @@
         	} 
                         
             $('button#acSearch').click(function(){ 
-            	alert('check input: ' + self.element.val());
+            	//console.log('check input: ' + self.element.val());
             	if ( self.term === undefined || self.element.val() == self._showSearchMsg() ){            	
             		self.term = "*";
             	}
@@ -491,11 +491,9 @@
         	}	        		
         				
  	    	self.options.queryParams_gene.q = q; 	    	 	
- 	    	alert('test url: ' + location.href) ;
-                alert('ends: '+ location.href.match(/org\//));    	
-                
+ 	    	    	
  	    	if ( location.href.indexOf('/search?') == -1 ) {
- 	    		alert('case 1');
+ 	    		
  	    		// facet types are done sequencially; starting from gene
 	        	$.ajax({            	    
 	        			url: self.options.solrBaseURL_bytemark + 'gene/search',
@@ -513,7 +511,7 @@
 	        	});
  	    	}
  	    	else {
- 	    		alert('case 2');
+ 	    		
  	    		// from redirect, so skip faceting 
  	    		self.element.val(self._showSearchMsg());     
  	    		$('div#leftSideBar').parent().parent().html('');
@@ -703,13 +701,12 @@
     		var params = self.options.facetTypeParams[self.options.searchMode];    		    		
     		params.q = self.term;  
     		
-    		$('div#facetBrowser').html(MPI2.searchAndFacetConfig.endOfSearch); 	
-    		alert(window.location.pathname + ' vs ' + self.options.search_pathname + ' enterTEst: ' +  self.options.hitEnterBeforeDropDownListOpensVal);
-    		alert('homepage: ' + self.options.homePage);
+    		$('div#facetBrowser').html(MPI2.searchAndFacetConfig.endOfSearch);    		
     		// only Enter event will fire and not other keyup/down events
+
     		if ( window.location.pathname != self.options.search_pathname && self.options.hitEnterBeforeDropDownListOpensVal == 1 ){ 
-    			alert('1: redirect chk hash: ' + window.location.hash);    					
-    			
+    			//console.log('1: redirect chk hash: ' + window.location.hash); 
+
     			if ( (self.options.searchMode == 'gene' || self.options.searchMode == 'mp') && self._isSingleton() ){ 
         			var acc = MPI2.AutoComplete.mapping[self.term.toLowerCase()];        			
         			window.location.href = baseUrl + '/' + MPI2.searchAndFacetConfig.restfulPrefix[self.options.searchMode] + '/' +  acc;        		
@@ -723,7 +720,7 @@
     			
     			// when users hit enter on inpubox and the result returns only 1 result
         		// go straight to mp/gene page
-        		alert('2: '+ self.options.searchMode);
+        		//console.log('2: '+ self.options.searchMode);
         		if ( (self.options.searchMode == 'gene' || self.options.searchMode == 'mp') && self._isSingleton() ){ 
         			var acc = MPI2.AutoComplete.mapping[self.term.toLowerCase()];
         			window.location.href = baseUrl + '/' + MPI2.searchAndFacetConfig.restfulPrefix[self.options.searchMode] + '/' +  acc;        			
@@ -764,7 +761,7 @@
     			self.options.fq = hashParams.fq;		    			
     			self.options.searchMode = coreName;    	
     			self.options.doDataTable = false;
-    			alert('TEST: '+ hashParams.fq);
+    			//console.log('TEST: '+ hashParams.fq);
     		}    		
     	        		
     		// when loadSideBar is done, dataTable will be loaded based on search result    		
