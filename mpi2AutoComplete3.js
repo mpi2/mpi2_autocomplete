@@ -743,7 +743,7 @@
     				hashParams.q = self.term;
     			}
     			else {
-    				//console.log(window.location.hash.substring(1));
+    				alert('hash: ' + window.location.hash.substring(1));
     				hashParams = $.fn.parseHashString(window.location.hash.substring(1));    			
     				coreName = hashParams.coreName;    			
     			}
