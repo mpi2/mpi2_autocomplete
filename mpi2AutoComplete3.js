@@ -401,7 +401,7 @@
         					var val = docs[d][fld];		
         					//console.log('field: '+ fld + ' -- val: ' + val + ' : ' + typeof val);
         					// marker_synonym, mp_id, mp_term, mp_term_synonym are all multivalued
-        					if ( fld == 'marker_name' || fld == 'marker_synonym' || fld == 'synonym' || fld == 'allele_synonym' ){//} || fld == 'mp_id' || fld == 'mp_term' || fld == 'mp_term_synonym' ){
+        					if ( fld == 'marker_name' || fld == 'marker_synonym' || fld == 'synonym' || fld == 'allele_synonym' ){//} || fld == 'mp_id' || fld == 'mp_term' || fld == 'mp_term_s ynonym' ){
         						var aVals = docs[d][fld];
         						for ( var v=0; v<aVals.length; v++ ){						
         							var thisVal = aVals[v];
@@ -494,7 +494,7 @@
  	    	    	
                 var homepage = location.href.match(/org\/$/);
                 if (homepage !== null ){
-                        alert('home page');
+                     //   alert('home page');
                       self.options.homePage = true;                        
                 }
 
@@ -524,7 +524,7 @@
  	    		
  	    		var urlParams = $.fn.parseUrlString(location.href);
     			
-    			self.term = urlParams.q;
+    			self.t erm = urlParams.q;
     			self.options.searchMode = urlParams.core;    					
     			
     			// replace url with hash and reload to convert redirected GET page into hash state
@@ -608,7 +608,7 @@
         	    dataType: 'jsonp',
         	    jsonp: 'json.wrf',
         	    timeout: 10000,
-        	    success: function (imgSolrResponse) {        	    	
+        	    success: fu nction (imgSolrResponse) {        	    	
         	    	self._doMPAutoSuggest(geneSolrResponse, sopSolrResponse, maSolrResponse, imgSolrResponse, q, response); 
         	    },
     			error: function (jqXHR, textStatus, errorThrown) {
@@ -710,8 +710,7 @@
     		$('div#facetBrowser').html(MPI2.searchAndFacetConfig.endOfSearch);    		
     		// only Enter event will fire and not other keyup/down events
 
-    		if ( (window.location.pathname != self.options.search_pathname && self.options.hitEnterBeforeDropDownListOpensVal == 1) || 
-                        typeof self.options.homePage !== 'undefined' ){ 
+    		if ( (window.location.pathname != self.options.search_pathname && self.options.hitEnterBeforeDropDownListOpensVal == 1) ){ 
     			//console.log('1: redirect chk hash: ' + window.location.hash); 
 
     			if ( (self.options.searchMode == 'gene' || self.options.searchMode == 'mp') && self._isSingleton() ){ 
