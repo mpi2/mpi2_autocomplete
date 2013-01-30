@@ -495,6 +495,7 @@
                 var homepage = location.href.match(/org\/$/);
                 if (homepage !== null ){
                         alert('home page');
+                      self.options.homePage = true;                        
                 }
 
  	    	if ( location.href.indexOf('/search?') == -1 ) {
@@ -709,7 +710,8 @@
     		$('div#facetBrowser').html(MPI2.searchAndFacetConfig.endOfSearch);    		
     		// only Enter event will fire and not other keyup/down events
 
-    		if ( window.location.pathname != self.options.search_pathname && self.options.hitEnterBeforeDropDownListOpensVal == 1 ){ 
+    		if ( (window.location.pathname != self.options.search_pathname && self.options.hitEnterBeforeDropDownListOpensVal == 1) || 
+                        typeof self.options.homePage !== 'undefined' ){ 
     			//console.log('1: redirect chk hash: ' + window.location.hash); 
 
     			if ( (self.options.searchMode == 'gene' || self.options.searchMode == 'mp') && self._isSingleton() ){ 
