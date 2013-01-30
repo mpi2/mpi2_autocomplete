@@ -493,7 +493,7 @@
  	    	self.options.queryParams_gene.q = q; 	    	 	
  	    	    	
                 var homepage = location.href.match(/org\/$/);
-                if (homepage !=== null ){
+                if (homepage !== null ){
                         alert('home page');
                 }
 
