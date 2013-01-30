@@ -492,6 +492,11 @@
         				
  	    	self.options.queryParams_gene.q = q; 	    	 	
  	    	    	
+                var homepage = location.href.match(/org\/$/);
+                if (homepage !=== null ){
+                        alert('home page');
+                }
+
  	    	if ( location.href.indexOf('/search?') == -1 ) {
  	    		
  	    		// facet types are done sequencially; starting from gene
