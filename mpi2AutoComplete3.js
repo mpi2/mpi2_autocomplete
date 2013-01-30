@@ -705,8 +705,7 @@
     		alert(window.location.pathname + ' vs ' + self.options.search_pathname + ' enterTEst: ' +  self.options.hitEnterBeforeDropDownListOpensVal);
     		alert('homepage: ' + self.options.homePage);
     		// only Enter event will fire and not other keyup/down events
-    		if ( (window.location.pathname != self.options.search_pathname && self.options.hitEnterBeforeDropDownListOpensVal == 1) ||
-    			 typeof self.options.homePage != 'undefined' ){ 
+    		if ( window.location.pathname != self.options.search_pathname && self.options.hitEnterBeforeDropDownListOpensVal == 1 ){ 
     			alert('1: redirect chk hash: ' + window.location.hash);    					
     			
     			if ( (self.options.searchMode == 'gene' || self.options.searchMode == 'mp') && self._isSingleton() ){ 
