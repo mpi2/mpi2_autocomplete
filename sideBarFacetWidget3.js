@@ -18,7 +18,11 @@
  * 
  */
 (function ($) {
-	'use strict';
+	'use strict'; 
+
+        if(typeof(window.MPI2) === 'undefined') {
+        window.MPI2 = {};
+    }  
     $.widget('MPI2.mpi2LeftSideBar', {
         
 	    options: {	    	
