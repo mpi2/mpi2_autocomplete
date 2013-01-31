@@ -524,7 +524,7 @@
  	    		
  	    		var urlParams = $.fn.parseUrlString(location.href);
     			
-    			self.t erm = urlParams.q;
+    			self.term = urlParams.q;
     			self.options.searchMode = urlParams.core;    					
     			
     			// replace url with hash and reload to convert redirected GET page into hash state
