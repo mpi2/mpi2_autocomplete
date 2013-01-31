@@ -608,7 +608,7 @@
         	    dataType: 'jsonp',
         	    jsonp: 'json.wrf',
         	    timeout: 10000,
-        	    success: fu nction (imgSolrResponse) {        	    	
+        	    success: function (imgSolrResponse) {        	    	
         	    	self._doMPAutoSuggest(geneSolrResponse, sopSolrResponse, maSolrResponse, imgSolrResponse, q, response); 
         	    },
     			error: function (jqXHR, textStatus, errorThrown) {
