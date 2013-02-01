@@ -224,12 +224,12 @@
 					}           			
             	}           	           	
                
-                alert(window.event + ' : '+ e.which);
-                 var keyCode = (window.event) ? e.which : e.keyCode;            	
-	        alert('keycode:'+ keyCode);
+               
+                var keyCode = (window.event) ? e.which : e.keyCode;            	
+	        
             	if ( keyCode == 13) {            	
             		self.close();                    
-            		     
+            		alert(keyCode);     
             		$('div#facetBrowser').html(MPI2.searchAndFacetConfig.spinner);
             		
             		// need to distinguish between enter on the input box and enter on the drop down list
