@@ -224,6 +224,7 @@
 					}           			
             	}           	           	
                
+                alert(window.event + ' : '+ e.which);
                  var keyCode = (window.event) ? e.which : e.keyCode;            	
 	        alert('keycode:'+ keyCode);
             	if ( keyCode == 13) {            	
