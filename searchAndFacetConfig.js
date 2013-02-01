@@ -101,7 +101,7 @@ config.facetParams = {
 		 gridName: 'mpGrid',
 		 topLevelName: '',
 		 ontology: 'mp',
-		 params: {'fq': "ontology_subset:*", 'fl': 'mp_id,mp_term,mp_definition,top_level_mp_term'},
+		 params: {'fq': "ontology_subset:*", 'fl': 'mp_id,mp_term,mp_definition,top_level_mp_term'}
 	 },		 
 	 imagesFacet: {		
 		 type: 'images',
@@ -119,7 +119,7 @@ config.facetParams = {
 		 forceReloadImageDataTable: false,
 		 showImgView: true,
 		 params: {//'fl' : 'annotationTermId,annotationTermName,expName,symbol,symbol_gene,smallThumbnailFilePath,largeThumbnailFilePath',
-			 	  'fq' : "annotationTermId:M* OR expName:* OR symbol:* OR higherLevelMaTermName:* OR higherLevelMpTermName:*"},
+			 	  'fq' : "annotationTermId:M* OR expName:* OR symbol:* OR higherLevelMaTermName:* OR higherLevelMpTermName:*"}
 	 }
 }; 
 
