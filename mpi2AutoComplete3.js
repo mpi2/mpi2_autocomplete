@@ -78,7 +78,8 @@
 			//solrBaseURL_bytemark: MPI2.searchAndFacetConfig.solrBaseURL_bytemark,			
 			//solrBaseURL_ebi: MPI2.searchAndFacetConfig.solrBaseURL_ebi,
 			mouseSelected: 0,	
-            minLength: 1,           
+            minLength: 1,
+            homePage: false,           
             delay: 300,  
             doneSourceCall: 0,           
 			facets: ['geneFacet', 'phenotypeFacet', 'tissueFacet', 'pipelineFacet', 'imageFacet'],			
@@ -770,7 +771,7 @@
     			//console.log('TEST: '+ hashParams.fq);
     		}    		
     	        	
-                if (homepage === null ){	
+                if ( !self.options.homePage ){	
     		        // when loadSideBar is done, dataTable will be loaded based on search result    		
 			self._trigger("loadSideBar", null, {    						
     			        q: self.term, core: self.options.searchMode, fq: self.options.fq							   
