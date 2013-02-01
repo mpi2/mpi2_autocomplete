@@ -211,9 +211,8 @@
             var self = this;  
             self.element.val(self._showSearchMsg());                    
             self._addHitEnterBeforeDropDownListOpensEvent(); 
-            	
-            var e = e || window.event;
-            self.element.bind('keyup', function(e) {
+                        
+            self.element.bind('keyup', function(e || window.event) {
             	//console.log('key up..');	
             	
             	// when input text becomes empty string (ie, due to deletion)
