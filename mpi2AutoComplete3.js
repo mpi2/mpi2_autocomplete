@@ -769,13 +769,13 @@
     			self.options.doDataTable = false;
     			//console.log('TEST: '+ hashParams.fq);
     		}    		
-    	        		
-    		// when loadSideBar is done, dataTable will be loaded based on search result    		
+    	        	
+                if (homepage === null ){	
+    		        // when loadSideBar is done, dataTable will be loaded based on search result    		
 			self._trigger("loadSideBar", null, {    						
-    			q: self.term, core: self.options.searchMode, fq: self.options.fq 																					   
-    		});	
-			
-    		
+    			        q: self.term, core: self.options.searchMode, fq: self.options.fq							   
+    		        });				
+    		}
     		
     	},	
     	
