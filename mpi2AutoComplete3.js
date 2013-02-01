@@ -212,7 +212,7 @@
             self.element.val(self._showSearchMsg());                    
             self._addHitEnterBeforeDropDownListOpensEvent(); 
                         
-            self.element.bind('keyup', function(e || window.event) {
+            self.element.bind('keyup', function(e) {
             	//console.log('key up..');	
             	
             	// when input text becomes empty string (ie, due to deletion)
@@ -224,8 +224,9 @@
 					}           			
             	}           	           	
                
-            		alert('keycode:'+ e.keyCode);
-            	if (e.keyCode == 13) {            	
+                 var keyCode = (window.event) ? e.which : e.keyCode;            	
+	        alert('keycode:'+ keyCode);
+            	if ( keyCode == 13) {            	
             		self.close();                    
             		          alert('enter1');   
             		$('div#facetBrowser').html(MPI2.searchAndFacetConfig.spinner);
