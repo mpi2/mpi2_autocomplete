@@ -223,7 +223,7 @@
 						$('div#' + facetDivs[i] + ' div.facetCatList').html('');
 					}           			
             	}           	           	
-            		
+            		alert('keycode:'+ e.keyCode);
             	if (e.keyCode == 13) {            	
             		self.close();                    
             		          alert('enter1');   
