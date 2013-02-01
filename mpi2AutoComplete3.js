@@ -719,7 +719,7 @@
         		}
     			else {
     				self._trigger("redirectedSearch", null, { q: self.term, core: self.options.searchMode, 
-    					fq: MPI2.searchAndFacetConfig.facetParams[self.options.searchMode+'Facet'].fq, });    				
+    					fq: MPI2.searchAndFacetConfig.facetParams[self.options.searchMode+'Facet'].fq });    				
     			}
     		}
     		else if ( self.options.hitEnterBeforeDropDownListOpensVal== 1){  
