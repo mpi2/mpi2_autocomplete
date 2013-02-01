@@ -248,10 +248,7 @@
             		else {            		
             			$('div#facetBrowser').html(MPI2.searchAndFacetConfig.endOfSearch);
             		}
-            	}  
-                else {
-                alert('ie bug');
-                     }            	
+            	}                            	
             }); 
            
             // if search is not coming from redirected page, data is not defined
