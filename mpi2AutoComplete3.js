@@ -212,6 +212,7 @@
             self.element.val(self._showSearchMsg());                    
             self._addHitEnterBeforeDropDownListOpensEvent(); 
             	
+            var e = e || window.event;
             self.element.bind('keyup', function(e) {
             	//console.log('key up..');	
             	
@@ -223,6 +224,7 @@
 						$('div#' + facetDivs[i] + ' div.facetCatList').html('');
 					}           			
             	}           	           	
+               
             		alert('keycode:'+ e.keyCode);
             	if (e.keyCode == 13) {            	
             		self.close();                    
