@@ -524,7 +524,7 @@
  	    		
  	    		var urlParams = $.fn.parseUrlString(location.href);
     			
-    			self.t erm = urlParams.q;
+    			self.term = urlParams.q;
     			self.options.searchMode = urlParams.core;    					
     			
     			// replace url with hash and reload to convert redirected GET page into hash state
@@ -608,7 +608,7 @@
         	    dataType: 'jsonp',
         	    jsonp: 'json.wrf',
         	    timeout: 10000,
-        	    success: fu nction (imgSolrResponse) {        	    	
+        	    success: function (imgSolrResponse) {        	    	
         	    	self._doMPAutoSuggest(geneSolrResponse, sopSolrResponse, maSolrResponse, imgSolrResponse, q, response); 
         	    },
     			error: function (jqXHR, textStatus, errorThrown) {
