@@ -213,7 +213,7 @@
             self._addHitEnterBeforeDropDownListOpensEvent(); 
                    
             //self.element.bind('keyup', function(e) {
-            self.element.keypress(function(e) {
+            self.element.keypress(function(e) {  
             	//alert('key up..' + e.which);	
             	
             	// when input text becomes empty string (ie, due to deletion)
@@ -224,13 +224,10 @@
 						$('div#' + facetDivs[i] + ' div.facetCatList').html('');
 					}           			
             	}           	           	
-               
-               
-                //var keyCode = (window.event) ? e.which : e.keyCode;            	
-	        
-            	if ( e.which == 13) {            	
+                              
+            	if ( e.which == 13) {  // catches IE           	
             		self.close();                    
-            		//alert(e.which);     
+            		alert(e.which);     
             		$('div#facetBrowser').html(MPI2.searchAndFacetConfig.spinner);
             		
             		// need to distinguish between enter on the input box and enter on the drop down list
