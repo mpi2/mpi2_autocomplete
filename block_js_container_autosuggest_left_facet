@@ -1,0 +1,60 @@
+<?php
+
+drupal_add_js('https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.min.js', 'external');
+//drupal_add_js('https://raw.github.com/mpi2/mpi2_autocomplete/master/searchAndFacetConfig.js', 'external');
+//drupal_add_js('https://dev.mousephenotype.org/mi/impc/dev/phenotype-archive/js/utils/searchAndFacetConfig.js');
+
+?><script type="text/javascript">
+
+window.jQuery('document').ready(function(){
+  //var solrBaseURL_bytemark = '<?php echo (!empty($_SERVER['HTTPS'])) ? 'https':'http'; ?>://dev.mousephenotype.org/bytemark/solr/';
+  //var solrBaseURL_ebi      = '<?php echo (!empty($_SERVER['HTTPS'])) ? 'https':'http'; ?>://dev.mousephenotype.org/mi/impc/dev/solr/';
+ 
+  var solrBaseURL_bytemark = MPI2.searchAndFacetConfig.solrBaseURL_bytemark;
+  var solrBaseURL_ebi         = MPI2.searchAndFacetConfig.solrBaseURL_ebi;
+  var pathname = '/mi/impc/dev/phenotype-archive/search';
+
+
+// auto-complete is always created.
+window.jQuery('input#userInput').mpi2AutoComplete({	
+
+		solrBaseURL_bytemark: solrBaseURL_bytemark,
+		solrBaseURL_ebi: solrBaseURL_ebi,
+                search_pathname: pathname,
+	        homePage: true,
+		
+               /* loadSideBar: function(event, data){
+			// calls left side bar widget				
+					
+			window.jQuery('div#leftSideBar').mpi2LeftSideBar({                                
+                                solrBaseURL_bytemark: solrBaseURL_bytemark,
+                                solrBaseURL_ebi: solrBaseURL_ebi,				
+				data: data, //q, fq
+                                geneGridElem: 'div#mpi2-search',
+                                loggedIn: "<?php echo $user->uid ? true : false; ?>"                                 
+			});
+		},*/
+                redirectedSearch: function(event, data){                   
+                  
+                     // Make a hidden form on your page, and submit it here.
+                     var form = "<form id='hiddenSrch' action='" + pathname + "' method='get'>"
+                                 + "<input type='text' name='core' value='" + data.core + "'>"
+                                 + "<input type='text' name='fq' value=" + encodeURI(data.fq) + ">"
+                                 + "<input type='text' name='q' value='" + data.q + "'>"
+                                 + "</form>";                     
+
+                     window.jQuery('div#bannerSearch').append(form);
+                     window.jQuery('form#hiddenSrch').hide().submit();                    
+                } 
+	}).click(function(){
+		window.jQuery(this).val('');
+	}); 
+
+  // dynamically readjusted position of autosuggest dropdown list due to elastic design of page
+  window.jQuery(window).resize(function(){
+    var pos = window.jQuery('input#userInput').offset();     
+    window.jQuery('ul.ui-autocomplete').css({'position':'absolute', 'top': pos.top + 26, 'left': pos.left}); 
+  });
+});
+
+</script>
