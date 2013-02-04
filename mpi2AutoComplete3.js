@@ -499,7 +499,8 @@
                      //   alert('home page');
                       self.options.homePage = true;                                               
                 }
-                alert( 'check val 1: '+  self.options.hitEnterBeforeDropDownListOpensVal);   
+                alert( 'check val 1: '+  self.options.hitEnterBeforeDropDownListOpensVal + ' : '+ location.href);   
+                
  	    	if ( location.href.indexOf('/search?') == -1 ) {
  	    		alert('non redirect');
  	    		// facet types are done sequencially; starting from gene
