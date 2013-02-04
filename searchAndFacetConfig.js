@@ -30,10 +30,13 @@ var config = MPI2.searchAndFacetConfig;
 if ( typeof solrUrl == 'undefined' ){
 	var domain = document.domain;
 	if ( /^beta/.test(domain) ){		
-		solrUrl = 'http://' + domain + '/mi/impc/beta/solr';
+		solrUrl = '/mi/impc/beta/solr';
 	}
 	else if ( /^dev/.test(domain) ){	
-		solrUrl = 'http://' + domain + '/mi/impc/dev/solr';
+		solrUrl = '/mi/impc/dev/solr';
+	}
+	else {
+		solrUrl = '/mi/impc/solr';
 	}
 }
 if ( typeof baseUrl == 'undefined' ){

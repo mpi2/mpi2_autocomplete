@@ -78,7 +78,8 @@
 			//solrBaseURL_bytemark: MPI2.searchAndFacetConfig.solrBaseURL_bytemark,			
 			//solrBaseURL_ebi: MPI2.searchAndFacetConfig.solrBaseURL_ebi,
 			mouseSelected: 0,	
-            minLength: 1,           
+            minLength: 1,
+            homePage: false,           
             delay: 300,  
             doneSourceCall: 0,           
 			facets: ['geneFacet', 'phenotypeFacet', 'tissueFacet', 'pipelineFacet', 'imageFacet'],			
@@ -206,13 +207,14 @@
 		},
 				
         _create : function () {        	    	
-        	
+          
             var self = this;  
             self.element.val(self._showSearchMsg());                    
             self._addHitEnterBeforeDropDownListOpensEvent(); 
-            	
-            self.element.bind('keyup', function(e) {
-            	//console.log('key up..');	
+                   
+            //self.element.bind('keyup', function(e) {
+            self.element.keypress(function(e) {  
+            	//alert('key up..' + e.which);	
             	
             	// when input text becomes empty string (ie, due to deletion)
             	if ( self.element.val() == '' ){
@@ -222,29 +224,29 @@
 						$('div#' + facetDivs[i] + ' div.facetCatList').html('');
 					}           			
             	}           	           	
-            		
-            	if (e.keyCode == 13) {            	
+                              
+            	if ( e.which == 13) {  // catches IE           	
             		self.close();                    
-            		             
+            		//alert(e.which);     
             		$('div#facetBrowser').html(MPI2.searchAndFacetConfig.spinner);
             		
             		// need to distinguish between enter on the input box and enter on the drop down list
             		// ie, users use keyboard, instead of mouse, to navigate the list and hit enter to choose a term
             		if (self.options.mouseSelected == 0 ){                    	
             			// use the value in the input box for query 
-                    			
+                    		
             			if (self.options.hitEnterBeforeDropDownListOpensVal == 1){
             				//console.log('hitEnterBeforeDropDownListOpens');	
             				// sourceCallback() is automatically called when dropdown list is open
             				// so we need to call it now to simulate dropdown list open          				
-            			        				
+            			      	
             				self.sourceCallback(self); // ajax!!                    		
             			}  
             		}
-            		else {            		
+            		else { 		
             			$('div#facetBrowser').html(MPI2.searchAndFacetConfig.endOfSearch);
             		}
-            	}            	
+            	}                            	
             }); 
            
             // if search is not coming from redirected page, data is not defined
@@ -495,14 +497,15 @@
                 var homepage = location.href.match(/org\/$/);
                 if (homepage !== null ){
                      //   alert('home page');
-                      self.options.homePage = true;                        
+                      self.options.homePage = true;                                               
                 }
-
+                //alert( 'check val 1: '+  self.options.hitEnterBeforeDropDownListOpensVal + ' : '+ location.href);   
+                
  	    	if ( location.href.indexOf('/search?') == -1 ) {
- 	    		
+ 	    		//alert('non redirect');
  	    		// facet types are done sequencially; starting from gene
 	        	$.ajax({            	    
-	        			url: self.options.solrBaseURL_bytemark + 'gene/search',
+	        	        url: self.options.solrBaseURL_bytemark + 'gene/search',
 	            	    data: self.options.queryParams_gene,
 	            	    dataType: 'jsonp',
 	            	    jsonp: 'json.wrf',
@@ -516,8 +519,7 @@
 	            	    }            	
 	        	});
  	    	}
- 	    	else {
- 	    		
+ 	    	else { 	    	
  	    		// from redirect, so skip faceting 
  	    		self.element.val(self._showSearchMsg());     
  	    		$('div#leftSideBar').parent().parent().html('');
@@ -537,16 +539,15 @@
     		var self = this;
     		var queryParams = $.extend({},{    				
     			'fq': 'pipeline_stable_id=IMPC_001', 
-    			'q': q}, self.options.commonQryParams);   		
-    		    		
-    		//console.log(queryParams);
+    			'q': q}, self.options.commonQryParams);   		    		  		
+    		
     		$.ajax({
         	    url: self.options.solrBaseURL_ebi + 'pipeline/select',
         	    data: queryParams,
         	    dataType: 'jsonp',
         	    jsonp: 'json.wrf',
         	    timeout: 5000,
-        	    success: function (sopSolrResponse) {
+        	    success: function (sopSolrResponse) {                
         	    	self._doTissueAutoSuggest(geneSolrResponse, sopSolrResponse, q, response); 
         	    },
     			error: function (jqXHR, textStatus, errorThrown) {
@@ -572,7 +573,7 @@
         	    dataType: 'jsonp',
         	    jsonp: 'json.wrf',
         	    timeout: 10000,
-        	    success: function (maSolrResponse) {
+        	    success: function (maSolrResponse) { 
         	    	self._doImageAutosuggest(geneSolrResponse, sopSolrResponse, maSolrResponse, q, response); 
         	    },
     			error: function (jqXHR, textStatus, errorThrown) {
@@ -608,7 +609,8 @@
         	    dataType: 'jsonp',
         	    jsonp: 'json.wrf',
         	    timeout: 10000,
-        	    success: function (imgSolrResponse) {        	    	
+
+        	    success: function (imgSolrResponse) { 	    	
         	    	self._doMPAutoSuggest(geneSolrResponse, sopSolrResponse, maSolrResponse, imgSolrResponse, q, response); 
         	    },
     			error: function (jqXHR, textStatus, errorThrown) {
@@ -637,8 +639,7 @@
         	    dataType: 'jsonp',
         	    jsonp: 'json.wrf',
         	    timeout: 10000,
-        	    success: function (mpSolrResponse) {
-        	    	        	    	
+        	    success: function (mpSolrResponse) {  	
         	    	q = q.replace(/\*$/g, ""); // need to remove trailing * 
         	    	
         	    	// all JSONs from each solr query are parsed in one go here
@@ -668,14 +669,14 @@
         	    	
         	    	self.options.doneSourceCall = 1;
         	    	
-        	    	//console.log('doneSouceCall: '+ self.options.doneSourceCall);
+        	    	//alert('doneSouceCall: '+ self.options.doneSourceCall);
         	    	if ( response ){        	    		
         	    		// response is defined only after dropdown list is open
         	    		// all other key events do not trigger opening dropdown list
         	    		//response(self.options.acList);        	    		
         	    		response(self.options.acList.slice(0,4)); // return only first 4 terms in the list for now
         	    	}
-        	    	       	    	
+        	    	//alert( 'check val 2: '+  self.options.hitEnterBeforeDropDownListOpensVal);      	    	
         	    	self._doCallBacks();         	    	
         	    },
         	    error: function (jqXHR, textStatus, errorThrown) {
@@ -709,6 +710,7 @@
     		
     		$('div#facetBrowser').html(MPI2.searchAndFacetConfig.endOfSearch);    		
     		// only Enter event will fire and not other keyup/down events
+                //alert(window.location.pathname + ' : '+ self.options.search_pathname + ' : ' + self.options.hitEnterBeforeDropDownListOpensVal);              
 
     		if ( (window.location.pathname != self.options.search_pathname && self.options.hitEnterBeforeDropDownListOpensVal == 1) ){ 
     			//console.log('1: redirect chk hash: ' + window.location.hash); 
@@ -769,13 +771,13 @@
     			self.options.doDataTable = false;
     			//console.log('TEST: '+ hashParams.fq);
     		}    		
-    	        		
-    		// when loadSideBar is done, dataTable will be loaded based on search result    		
+    	        	
+                if ( !self.options.homePage ){	
+    		        // when loadSideBar is done, dataTable will be loaded based on search result    		
 			self._trigger("loadSideBar", null, {    						
-    			q: self.term, core: self.options.searchMode, fq: self.options.fq 																					   
-    		});	
-			
-    		
+    			        q: self.term, core: self.options.searchMode, fq: self.options.fq							   
+    		        });				
+    		}
     		
     	},	
     	
