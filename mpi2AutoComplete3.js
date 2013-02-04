@@ -207,14 +207,14 @@
 		},
 				
         _create : function () {        	    	
-            alert('test');	
+          
             var self = this;  
             self.element.val(self._showSearchMsg());                    
             self._addHitEnterBeforeDropDownListOpensEvent(); 
                    
             //self.element.bind('keyup', function(e) {
             self.element.keypress(function(e) {
-            	alert('key up..' + e.which);	
+            	//alert('key up..' + e.which);	
             	
             	// when input text becomes empty string (ie, due to deletion)
             	if ( self.element.val() == '' ){
@@ -230,7 +230,7 @@
 	        
             	if ( e.which == 13) {            	
             		self.close();                    
-            		alert(e.which);     
+            		//alert(e.which);     
             		$('div#facetBrowser').html(MPI2.searchAndFacetConfig.spinner);
             		
             		// need to distinguish between enter on the input box and enter on the drop down list
