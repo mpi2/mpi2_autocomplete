@@ -671,7 +671,7 @@
         	    	
         	    	self.options.doneSourceCall = 1;
         	    	
-        	    	//console.log('doneSouceCall: '+ self.options.doneSourceCall);
+        	    	alert('doneSouceCall: '+ self.options.doneSourceCall);
         	    	if ( response ){        	    		
         	    		// response is defined only after dropdown list is open
         	    		// all other key events do not trigger opening dropdown list
