@@ -213,7 +213,7 @@
             self._addHitEnterBeforeDropDownListOpensEvent(); 
                    
             self.element.bind('keyup', function(e) {
-            	//console.log('key up..');	
+            	alert('key up..' + e.keyCode);	
             	
             	// when input text becomes empty string (ie, due to deletion)
             	if ( self.element.val() == '' ){
