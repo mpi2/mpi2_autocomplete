@@ -227,24 +227,23 @@
                               
             	if ( e.which == 13) {  // catches IE           	
             		self.close();                    
-            		alert(e.which);     
+            		//alert(e.which);     
             		$('div#facetBrowser').html(MPI2.searchAndFacetConfig.spinner);
             		
             		// need to distinguish between enter on the input box and enter on the drop down list
             		// ie, users use keyboard, instead of mouse, to navigate the list and hit enter to choose a term
             		if (self.options.mouseSelected == 0 ){                    	
             			// use the value in the input box for query 
-                    		alert('1');	
+                    		
             			if (self.options.hitEnterBeforeDropDownListOpensVal == 1){
             				//console.log('hitEnterBeforeDropDownListOpens');	
             				// sourceCallback() is automatically called when dropdown list is open
             				// so we need to call it now to simulate dropdown list open          				
-            			      	alert('2');		
+            			      	
             				self.sourceCallback(self); // ajax!!                    		
             			}  
             		}
-            		else {            	
-                                alert('3');		
+            		else { 		
             			$('div#facetBrowser').html(MPI2.searchAndFacetConfig.endOfSearch);
             		}
             	}                            	
