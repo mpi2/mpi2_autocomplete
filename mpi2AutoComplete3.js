@@ -543,7 +543,7 @@
     			'fq': 'pipeline_stable_id=IMPC_001', 
     			'q': q}, self.options.commonQryParams);   		
     		    		
-    		//console.log(queryParams);
+    		alert(queryParams);
     		$.ajax({
         	    url: self.options.solrBaseURL_ebi + 'pipeline/select',
         	    data: queryParams,
