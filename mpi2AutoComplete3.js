@@ -511,6 +511,7 @@
 	            	    jsonp: 'json.wrf',
 	            	    timeout: 5000,
 	            	    success: function (geneSolrResponse) { 
+                                alert('do gene');
 							self._doPipelineAutoSuggest(geneSolrResponse, q, response); 
 	            	    },
 	            	    error: function (jqXHR, textStatus, errorThrown) {
@@ -550,6 +551,7 @@
         	    jsonp: 'json.wrf',
         	    timeout: 5000,
         	    success: function (sopSolrResponse) {
+                 alert('do pipeline');
         	    	self._doTissueAutoSuggest(geneSolrResponse, sopSolrResponse, q, response); 
         	    },
     			error: function (jqXHR, textStatus, errorThrown) {
@@ -575,7 +577,8 @@
         	    dataType: 'jsonp',
         	    jsonp: 'json.wrf',
         	    timeout: 10000,
-        	    success: function (maSolrResponse) {
+        	    success: function (maSolrResponse) { 
+                        alert('do ma');
         	    	self._doImageAutosuggest(geneSolrResponse, sopSolrResponse, maSolrResponse, q, response); 
         	    },
     			error: function (jqXHR, textStatus, errorThrown) {
@@ -611,7 +614,8 @@
         	    dataType: 'jsonp',
         	    jsonp: 'json.wrf',
         	    timeout: 10000,
-        	    success: function (imgSolrResponse) {        	    	
+        	    success: function (imgSolrResponse) { 
+                               alert('do images');       	    	
         	    	self._doMPAutoSuggest(geneSolrResponse, sopSolrResponse, maSolrResponse, imgSolrResponse, q, response); 
         	    },
     			error: function (jqXHR, textStatus, errorThrown) {
@@ -641,7 +645,7 @@
         	    jsonp: 'json.wrf',
         	    timeout: 10000,
         	    success: function (mpSolrResponse) {
-        	    	        	    	
+        	    	      alert('do mp');    	    	
         	    	q = q.replace(/\*$/g, ""); // need to remove trailing * 
         	    	
         	    	// all JSONs from each solr query are parsed in one go here
