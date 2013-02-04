@@ -502,7 +502,7 @@
                 }
 
  	    	if ( location.href.indexOf('/search?') == -1 ) {
- 	    		
+ 	    		alert('non redirect');
  	    		// facet types are done sequencially; starting from gene
 	        	$.ajax({            	    
 	        			url: self.options.solrBaseURL_bytemark + 'gene/search',
@@ -520,7 +520,7 @@
 	        	});
  	    	}
  	    	else {
- 	    		
+ 	    		alert('redirect');
  	    		// from redirect, so skip faceting 
  	    		self.element.val(self._showSearchMsg());     
  	    		$('div#leftSideBar').parent().parent().html('');
