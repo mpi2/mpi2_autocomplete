@@ -498,14 +498,14 @@
                 var homepage = location.href.match(/org\/$/);
                 if (homepage !== null ){
                      //   alert('home page');
-                      self.options.homePage = true;                        
+                      self.options.homePage = true;                                               
                 }
-
+                alert( 'check val 1: '+  self.options.hitEnterBeforeDropDownListOpensVal);   
  	    	if ( location.href.indexOf('/search?') == -1 ) {
  	    		alert('non redirect');
  	    		// facet types are done sequencially; starting from gene
 	        	$.ajax({            	    
-	        			url: self.options.solrBaseURL_bytemark + 'gene/search',
+	        	        url: self.options.solrBaseURL_bytemark + 'gene/search',
 	            	    data: self.options.queryParams_gene,
 	            	    dataType: 'jsonp',
 	            	    jsonp: 'json.wrf',
@@ -678,7 +678,7 @@
         	    		//response(self.options.acList);        	    		
         	    		response(self.options.acList.slice(0,4)); // return only first 4 terms in the list for now
         	    	}
-        	    	       	    	
+        	    	alert( 'check val 2: '+  self.options.hitEnterBeforeDropDownListOpensVal);      	    	
         	    	self._doCallBacks();         	    	
         	    },
         	    error: function (jqXHR, textStatus, errorThrown) {
