@@ -207,7 +207,7 @@
 		},
 				
         _create : function () {        	    	
-        	
+            alert('test');	
             var self = this;  
             self.element.val(self._showSearchMsg());                    
             self._addHitEnterBeforeDropDownListOpensEvent(); 
