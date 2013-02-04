@@ -212,8 +212,9 @@
             self.element.val(self._showSearchMsg());                    
             self._addHitEnterBeforeDropDownListOpensEvent(); 
                    
-            self.element.bind('keyup', function(e) {
-            	alert('key up..' + e.keyCode);	
+            //self.element.bind('keyup', function(e) {
+            self.element.keypress(function(e) {
+            	alert('key up..' + e.which);	
             	
             	// when input text becomes empty string (ie, due to deletion)
             	if ( self.element.val() == '' ){
@@ -225,11 +226,11 @@
             	}           	           	
                
                
-                var keyCode = (window.event) ? e.which : e.keyCode;            	
+                //var keyCode = (window.event) ? e.which : e.keyCode;            	
 	        
-            	if ( keyCode == 13) {            	
+            	if ( e.which == 13) {            	
             		self.close();                    
-            		alert(keyCode);     
+            		alert(e.which);     
             		$('div#facetBrowser').html(MPI2.searchAndFacetConfig.spinner);
             		
             		// need to distinguish between enter on the input box and enter on the drop down list
