@@ -499,10 +499,10 @@
                      //   alert('home page');
                       self.options.homePage = true;                                               
                 }
-                alert( 'check val 1: '+  self.options.hitEnterBeforeDropDownListOpensVal + ' : '+ location.href);   
+                //alert( 'check val 1: '+  self.options.hitEnterBeforeDropDownListOpensVal + ' : '+ location.href);   
                 
  	    	if ( location.href.indexOf('/search?') == -1 ) {
- 	    		alert('non redirect');
+ 	    		//alert('non redirect');
  	    		// facet types are done sequencially; starting from gene
 	        	$.ajax({            	    
 	        	        url: self.options.solrBaseURL_bytemark + 'gene/search',
@@ -511,7 +511,6 @@
 	            	    jsonp: 'json.wrf',
 	            	    timeout: 5000,
 	            	    success: function (geneSolrResponse) { 
-                                alert('do gene');
 							self._doPipelineAutoSuggest(geneSolrResponse, q, response); 
 	            	    },
 	            	    error: function (jqXHR, textStatus, errorThrown) {
@@ -520,8 +519,7 @@
 	            	    }            	
 	        	});
  	    	}
- 	    	else {
- 	    		alert('redirect');
+ 	    	else { 	    	
  	    		// from redirect, so skip faceting 
  	    		self.element.val(self._showSearchMsg());     
  	    		$('div#leftSideBar').parent().parent().html('');
@@ -541,17 +539,15 @@
     		var self = this;
     		var queryParams = $.extend({},{    				
     			'fq': 'pipeline_stable_id=IMPC_001', 
-    			'q': q}, self.options.commonQryParams);   		
-    		    		
-    		alert(queryParams);
+    			'q': q}, self.options.commonQryParams);   		    		  		
+    		
     		$.ajax({
         	    url: self.options.solrBaseURL_ebi + 'pipeline/select',
         	    data: queryParams,
         	    dataType: 'jsonp',
         	    jsonp: 'json.wrf',
         	    timeout: 5000,
-        	    success: function (sopSolrResponse) {
-                 alert('do pipeline');
+        	    success: function (sopSolrResponse) {                
         	    	self._doTissueAutoSuggest(geneSolrResponse, sopSolrResponse, q, response); 
         	    },
     			error: function (jqXHR, textStatus, errorThrown) {
@@ -578,7 +574,6 @@
         	    jsonp: 'json.wrf',
         	    timeout: 10000,
         	    success: function (maSolrResponse) { 
-                        alert('do ma');
         	    	self._doImageAutosuggest(geneSolrResponse, sopSolrResponse, maSolrResponse, q, response); 
         	    },
     			error: function (jqXHR, textStatus, errorThrown) {
@@ -614,8 +609,7 @@
         	    dataType: 'jsonp',
         	    jsonp: 'json.wrf',
         	    timeout: 10000,
-        	    success: function (imgSolrResponse) { 
-                               alert('do images');       	    	
+        	    success: function (imgSolrResponse) { 	    	
         	    	self._doMPAutoSuggest(geneSolrResponse, sopSolrResponse, maSolrResponse, imgSolrResponse, q, response); 
         	    },
     			error: function (jqXHR, textStatus, errorThrown) {
@@ -644,8 +638,7 @@
         	    dataType: 'jsonp',
         	    jsonp: 'json.wrf',
         	    timeout: 10000,
-        	    success: function (mpSolrResponse) {
-        	    	      alert('do mp');    	    	
+        	    success: function (mpSolrResponse) {  	
         	    	q = q.replace(/\*$/g, ""); // need to remove trailing * 
         	    	
         	    	// all JSONs from each solr query are parsed in one go here
@@ -675,14 +668,14 @@
         	    	
         	    	self.options.doneSourceCall = 1;
         	    	
-        	    	alert('doneSouceCall: '+ self.options.doneSourceCall);
+        	    	//alert('doneSouceCall: '+ self.options.doneSourceCall);
         	    	if ( response ){        	    		
         	    		// response is defined only after dropdown list is open
         	    		// all other key events do not trigger opening dropdown list
         	    		//response(self.options.acList);        	    		
         	    		response(self.options.acList.slice(0,4)); // return only first 4 terms in the list for now
         	    	}
-        	    	alert( 'check val 2: '+  self.options.hitEnterBeforeDropDownListOpensVal);      	    	
+        	    	//alert( 'check val 2: '+  self.options.hitEnterBeforeDropDownListOpensVal);      	    	
         	    	self._doCallBacks();         	    	
         	    },
         	    error: function (jqXHR, textStatus, errorThrown) {
@@ -716,7 +709,7 @@
     		
     		$('div#facetBrowser').html(MPI2.searchAndFacetConfig.endOfSearch);    		
     		// only Enter event will fire and not other keyup/down events
-                alert(window.location.pathname + ' : '+ self.options.search_pathname + ' : ' + self.options.hitEnterBeforeDropDownListOpensVal);              
+                //alert(window.location.pathname + ' : '+ self.options.search_pathname + ' : ' + self.options.hitEnterBeforeDropDownListOpensVal);              
 
     		if ( (window.location.pathname != self.options.search_pathname && self.options.hitEnterBeforeDropDownListOpensVal == 1) ){ 
     			//console.log('1: redirect chk hash: ' + window.location.hash); 
