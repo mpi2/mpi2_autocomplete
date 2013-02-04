@@ -712,6 +712,7 @@
     		
     		$('div#facetBrowser').html(MPI2.searchAndFacetConfig.endOfSearch);    		
     		// only Enter event will fire and not other keyup/down events
+                alert(window.location.pathname + ' : '+ self.options.search_pathname + ' : ' + self.options.hitEnterBeforeDropDownListOpensVal);              
 
     		if ( (window.location.pathname != self.options.search_pathname && self.options.hitEnterBeforeDropDownListOpensVal == 1) ){ 
     			//console.log('1: redirect chk hash: ' + window.location.hash); 
