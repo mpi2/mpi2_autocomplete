@@ -18,11 +18,7 @@
  * 
  */
 (function ($) {
-	'use strict'; 
-
-        if(typeof(window.MPI2) === 'undefined') {
-        window.MPI2 = {};
-    }  
+	'use strict';
     $.widget('MPI2.mpi2LeftSideBar', {
         
 	    options: {	    	
@@ -177,7 +173,7 @@
 		 		oInfos.params = $.fn.stringifyJsonAsUrlParams(oSolrSrchParams);
 		 		oInfos.solrCoreName = oVal.solrCoreName;
 		 		oInfos.mode = oVal.gridName;
-		 		oInfos.dataTablePath = baseUrl + '/dataTable';
+		 		oInfos.dataTablePath = baseUrl + '/dataTable';		 		
 		 		
 		 	   	var dTable = $('<table></table>').attr({'id':oInfos.mode});	    		    	
 		 	   	var thead = oVal.tableHeader;
@@ -287,14 +283,15 @@
 	    	var self = this;
 	    	
 			var solrURL = self.options.solrBaseURL_bytemark + 'gene/search';
-	    	var queryParams = $.extend({},{				
+	    	//var queryParams = $.extend({},{		
+	    	var queryParams = { 
 				'rows': 0,
 				'facet': 'on',								
 				'facet.mincount': 1,
 				'facet.limit': -1,
 				'facet.field': 'marker_type_str',  
-				'facet.sort': 'count',
-				'q': self.options.data.q}, self.options.commonParams);	
+				'facet.sort': 'count',					
+	    		'q': self.options.data.q};
 	    	
 	    	$.ajax({ 				 					
 	    		'url': solrURL,
@@ -309,6 +306,7 @@
 	    },
 	    
 	    _displayGeneSubTypeFacet: function(json){
+	    	
 	    	var self = this;
 	    	var numFound = json.response.numFound;
 	    	
