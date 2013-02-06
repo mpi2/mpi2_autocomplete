@@ -285,9 +285,9 @@
             $.ui.autocomplete.prototype._create.apply(this);			
         },   
 
-        _showSearchMsg: function(){
-			//return 'Search genes, MP terms, SOP by MGI/MP ID, gene symbol, synonym or name';
-			return 'Search genes, SOP, MP, images by MGI ID, gene symbol, synonym or name';
+        _showSearchMsg: function(){			
+			//return 'Search genes, SOP, MP, images by MGI ID, gene symbol, synonym or name';
+			return ''; // in case users want to have them back
 		},                     
         
        /* _setOption: function (key, value) {
@@ -730,8 +730,7 @@
 
     		if ( (window.location.pathname != self.options.search_pathname && self.options.hitEnterBeforeDropDownListOpensVal == 1) ){ 
     			//console.log('1: redirect chk hash: ' + window.location.hash); 
-
-                        // when users hit enter on inpubox and the result returns only 1 result
+    			// when users hit enter on inpubox and the result returns only 1 result
         		// go straight to mp/gene page
     			/*if ( (self.options.searchMode == 'gene' || self.options.searchMode == 'mp') && self._isSingleton() ){ 
         			var acc = MPI2.AutoComplete.mapping[self.term.toLowerCase()];        			
