@@ -104,14 +104,14 @@
 		_inputValMappingForCallBack: function(input, srchBtn){
 			
 			var self = this;	
-			
-			$('div#facetBrowser').html(MPI2.searchAndFacetConfig.spinner);			
+									
 			var termVal = input.replace(/^(.+)\s(:)\s(.+)/, '$3');			
 			var displayField = input.replace(/^(.+)\s(:)\s(.+)/, '$1');
 			var solrField = input.replace(/^(.+)\s(:)\s(.+)/, '$1').replace(/ /g, '_').toLowerCase();	
 			
 			var solrQStr = input;
 			var solrParams= null;
+			var doSideBar = true;
 			
 			//console.log('input: '+ input + ' --- field: ' + solrField + ' --- qry str: ' + solrQStr);					
 			
@@ -123,13 +123,15 @@
 				}				
 			}
 			else if ( MPI2.AutoComplete.mapping[termVal.toLowerCase()] && MPI2.AutoComplete.mapping[termVal.toLowerCase()].indexOf('MGI:') != -1 ){	
-				// MGI id				
+				// MGI id	
+				doSideBar = false;
 				var geneId = MPI2.AutoComplete.mapping[termVal.toLowerCase()];				
 				solrQStr = self.options.grouppingId + ':"' + geneId.replace(/:/g,"\\:") + '"';	
 				//console.log('MOUSE1: '+  ' -- ' + ' termVal: ' + termVal + ' : '+ geneId );
 								
 				// jump straight to gene page
-				window.location.href = baseUrl + '/genes/' + geneId;					
+				window.location.href = baseUrl + '/genes/' + geneId;	
+				return;
 			}	
 			else if (input.indexOf(':') != -1 ) {
 				//console.log('MOUSE2: '+  ' -- ' + ' termVal: ' + termVal);
@@ -148,14 +150,12 @@
 				else if ( solrField.indexOf('mp_') != -1 ){					
 					// jump straight to mp page
 					var mpId = MPI2.AutoComplete.mapping[termVal.toLowerCase()];
-					window.location.href = baseUrl + '/phenotypes/' + mpId;						
-				}
-				
+					window.location.href = baseUrl + '/phenotypes/' + mpId;	
+					return;
+				}				
 				solrQStr = solrField + ':' + '"' + termVal + '"';										
 			}	
-									
-			// hash state stuff
-			
+						
 			if ( srchBtn ){							
 				var pathname = window.location.pathname;			
 				
@@ -166,20 +166,23 @@
 				}				
 			}
 			
+			for( var i=0; i<facetDivs.length; i++ ){
+				$('div#' + facetDivs[i] + ' span.facetCount').text('');
+				$('div#' + facetDivs[i] + ' div.facetCatList').html('');	
+			} 
+			
 			window.location.hash = 'q=' + solrQStr + "&core=" + self.options.searchMode 
 		                     + '&fq=' + self.options.facetTypeParams[self.options.searchMode].fq;			
 					
 			$('div#userKeyword').html('Search keyword: ' + input);
-		
-			var pathname = window.location.pathname;			
-			//if ( pathname != self.options.search_pathname ){				
-				//self._trigger("redirectedSearch", null, { q: solrQStr, core: self.options.searchMode, 
-					//fq: self.options.facetTypeParams[self.options.searchMode].fq });
-			//}						
-			
-			//console.log('Gene: '+ self.options.geneFound + ' - mp: '+ self.options.mpFound + ' - pipeline: '+ self.options.pipelineFound + ' - img: '+ self.options.imagesFound);				
-			self._trigger("loadSideBar", null, { q: solrQStr, core: self.options.searchMode, fq: self.options.fq });
-		
+					
+			//console.log('Gene: '+ self.options.geneFound + ' - mp: '+ self.options.mpFound + ' - pipeline: '+ self.options.pipelineFound + ' - img: '+ self.options.imagesFound);
+			if ( !self.options.homePage && doSideBar ){	
+				self._trigger("loadSideBar", null, { q: solrQStr, core: self.options.searchMode, fq: self.options.fq });
+			}
+			else {
+				$('div#facetBrowser').html(MPI2.searchAndFacetConfig.spinner);
+			}
 		},
 		
 		_addHitEnterBeforeDropDownListOpensEvent: function(){
@@ -207,14 +210,15 @@
 		},
 				
         _create : function () {        	    	
-          
+        	
             var self = this;  
             self.element.val(self._showSearchMsg());                    
             self._addHitEnterBeforeDropDownListOpensEvent(); 
-                   
+            	
             //self.element.bind('keyup', function(e) {
-            self.element.keypress(function(e) {  
-            	//alert('key up..' + e.which);	
+            self.element.keypress(function(e) { 
+           
+            	//console.log('key up..');	
             	
             	// when input text becomes empty string (ie, due to deletion)
             	if ( self.element.val() == '' ){
@@ -224,29 +228,29 @@
 						$('div#' + facetDivs[i] + ' div.facetCatList').html('');
 					}           			
             	}           	           	
-                              
-            	if ( e.which == 13) {  // catches IE           	
+            	            	
+            	if ( e.which == 13) {  // catches IE     	
             		self.close();                    
-            		//alert(e.which);     
+            		             
             		$('div#facetBrowser').html(MPI2.searchAndFacetConfig.spinner);
             		
             		// need to distinguish between enter on the input box and enter on the drop down list
             		// ie, users use keyboard, instead of mouse, to navigate the list and hit enter to choose a term
             		if (self.options.mouseSelected == 0 ){                    	
             			// use the value in the input box for query 
-                    		
+                    			
             			if (self.options.hitEnterBeforeDropDownListOpensVal == 1){
             				//console.log('hitEnterBeforeDropDownListOpens');	
             				// sourceCallback() is automatically called when dropdown list is open
             				// so we need to call it now to simulate dropdown list open          				
-            			      	
+            			        				
             				self.sourceCallback(self); // ajax!!                    		
             			}  
             		}
-            		else { 		
+            		else {            		
             			$('div#facetBrowser').html(MPI2.searchAndFacetConfig.endOfSearch);
             		}
-            	}                            	
+            	}            	
             }); 
            
             // if search is not coming from redirected page, data is not defined
@@ -272,18 +276,18 @@
             self.element.click(function(){
             	self.term = undefined; 		
             	            	
-				for( var i=0; i<facetDivs.length; i++ ){
+				/*for( var i=0; i<facetDivs.length; i++ ){
 					$('div#' + facetDivs[i] + ' span.facetCount').text('');
 					$('div#' + facetDivs[i] + ' div.facetCatList').html('');	
-				}            	
+				} */           	
             });      
            
             $.ui.autocomplete.prototype._create.apply(this);			
         },   
 
-        _showSearchMsg: function(){
-			//return 'Search genes, MP terms, SOP by MGI/MP ID, gene symbol, synonym or name';
-			return 'Search genes, SOP, MP, images by MGI ID, gene symbol, synonym or name';
+        _showSearchMsg: function(){			
+			//return 'Search genes, SOP, MP, images by MGI ID, gene symbol, synonym or name';
+			return ''; // in case users want to have them back
 		},                     
         
        /* _setOption: function (key, value) {
@@ -328,7 +332,7 @@
 						
 			self.options[sDataType + 'Found'] = matchesFound;
 		
-			$('div#' + sDivId + ' span.facetCount').text(matchesFound);
+			//$('div#' + sDivId + ' span.facetCount').text(matchesFound);
 			$('div#' + sDivId + ' .facetCatList').html(''); 
 									
 			var list = [];
@@ -383,7 +387,7 @@
 			//console.log('FOUND: gene found: '+ matchesFound);
            	self.options.geneFound = matchesFound;   
 
-           	$('div#geneFacet span.facetCount').text(matchesFound);
+           //	$('div#geneFacet span.facetCount').text(matchesFound);
 			$('div#geneFacet .facetCatList').html(''); 
 
            	var groups   = g.groups;
@@ -493,25 +497,25 @@
         	}	        		
         				
  	    	self.options.queryParams_gene.q = q; 	    	 	
- 	    	    	
-                var homepage = location.href.match(/org\/$/);
-                if (homepage !== null ){
-                     //   alert('home page');
-                      self.options.homePage = true;                                               
-                }
-                //alert( 'check val 1: '+  self.options.hitEnterBeforeDropDownListOpensVal + ' : '+ location.href);   
-                
+
+    	
+ 	    	var homepage = location.href.match(/org\/$/);
+ 	    	if (homepage !== null ){
+ 	    		//   alert('home page');
+ 	    		self.options.homePage = true;                        
+ 	    	}
+
  	    	if ( location.href.indexOf('/search?') == -1 ) {
- 	    		//alert('non redirect');
+ 	    		
  	    		// facet types are done sequencially; starting from gene
 	        	$.ajax({            	    
-	        	        url: self.options.solrBaseURL_bytemark + 'gene/search',
+	        			url: self.options.solrBaseURL_bytemark + 'gene/search',
 	            	    data: self.options.queryParams_gene,
 	            	    dataType: 'jsonp',
 	            	    jsonp: 'json.wrf',
 	            	    timeout: 5000,
-	            	    success: function (geneSolrResponse) { 
-							self._doPipelineAutoSuggest(geneSolrResponse, q, response); 
+	            	    success: function (geneSolrResponse) {
+	            	    	self._doPipelineAutoSuggest(geneSolrResponse, q, response);	            	    
 	            	    },
 	            	    error: function (jqXHR, textStatus, errorThrown) {
 	            	        //response('AJAX error');            	        
@@ -519,7 +523,8 @@
 	            	    }            	
 	        	});
  	    	}
- 	    	else { 	    	
+ 	    	else {
+ 	    		
  	    		// from redirect, so skip faceting 
  	    		self.element.val(self._showSearchMsg());     
  	    		$('div#leftSideBar').parent().parent().html('');
@@ -533,21 +538,33 @@
     			document.location.href = 'search' + '#q=' + urlParams.q + '&core=' + urlParams.core + '&fq=' + urlParams.fq; 
  	    	}
     	},
+    	
+    	_checkSingletonForRedirect: function(json, query){
+            var self = this;
+            var g = json.grouped[self.options.grouppingId];
+
+            if (g.matches == 1){
+                    self._parseGeneGroupedJson(json, query);
+                    console.log(MPI2.AutoComplete.mapping);
+                    return MPI2.AutoComplete.mapping[query.toLowerCase()];
+            }
+    	},
 
     	_doPipelineAutoSuggest: function(geneSolrResponse, q, response){
     		
     		var self = this;
     		var queryParams = $.extend({},{    				
     			'fq': 'pipeline_stable_id=IMPC_001', 
-    			'q': q}, self.options.commonQryParams);   		    		  		
-    		
+    			'q': q}, self.options.commonQryParams);   		
+    		    		
+    		//console.log(queryParams);
     		$.ajax({
         	    url: self.options.solrBaseURL_ebi + 'pipeline/select',
         	    data: queryParams,
         	    dataType: 'jsonp',
         	    jsonp: 'json.wrf',
         	    timeout: 5000,
-        	    success: function (sopSolrResponse) {                
+        	    success: function (sopSolrResponse) {
         	    	self._doTissueAutoSuggest(geneSolrResponse, sopSolrResponse, q, response); 
         	    },
     			error: function (jqXHR, textStatus, errorThrown) {
@@ -573,7 +590,7 @@
         	    dataType: 'jsonp',
         	    jsonp: 'json.wrf',
         	    timeout: 10000,
-        	    success: function (maSolrResponse) { 
+        	    success: function (maSolrResponse) {
         	    	self._doImageAutosuggest(geneSolrResponse, sopSolrResponse, maSolrResponse, q, response); 
         	    },
     			error: function (jqXHR, textStatus, errorThrown) {
@@ -609,11 +626,10 @@
         	    dataType: 'jsonp',
         	    jsonp: 'json.wrf',
         	    timeout: 10000,
-
-        	    success: function (imgSolrResponse) { 	    	
+        	    success: function (imgSolrResponse) {        	    	
         	    	self._doMPAutoSuggest(geneSolrResponse, sopSolrResponse, maSolrResponse, imgSolrResponse, q, response); 
         	    },
-    		        error: function (jqXHR, textStatus, errorThrown) {
+    			error: function (jqXHR, textStatus, errorThrown) {
     				//response('AJAX error');            	        
     				$('div#facetBrowser').html('Error fetching data ...');
     			} 
@@ -639,7 +655,8 @@
         	    dataType: 'jsonp',
         	    jsonp: 'json.wrf',
         	    timeout: 10000,
-        	    success: function (mpSolrResponse) {  	
+        	    success: function (mpSolrResponse) {
+        	    	        	    	
         	    	q = q.replace(/\*$/g, ""); // need to remove trailing * 
         	    	
         	    	// all JSONs from each solr query are parsed in one go here
@@ -665,18 +682,18 @@
         	    													mpFound: self.options.mpFound, 
         	    													pipelineFound: self.options.pipelineFound,
         	    													imagesFound: self.options.imagesFound
-        	    													});
+        	    													});        	    	       	    	
         	    	
         	    	self.options.doneSourceCall = 1;
         	    	
-        	    	//alert('doneSouceCall: '+ self.options.doneSourceCall);
+        	    	//console.log('doneSouceCall: '+ self.options.doneSourceCall);
         	    	if ( response ){        	    		
         	    		// response is defined only after dropdown list is open
         	    		// all other key events do not trigger opening dropdown list
         	    		//response(self.options.acList);        	    		
         	    		response(self.options.acList.slice(0,4)); // return only first 4 terms in the list for now
         	    	}
-        	    	//alert( 'check val 2: '+  self.options.hitEnterBeforeDropDownListOpensVal);      	    	
+        	    	       	    	
         	    	self._doCallBacks();         	    	
         	    },
         	    error: function (jqXHR, textStatus, errorThrown) {
@@ -710,34 +727,35 @@
     		
     		$('div#facetBrowser').html(MPI2.searchAndFacetConfig.endOfSearch);    		
     		// only Enter event will fire and not other keyup/down events
-                //alert(window.location.pathname + ' : '+ self.options.search_pathname + ' : ' + self.options.hitEnterBeforeDropDownListOpensVal);              
 
     		if ( (window.location.pathname != self.options.search_pathname && self.options.hitEnterBeforeDropDownListOpensVal == 1) ){ 
     			//console.log('1: redirect chk hash: ' + window.location.hash); 
-
-    			if ( (self.options.searchMode == 'gene' || self.options.searchMode == 'mp') && self._isSingleton() ){ 
+    			// when users hit enter on inpubox and the result returns only 1 result
+        		// go straight to mp/gene page
+    			/*if ( (self.options.searchMode == 'gene' || self.options.searchMode == 'mp') && self._isSingleton() ){ 
         			var acc = MPI2.AutoComplete.mapping[self.term.toLowerCase()];        			
         			window.location.href = baseUrl + '/' + MPI2.searchAndFacetConfig.restfulPrefix[self.options.searchMode] + '/' +  acc;        		
-        		}
-    			else {
+        		}*/
+    			//else {
     				self._trigger("redirectedSearch", null, { q: self.term, core: self.options.searchMode, 
     					fq: MPI2.searchAndFacetConfig.facetParams[self.options.searchMode+'Facet'].fq });    				
-    			}
+    			//}
     		}
     		else if ( self.options.hitEnterBeforeDropDownListOpensVal== 1){  
     			
     			// when users hit enter on inpubox and the result returns only 1 result
         		// go straight to mp/gene page
         		//console.log('2: '+ self.options.searchMode);
-        		if ( (self.options.searchMode == 'gene' || self.options.searchMode == 'mp') && self._isSingleton() ){ 
+        		/*if ( (self.options.searchMode == 'gene' || self.options.searchMode == 'mp') && self._isSingleton() ){ 
         			var acc = MPI2.AutoComplete.mapping[self.term.toLowerCase()];
-        			window.location.href = baseUrl + '/' + MPI2.searchAndFacetConfig.restfulPrefix[self.options.searchMode] + '/' +  acc;        			
-        		}
-        		else {    			
+        			window.location.href = baseUrl + '/' + MPI2.searchAndFacetConfig.restfulPrefix[self.options.searchMode] + '/' +  acc; 
+        			return;
+        		}*/
+        		//else {    			
         			//console.log('fq check: ' + MPI2.searchAndFacetConfig.facetParams[self.options.searchMode+'Facet'].fq);
         			window.location.hash = 'q=' + self.term + '&core=' + self.options.searchMode 
         			+ '&fq=' + MPI2.searchAndFacetConfig.facetParams[self.options.searchMode+'Facet'].fq;
-        		}
+        		//}
     		} 		
     		   		    
     		//console.log('check url: '+ window.location.href);
@@ -772,11 +790,11 @@
     			//console.log('TEST: '+ hashParams.fq);
     		}    		
     	        	
-                if ( !self.options.homePage ){	
-    		        // when loadSideBar is done, dataTable will be loaded based on search result    		
-			self._trigger("loadSideBar", null, {    						
+    		if ( !self.options.homePage ){	
+    			// when loadSideBar is done, dataTable will be loaded based on search result    		
+    			self._trigger("loadSideBar", null, {    						
     			        q: self.term, core: self.options.searchMode, fq: self.options.fq							   
-    		        });				
+    			});				
     		}
     		
     	},	
